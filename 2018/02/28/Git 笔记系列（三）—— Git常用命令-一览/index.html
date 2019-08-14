@@ -155,6 +155,458 @@
 <figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> git config --global core.editor emacs</span><br></pre></td></tr></table></figure>
 <h4 id="设置git命令-别名"><a href="#设置git命令-别名" class="headerlink" title="设置git命令 别名"></a>设置<code>git</code>命令 别名</h4><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> git config --global alias.st status</span><br><span class="line"><span class="meta">$</span> git config --global alias.co checkout</span><br><span class="line"><span class="meta">$</span> git config --global alias.ct commit</span><br><span class="line"><span class="meta">$</span> git config --global alias.df diff</span><br><span class="line"><span class="meta">$</span> git config --global alias.br branch</span><br><span class="line"><span class="meta">#</span>git lg to view commit log like network graph</span><br><span class="line"><span class="meta">$</span></span><br></pre></td></tr></table></figure>
 <h5 id="Git命令的别名"><a href="#Git命令的别名" class="headerlink" title="Git命令的别名"></a>Git命令的别名</h5><p>有些<code>Git</code>的命令很长，如果经常输入就很繁琐，通过设置<code>Git</code>的别名，可以简化输入，提交效率，这里推荐一个<code>Git</code>的别名库，方便使用各种<code>Git</code>命令。<br><a href="https://github.com/tj/git-extras" target="_blank" rel="noopener"></a><br><a href="https://github.com/tj/git-extras/blob/master/Commands.md" target="_blank" rel="noopener">git-extras/Commands.md at master · tj/git-extras</a>GIT utilities – repo summary, repl, changelog population, author commit percentages and more</p>
+<p><a href="https://github.com/robbyrussell/oh-my-zsh/wiki/Cheatsheet" target="_blank" rel="noopener">Cheatsheet · robbyrussell/oh-my-zsh Wiki</a></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Alias</th>
+<th style="text-align:left">Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">_g_</td>
+<td style="text-align:left">git</td>
+</tr>
+<tr>
+<td style="text-align:left">_ga_</td>
+<td style="text-align:left">git add</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gau</em></td>
+<td style="text-align:left">git add -u</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gaa</em></td>
+<td style="text-align:left">git add –all</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gapa</em></td>
+<td style="text-align:left">git add –patch</td>
+</tr>
+<tr>
+<td style="text-align:left">_gb_</td>
+<td style="text-align:left">git branch</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gba</em></td>
+<td style="text-align:left">git branch -a</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gbd</em></td>
+<td style="text-align:left">git branch -d</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gbl</em></td>
+<td style="text-align:left">git blame -b -w</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gbnm</em></td>
+<td style="text-align:left">git branch –no-merged</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gbr</em></td>
+<td style="text-align:left">git branch –remote</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gbs</em></td>
+<td style="text-align:left">git bisect</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gbsb</em></td>
+<td style="text-align:left">git bisect bad</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gbsg</em></td>
+<td style="text-align:left">git bisect good</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gbsr</em></td>
+<td style="text-align:left">git bisect reset</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gbss</em></td>
+<td style="text-align:left">git bisect start</td>
+</tr>
+<tr>
+<td style="text-align:left">_gc_</td>
+<td style="text-align:left">git commit -v</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gc!</em></td>
+<td style="text-align:left">git commit -v –amend</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gca</em></td>
+<td style="text-align:left">git commit -v -a</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gca!</em></td>
+<td style="text-align:left">git commit -v -a –amend</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gcan!</em></td>
+<td style="text-align:left">git commit -v -a –no-edit –amend</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gcans!</em></td>
+<td style="text-align:left">git commit -v -a -s –no-edit –amend</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gcam</em></td>
+<td style="text-align:left">git commit -a -m</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gcsm</em></td>
+<td style="text-align:left">git commit -s -m</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gcb</em></td>
+<td style="text-align:left">git checkout -b</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gcf</em></td>
+<td style="text-align:left">git config –list</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gcl</em></td>
+<td style="text-align:left">git clone –recursive</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gclean</em></td>
+<td style="text-align:left">git clean -fd</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gpristine</em></td>
+<td style="text-align:left">git reset –hard &amp;&amp; git clean -dfx</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gcm</em></td>
+<td style="text-align:left">git checkout master</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gcd</em></td>
+<td style="text-align:left">git checkout develop</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gcmsg</em></td>
+<td style="text-align:left">git commit -m</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gco</em></td>
+<td style="text-align:left">git checkout</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gcount</em></td>
+<td style="text-align:left">git shortlog -sn</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gcp</em></td>
+<td style="text-align:left">git cherry-pick</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gcpa</em></td>
+<td style="text-align:left">git cherry-pick –abort</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gcpc</em></td>
+<td style="text-align:left">git cherry-pick –continue</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gcs</em></td>
+<td style="text-align:left">git commit -S</td>
+</tr>
+<tr>
+<td style="text-align:left">_gd_</td>
+<td style="text-align:left">git diff</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gdca</em></td>
+<td style="text-align:left">git diff –cached</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gdct</em></td>
+<td style="text-align:left">git describe –tags <code>git rev-list --tags --max-count=1</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gdt</em></td>
+<td style="text-align:left">git diff-tree –no-commit-id –name-only -r</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gdw</em></td>
+<td style="text-align:left">git diff –word-diff</td>
+</tr>
+<tr>
+<td style="text-align:left">_gf_</td>
+<td style="text-align:left">git fetch</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gfa</em></td>
+<td style="text-align:left">git fetch –all –prune</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gfo</em></td>
+<td style="text-align:left">git fetch origin</td>
+</tr>
+<tr>
+<td style="text-align:left">_gg_</td>
+<td style="text-align:left">git gui citool</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gga</em></td>
+<td style="text-align:left">git gui citool –amend</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>ggpnp</em></td>
+<td style="text-align:left">git pull origin $(current_branch) &amp;&amp; git push origin $(current_branch)</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>ggpull</em></td>
+<td style="text-align:left">git pull origin $(current_branch)</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>ggl</em></td>
+<td style="text-align:left">git pull origin $(current_branch)</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>ggpur</em></td>
+<td style="text-align:left">git pull –rebase origin $(current_branch)</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>glum</em></td>
+<td style="text-align:left">git pull upstream master</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>ggpush</em></td>
+<td style="text-align:left">git push origin $(current_branch)</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>ggp</em></td>
+<td style="text-align:left">git push origin $(current_branch)</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>ggfl</em></td>
+<td style="text-align:left">git push –force-with-lease origin &lt;your_argument&gt;/$(current_branch)</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>ggsup</em></td>
+<td style="text-align:left">git branch –set-upstream-to=origin/$(current_branch)</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gpsup</em></td>
+<td style="text-align:left">git push –set-upstream origin $(current_branch)</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gignore</em></td>
+<td style="text-align:left">git update-index –assume-unchanged</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gignored</em></td>
+<td style="text-align:left">git ls-files -v</td>
+<td>grep “^<a href="https://github.com/robbyrussell/oh-my-zsh/wiki/%3Alower%3A" target="_blank" rel="noopener">:lower:</a>“</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>git-svn-dcommit-push</em></td>
+<td style="text-align:left">git svn dcommit &amp;&amp; git push github master:svntrunk</td>
+</tr>
+<tr>
+<td style="text-align:left">_gk_</td>
+<td style="text-align:left">gitk –all –branches</td>
+</tr>
+<tr>
+<td style="text-align:left">_gl_</td>
+<td style="text-align:left">git pull</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>glg</em></td>
+<td style="text-align:left">git log –stat –max-count = 10</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>glgg</em></td>
+<td style="text-align:left">git log –graph –max-count = 10</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>glgga</em></td>
+<td style="text-align:left">git log –graph –decorate –all</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>glo</em></td>
+<td style="text-align:left">git log –oneline –decorate –color</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>glog</em></td>
+<td style="text-align:left">git log –oneline –decorate –color –graph</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>glp</em></td>
+<td style="text-align:left">_git_log_prettily (git log –pretty=$1)</td>
+</tr>
+<tr>
+<td style="text-align:left">_gm_</td>
+<td style="text-align:left">git merge</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gma</em></td>
+<td style="text-align:left">git merge –abort</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gmt</em></td>
+<td style="text-align:left">git mergetool –no-prompt</td>
+</tr>
+<tr>
+<td style="text-align:left">_gp_</td>
+<td style="text-align:left">git push</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gpoat</em></td>
+<td style="text-align:left">git push origin –all &amp;&amp; git push origin –tags</td>
+</tr>
+<tr>
+<td style="text-align:left">_gr_</td>
+<td style="text-align:left">git remote</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>grb</em></td>
+<td style="text-align:left">git rebase</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>grba</em></td>
+<td style="text-align:left">git rebase –abort</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>grbc</em></td>
+<td style="text-align:left">git rebase –continue</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>grbd</em></td>
+<td style="text-align:left">git rebase develop</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>grbm</em></td>
+<td style="text-align:left">git rebase master</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>grbs</em></td>
+<td style="text-align:left">git rebase –skip</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>grbi</em></td>
+<td style="text-align:left">git rebase -i</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>grh</em></td>
+<td style="text-align:left">git reset HEAD</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>grhh</em></td>
+<td style="text-align:left">git reset HEAD –hard</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>grmv</em></td>
+<td style="text-align:left">git remote rename</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>grrm</em></td>
+<td style="text-align:left">git remote remove</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>grset</em></td>
+<td style="text-align:left">git remote set-url</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>grt</em></td>
+<td style="text-align:left">cd $(git rev-parse –show-toplevel</td>
+<td></td>
+<td>echo “.”)</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>grup</em></td>
+<td style="text-align:left">git remote update</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>grv</em></td>
+<td style="text-align:left">git remote -v</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gsd</em></td>
+<td style="text-align:left">git svn dcommit</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gsps</em></td>
+<td style="text-align:left">git show –pretty = short –show-signature</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gsr</em></td>
+<td style="text-align:left">git svn rebase</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gss</em></td>
+<td style="text-align:left">git status -s</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gst</em></td>
+<td style="text-align:left">git status</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gsta</em></td>
+<td style="text-align:left">git stash save</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gstaa</em></td>
+<td style="text-align:left">git stash apply</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gstd</em></td>
+<td style="text-align:left">git stash drop</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gstl</em></td>
+<td style="text-align:left">git stash list</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gstp</em></td>
+<td style="text-align:left">git stash pop</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gsts</em></td>
+<td style="text-align:left">git stash show –text</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gsu</em></td>
+<td style="text-align:left">git submodule update</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gts</em></td>
+<td style="text-align:left">git tag -s</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gunignore</em></td>
+<td style="text-align:left">git update-index –no-assume-unchanged</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gunwip</em></td>
+<td style="text-align:left">git log -n 1</td>
+<td>grep -q -c “–wip–” &amp;&amp; git reset HEAD~1</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gup</em></td>
+<td style="text-align:left">git pull –rebase</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gvt</em></td>
+<td style="text-align:left">git verify-tag</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gwch</em></td>
+<td style="text-align:left">git whatchanged -p –abbrev-commit –pretty = medium</td>
+</tr>
+<tr>
+<td style="text-align:left"><em>gwip</em></td>
+<td style="text-align:left">git add -A; git ls-files –deleted -z</td>
+<td>xargs -r0 git rm; git commit -m “–wip–”</td>
+</tr>
+</tbody>
+</table>
 <h4 id="同一台电脑可以有2个git账号（不同网站的）"><a href="#同一台电脑可以有2个git账号（不同网站的）" class="headerlink" title="同一台电脑可以有2个git账号（不同网站的）"></a>同一台电脑可以有2个git账号（不同网站的）</h4><p><a href="https://gist.github.com/suziewong/4378434" target="_blank" rel="noopener">1.同一台电脑可以有2个git账号（不同网站的）</a></p>
 <p>这种情况下，需要几点注意</p>
 <p>1.<code>remote pull push</code>的时候有问题，因为要设置邮箱问题了 pull的时候识别的是邮箱，2个github账号，2个邮箱，我们自然不能使用global的user.email了</p>
