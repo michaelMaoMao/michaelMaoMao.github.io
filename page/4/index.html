@@ -44,7 +44,60 @@
 <p>对于iOS开发中，<code>Xcode</code>是我们天天打交道使用的官方开发工具，经过许多个版本的迭代，<code>Xcode</code>已经越来越好用，功能越来越强大，开发者虽然经常使用，但是不一定清楚<code>Xcode</code>的一切奇赢技巧。本篇将介绍从常用快捷键、debug方法以及常见问题等来全面介绍<code>Xcode</code>。</p>
 </blockquote>
 <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p>[Build settings reference](#Build settings reference)<br>[Scheme Menu](#Scheme Menu)<br><a href="#%E6%B7%BB%E5%8A%A0%E6%96%87%E4%BB%B6">添加文件</a><br><a href="#%E6%90%9C%E7%B4%A2">搜索</a><br><a href="#Signing">Signing</a><br><a href="#Distribution%E5%8F%91%E5%B8%83App">Distribution发布App</a><br><a href="#Debug">Debug</a><br>[Code Test](#Code Test)<br><a href="#%E9%99%84%E5%BD%95">附录</a><br><a href="#%E5%8F%82%E8%80%83">参考</a></p></div><a class="more" href="/2017/03/31/Xcode%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2017/03/05/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2-%E7%BB%99Hexo%E6%8D%A2%E7%9A%AE%E8%82%A4/">搭建博客-给Hexo换皮肤</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-03-05</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hexo/">Hexo</a></span><div class="content"><p><strong>变更记录</strong></p>
-<p>序号 |  	录入时间 | 备注<br> — | — |  — | —<br>9	| 2023-03-28 | 完善SSH Key配置说明<br>8	| 2022-07-16 | 优化MarkDown格式<br>7	| 2019-07-07 | 优化hexo搜索和参考ref links.<br>6	| 2019-02-14 | 基于gollum的wiki搭建<br>5	| 2019-01-27 | 使用Cloudflare Free SSL解析<br>4	| 2019-01-26 | 完善博客图床url失效问题<br>3	| 2018-11-09 | 完善SSH Key配置<br>2	| 2018-02-28 | 整理博客配置问题，添加问题8<br>1	| 2017-03-05 | 新建文章</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>录入时间</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>9</td>
+<td>2023-03-28</td>
+<td>完善SSH Key配置说明</td>
+</tr>
+<tr>
+<td>8</td>
+<td>2022-07-16</td>
+<td>优化MarkDown格式</td>
+</tr>
+<tr>
+<td>7</td>
+<td>2019-07-07</td>
+<td>优化hexo搜索和参考ref links.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2019-02-14</td>
+<td>基于gollum的wiki搭建</td>
+</tr>
+<tr>
+<td>5</td>
+<td>2019-01-27</td>
+<td>使用Cloudflare Free SSL解析</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2019-01-26</td>
+<td>完善博客图床url失效问题</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2018-11-09</td>
+<td>完善SSH Key配置</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2018-02-28</td>
+<td>整理博客配置问题，添加问题8</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2017-03-05</td>
+<td>新建文章</td>
+</tr>
+</tbody></table>
 <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><blockquote>
 <p>一直看到大’婶’们在用 <code>Hexo</code> 搭建博客主题，看起来不错的样纸ヾ(o◕∀◕)ﾉ，再看看自己的博客╮(╯_╰)╭, 肿么总感觉气质上差的不是一点半点呢，对于爱装X的我来说这能忍？(￣ェ￣;)这事一直在我心里”酝酿”着,只由于平时实在太忙(lan).<br>直到这周末，一位童鞋想让我帮忙搭个博客，让俺这懒癌患者都不好推脱，顺便换一下主题吧。本以为熟悉后分分钟的事，然而，对 <code>Git</code> 和 <code>SSH</code> 还不很熟悉的我，为了换掉原来的配置的 <code>SSH</code> 账号，搞到凌晨3点，才把博客部署上去, 搞到后面都快睡着了（¯﹃¯），期间蛋疼不断，没有深入熟悉的事不敢再说简单&lt;(_ _)&gt;，在此记录一笔。</p>
 </blockquote>
