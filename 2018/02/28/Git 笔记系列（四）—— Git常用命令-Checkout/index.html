@@ -1,0 +1,158 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Git 笔记系列（四）—— Git常用命令-Checkout"><meta name="keywords" content="Git"><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>Git 笔记系列（四）—— Git常用命令-Checkout | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95"><span class="toc-number">2.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#checkout%E6%A3%80%E5%87%BA"><span class="toc-number">3.</span> <span class="toc-text">checkout检出</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HEAD%E6%98%AFcheckout%E7%9A%84%E7%81%B5%E9%AD%82"><span class="toc-number">3.1.</span> <span class="toc-text">HEAD是checkout的灵魂</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9HEAD%E5%92%8C%E5%88%86%E6%94%AF%E6%8C%87%E9%92%88%E6%8C%87%E5%90%91"><span class="toc-number">3.2.</span> <span class="toc-text">修改HEAD和分支指针指向</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9HEAD%E6%80%BB%E7%BB%93"><span class="toc-number">3.2.1.</span> <span class="toc-text">修改HEAD总结</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%87%E6%8D%A2%E5%88%86%E6%94%AF"><span class="toc-number">3.3.</span> <span class="toc-text">切换分支</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Checkout%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">Checkout总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-commit"><span class="toc-number">5.</span> <span class="toc-text">git commit</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%92%A4%E9%94%80%E6%8F%90%E4%BA%A4%EF%BC%88commit%EF%BC%89"><span class="toc-number">5.1.</span> <span class="toc-text">撤销提交（commit）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">5.2.</span> <span class="toc-text"></span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">6.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">7.</span> <span class="toc-text">参考</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">40</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">14</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a><a class="site-page" href="/gallery">相册</a><a class="site-page" href="/gtd">GTD</a></span></div><div id="post-info"><div id="post-title">Git 笔记系列（四）—— Git常用命令-Checkout</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-02-28</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><table>
+<thead>
+<tr>
+<th>时间</th>
+<th>更新备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2018-02-28</td>
+<td>新建文章</td>
+</tr>
+<tr>
+<td>2018-06-06</td>
+<td>添加checkout命令</td>
+</tr>
+<tr>
+<td>2019-01-18</td>
+<td>更新链接</td>
+</tr>
+</tbody></table>
+<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><blockquote>
+<p>上篇介绍<code>Git</code>的流程涉及了很多命令，这篇将对介绍<code>Git</code>工作流的命令进行梳理，希望增加对<code>Git</code>的理解，方便大家的使用。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="https://michaelmao.co/2018/02/27/Git%20%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%20Git%E7%AE%80%E4%BB%8B/">Git 笔记系列（一）—— Git简介</a></li>
+<li><a href="https://michaelmao.co/2018/02/28/Git%20%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%20Git%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B/">Git 笔记系列（二）—— Git工作流程</a></li>
+<li><a href="https://michaelmao.co/2018/02/28/Git%20%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%89%EF%BC%89%E2%80%94%E2%80%94%20Git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-%E4%B8%80%E8%A7%88/">Git 笔记系列（三）—— Git常用命令-一览</a></li>
+<li><a href="https://michaelmao.co/2018/02/28/Git%20%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E5%9B%9B%EF%BC%89%E2%80%94%E2%80%94%20Git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-Checkout/"><strong>Git 笔记系列（四）—— Git常用命令-Checkout</strong></a></li>
+<li><a href="https://michaelmao.co/2018/03/01/Git%20%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%94%EF%BC%89%E2%80%94%E2%80%94%20Git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-Branch/">Git 笔记系列（五）—— Git常用命令-Branch</a></li>
+<li><a href="https://michaelmao.co/2018/03/02/Git%20%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E5%85%AD%EF%BC%89%E2%80%94%E2%80%94%20Git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-Reset/">Git 笔记系列（六）—— Git常用命令-Reset</a></li>
+<li><a href="https://michaelmao.co/2018/03/08/Git%20%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%83%EF%BC%89%E2%80%94%E2%80%94%20Git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-Rebase/">Git 笔记系列（七）—— Git常用命令-Rebase</a></li>
+<li><a href="https://michaelmao.co/2018/03/10/Git%20%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E5%85%AB%EF%BC%89%E2%80%94%E2%80%94%20Git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-Stash/">Git 笔记系列（八）—— Git常用命令-Stash等</a></li>
+<li><a href="https://michaelmao.co/2018/04/26/Git%20%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B9%9D%EF%BC%89%E2%80%94%E2%80%94%20Git%E8%BF%9B%E9%98%B6/">Git 笔记系列（九）—— Git进阶</a></li>
+</ul>
+<h2 id="checkout检出"><a href="#checkout检出" class="headerlink" title="checkout检出"></a>checkout检出</h2><p><strong>checkout作用是修改HEAD的指向，变更Index区域里的内容，修改Working Directory里的内容。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git-checkout - Switch branches or restore working tree files</span><br></pre></td></tr></table></figure>
+<p>git checkout命令用于切换分支或恢复工作树文件。git checkout是git最常用的命令之一，同时也是一个很危险的命令，因为这条命令会重写工作区。</p>
+<h3 id="HEAD是checkout的灵魂"><a href="#HEAD是checkout的灵魂" class="headerlink" title="HEAD是checkout的灵魂"></a><code>HEAD</code>是<code>checkout</code>的灵魂</h3><p>检出命令（<code>git checkout</code>）是<code>Git</code>最常用的命令之一，同样也很危险，因为这条命令会重写本地工作区。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">用法一： git checkout [-q] [&lt;commit&gt;] [--] &lt;paths&gt;...       从index中恢复文件</span><br><span class="line">用法二： git checkout [&lt;branch&gt;]   切换分支</span><br><span class="line">用法三： git checkout [-m] [[-b|--orphan] &lt;new_branch&gt;] [&lt;start_point&gt;]      从另一个提交中取出文件</span><br></pre></td></tr></table></figure>
+<p><img src="http://pic-mike.oss-cn-hongkong.aliyuncs.com/qiniu/14936268612321.jpg"></p>
+<p>下面通过一些示例，具体的看一下检出命令的不同用法。</p>
+<ul>
+<li><p>命令：<code>git checkout branch</code><br>检出<code>branch</code>分支。要完成如图的三个步骤，更新<code>HEAD</code>以指向<code>branch</code>分支，以<code>branch</code>指向的树更新暂存区和工作区。</p>
+</li>
+<li><p>命令：<code>git checkout</code><br>汇总显示工作区、暂存区与HEAD的差异。</p>
+</li>
+<li><p>命令：<code>git checkout HEAD</code><br> 同上.</p>
+</li>
+<li><p>命令：<code>git checkout – filename</code><br>用暂存区中<code>filename</code>文件来覆盖工作区中的<code>filename</code>文件。相当于取消自上次执行<code>git add filename</code>以来（如果执行过）本地的修改。<br>这个命令很危险，因为对于本地的修改会悄无声息的覆盖，毫不留情。</p>
+</li>
+<li><p>命令：<code>git checkout branch – filename</code><br>维持<code>HEAD</code>的指向不变。将<code>branch</code>所指向的提交中的<code>filename</code>替换暂存区和工作区中相应的文件。注意会将暂存区和工作区中的<code>filename</code>文件直接覆盖。</p>
+</li>
+<li><p>命令：<code>git checkout – </code> 或写做 <code>git checkout .</code><br>注意：<code>git checkout</code>命令后的参数为一个点（“.”）。这条命令最危险！会取消所有本地的修改（相对于暂存区）。相当于将暂存区的所有文件直接覆盖本地文件，不给用户任何确认的机会！</p>
+</li>
+</ul>
+<h3 id="修改HEAD和分支指针指向"><a href="#修改HEAD和分支指针指向" class="headerlink" title="修改HEAD和分支指针指向"></a>修改HEAD和分支指针指向</h3><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//直接移动HEAD指针</span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git checkout HEAD~num</span></span><br><span class="line">//使用分支作为参考坐标移动HEAD指针</span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git checkout BranchName~num</span></span><br><span class="line"></span><br><span class="line">//直接使用HashCode移动分支指针</span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">`git branch -f BranchName HashCode`</span></span><br><span class="line"></span><br><span class="line">//使用其他分支作为参考坐标移动分支指针</span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">`git branch -f BranchName OtherBranchName~num`</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="http://pic-mike.oss-cn-hongkong.aliyuncs.com/qiniu/15286770471212.jpg"></p>
+<p>注意，<code>HEAD</code>指针是由Checkout命令修改指向，后面讲到的分支的指向由<code>git branch -f BranchName HashCode</code>来修改，可以使用<code>HEAD</code>指针作为相对位置进行修改分支的指向。</p>
+<h4 id="修改HEAD总结"><a href="#修改HEAD总结" class="headerlink" title="修改HEAD总结"></a>修改HEAD总结</h4><p>注意^与<del>之间的区别，当存在多个分支时，^可以用来选择分支，HEAD</del>i永远只选择第i级父节点的第一个分支，HEAD<del>i^2选择第i级父节点的第二个分支，以此类推；HEAD^&#x3D;HEAD^1&#x3D;HEAD</del>1；如果没有分支，只有一条主线，则HEAD^^^&#x3D;HEAD^1^1^1&#x3D;HEAD<del>3，如果该级几点有第二个分支，则表示为：HEAD^^^2 &#x3D; HEAD</del>2^2. </p>
+<ul>
+<li>“^”代表父提交,当一个提交有多个父提交时，可以通过在”^”后面跟上一个数字，表示第几个父提交，”^”相当于”^1”.</li>
+<li>~<n>相当于连续的<n>个”^”.</li>
+<li>checkout只会移动<code>HEAD</code>指针，reset会改变<code>HEAD</code>的引用值。</li>
+</ul>
+<h3 id="切换分支"><a href="#切换分支" class="headerlink" title="切换分支"></a>切换分支</h3><p><code>git checkout branch</code></p>
+<p>当你checkout分支的时候，git做了这么三件事情</p>
+<ol>
+<li><p>将HEAD指向那个分支的最后一次commit</p>
+</li>
+<li><p>将HEAD指向的commit里所有文件的snapshot替换掉Index区域里原来的内容</p>
+</li>
+<li><p>将Index区域里的内容填充到Working Directory里</p>
+</li>
+</ol>
+<h2 id="Checkout总结"><a href="#Checkout总结" class="headerlink" title="Checkout总结"></a>Checkout总结</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout branch</span><br><span class="line">#检出branch分支。要完成图中的三个步骤，更新HEAD以指向branch分支，以及用branch  指向的树更新暂存区和工作区。</span><br><span class="line"></span><br><span class="line">$ git checkout</span><br><span class="line">#汇总显示工作区、暂存区与HEAD的差异。</span><br><span class="line"></span><br><span class="line">$ git checkout HEAD</span><br><span class="line">#同上</span><br><span class="line"></span><br><span class="line">$ git checkout -- filename</span><br><span class="line">#用暂存区中filename文件来覆盖工作区中的filename文件。相当于取消自上次执行git add filename以来（如果执行过）的本地修改。</span><br><span class="line"></span><br><span class="line">$ git checkout branch -- filename</span><br><span class="line">#维持HEAD的指向不变。用branch所指向的提交中filename替换暂存区和工作区中相   应的文件。注意会将暂存区和工作区中的filename文件直接覆盖。</span><br><span class="line"></span><br><span class="line">$ git checkout -- . 或写作 git checkout .</span><br><span class="line">#注意git checkout 命令后的参数为一个点（“.”）。这条命令最危险！会取消所有本地的  #修改（相对于暂存区）。相当于用暂存区的所有文件直接覆盖本地文件，不给用户任何确认的机会！</span><br><span class="line"></span><br><span class="line">$ git checkout commit_id -- file_name</span><br><span class="line">#如果不加commit_id，那么git checkout -- file_name 表示恢复文件到本地版本库中最新的状态。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>git checkout – file；撤销对工作区修改；这个命令是以最新的存储时间节点（add和commit）为参照，覆盖工作区对应文件file；这个命令改变的是工作区</li>
+<li>git reset HEAD – file；清空add命令向暂存区提交的关于file文件的修改（Ustage）；这个命令仅改变暂存区，并不改变工作区，这意味着在无任何其他操作的情况下，工作区中的实际文件同该命令运行之前无任何改变</li>
+</ul>
+<h2 id="git-commit"><a href="#git-commit" class="headerlink" title="git commit"></a>git commit</h2><ul>
+<li><p>Git 仓库中的提交记录保存的是你的目录下所有文件的快照，就像是把整个目录复制，然后再粘贴一样，但比复制粘贴优雅许多！</p>
+</li>
+<li><p>Git 希望提交记录尽可能地轻量，因此在你每次进行提交时，它并不会盲目地复制整个目录。条件允许的情况下，它会将当前版本与仓库中的上一个版本进行对比，并把所有的差异打包到一起作为一个提交记录。</p>
+</li>
+<li><p>Git 还保存了提交的历史记录。这也是为什么大多数提交记录的上面都有父节点的原因 —— 我们会在图示中用箭头来表示这种关系。对于项目组的成员来说，维护提交历史对大家都有好处。</p>
+</li>
+<li><p>关于提交记录太深入的东西咱们就不再继续探讨了，现在你可以把提交记录看作是项目的快照。提交记录非常轻量，可以快速地在这些提交记录之间切换！</p>
+</li>
+</ul>
+<p>使用一次新的commit，替代上一次提交<br>如果代码没有任何新变化，则用来改写上一次commit的提交信息</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git commit --amend -m [message]</span></span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li><code>git commit files</code> 进行一次包含最后一次提交加上工作目录中文件快照的提交。并且文件被添加到暂存区域。</li>
+<li><code>git commit -a</code> 相当于运行 <code>git add</code> 把所有当前目录下的文件加入暂存区域再运行<code>git commit</code>.</li>
+</ul>
+<h3 id="撤销提交（commit）"><a href="#撤销提交（commit）" class="headerlink" title="撤销提交（commit）"></a>撤销提交（commit）</h3><p>原理就是放弃工作区和index的改动，同时HEAD指针指向前一个commit对象</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#撤销上一次的提交</span><br><span class="line">git reset --hard HEAD~1</span><br></pre></td></tr></table></figure>
+
+<p> 要通过git log查看提交日志，也可直接指定提交编号或序号</p>
+<p>示例：</p>
+<p><img src="http://pic-mike.oss-cn-hongkong.aliyuncs.com/qiniu/15287143938274.jpg"></p>
+<p>撤销提交</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git revert &lt;commit-id&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这条命令会把指定的提交的所有修改回滚，并同时生成一个新的提交。</p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3><p>要提交新版本a.txt，即内容为’a’的a.txt，则需要使用git add a.txt，将新版本的a.txt放到staged暂存区，然后才能使用git commit -m进行提交</p>
+<p>而如果使用git commit -am，则可以省略git add a.txt这一步，因为git commit -am可以提交跟踪过的文件，而a.txt一开始已经被跟踪过了</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><code>git checkout -- files</code> 把文件从暂存区域复制到工作目录，用来丢弃本地修改。</li>
+<li><code>git checkout HEAD -- files</code> 回滚到复制最后一次提交。</li>
+<li><code>git checkout HEAD filename</code>: Discards changes in the working directory.</li>
+</ul>
+<p><img src="http://pic-mike.oss-cn-hongkong.aliyuncs.com/qiniu/14936234442203.jpg"></p>
+<ul>
+<li><p><code>git reset HEAD filename</code>: Unstages file changes in the staging area.</p>
+</li>
+<li><p><code>git reset SHA</code>: Can be used to reset to a previous commit in your commit history.</p>
+</li>
+<li><p><code>git reset -- files</code> 用来撤销最后一次git add files，你也可以用git reset&#96; 撤销所有暂存区域文件。</p>
+</li>
+</ul>
+<p><img src="http://pic-mike.oss-cn-hongkong.aliyuncs.com/qiniu/14936233428927.jpg"></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><a href="https://marklodato.github.io/visual-git-guide/index-zh-cn.html#commands-in-detail">图解Git</a></li>
+<li><a href="https://www.atlassian.com/git/tutorials/atlassian-git-cheatsheet">Git Cheat Sheet | Atlassian Git Tutorial</a></li>
+<li><a href="https://segmentfault.com/a/1190000008617626">Git 图解、常用命令和廖雪峰教程笔记总结 - 好好地 - SegmentFault 思否</a></li>
+<li><a href="https://www.jianshu.com/p/fcfbb551e00a">Git技术栈 - 简书</a></li>
+<li><a href="https://www.cnblogs.com/zqlmmd/p/5541334.html">Git学习02 －－暂存区，撤销修改，删除文件 - zqlmmd - 博客园</a></li>
+<li><a href="http://www.jianshu.com/p/c3ff8f0da85e">git 删除文件</a></li>
+<li><a href="https://segmentfault.com/a/1190000006185954">git的reset和checkout的区别 - 颇忒脱 - SegmentFault 思否</a></li>
+<li><a href="https://git-scm.com/book/zh/v1/Git-%E5%B7%A5%E5%85%B7-%E4%BA%A4%E4%BA%92%E5%BC%8F%E6%9A%82%E5%AD%98">Git - 交互式暂存</a></li>
+<li><a href="https://nuclearsquid.com/writings/git-add/">git add –patch and –interactive</a></li>
+</ol>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">MichaelMao</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://michaelmaomao.github.io/2018/02/28/Git%20%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E5%9B%9B%EF%BC%89%E2%80%94%E2%80%94%20Git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-Checkout/">http://michaelmaomao.github.io/2018/02/28/Git%20%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E5%9B%9B%EF%BC%89%E2%80%94%E2%80%94%20Git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-Checkout/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://michaelMaoMao.github.io">MMao</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Git/">Git</a></div><div class="post-qr-code"><div class="post-qr-code-item"><img class="post-qr-code__img" src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"><div class="post-qr-code__desc">我要吐槽下</div></div></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/03/01/Git%20%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%94%EF%BC%89%E2%80%94%E2%80%94%20Git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-Branch/"><i class="fa fa-chevron-left">  </i><span>Git 笔记系列（五）—— Git常用命令-Branch</span></a></div><div class="next-post pull-right"><a href="/2018/02/28/Git%20%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%89%EF%BC%89%E2%80%94%E2%80%94%20Git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-%E4%B8%80%E8%A7%88/"><span>Git 笔记系列（三）—— Git常用命令-一览</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2025 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
