@@ -39,6 +39,70 @@
 <li><strong>可扩展性</strong>：可以轻松添加新的Agent来扩展系统能力</li>
 <li><strong>专业化</strong>：不同Agent可以专注于不同领域或任务</li>
 </ul>
+<h2 id="MCP：连接Agent与外部世界的桥梁"><a href="#MCP：连接Agent与外部世界的桥梁" class="headerlink" title="MCP：连接Agent与外部世界的桥梁"></a>MCP：连接Agent与外部世界的桥梁</h2><p>多智能体系统要发挥最大效能，关键在于智能体如何与外部工具和其他智能体进行交互。模型上下文协议（Model Context Protocol，简称MCP）作为一种新兴的通信标准，为AI-Agent提供了与外部世界交互的统一接口。</p>
+<h3 id="MCP的核心架构与工作原理"><a href="#MCP的核心架构与工作原理" class="headerlink" title="MCP的核心架构与工作原理"></a>MCP的核心架构与工作原理</h3><p><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/20250315140712165.png" alt="MCP架构图"></p>
+<p>MCP的基本架构包含两个核心组件：</p>
+<ol>
+<li><strong>MCP客户端（Client）</strong>：通常是一个AI模型或Agent系统，需要访问外部功能</li>
+<li><strong>MCP服务器（Server）</strong>：提供各种工具、API和资源的接入点</li>
+</ol>
+<p>在多智能体系统中，MCP的工作流程如下：</p>
+<ul>
+<li>Agent通过MCP客户端向服务器发送请求，说明需要使用的工具或功能</li>
+<li>MCP服务器接收请求，调用相应的工具或资源</li>
+<li>服务器将结果返回给Agent</li>
+<li>Agent基于获取的信息继续思考和行动</li>
+</ul>
+<h3 id="MCP与A2A：两种关键协议的协同作用"><a href="#MCP与A2A：两种关键协议的协同作用" class="headerlink" title="MCP与A2A：两种关键协议的协同作用"></a>MCP与A2A：两种关键协议的协同作用</h3><p>在构建多智能体系统时，需要理解MCP（Model Context Protocol）和A2A（Agent-to-Agent）两种协议的区别与联系：</p>
+<p><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/mcp.jpg" alt="MCP与A2A比较"></p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>MCP</th>
+<th>A2A</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主要用途</td>
+<td>连接AI模型与外部工具</td>
+<td>促进智能体之间的协作</td>
+</tr>
+<tr>
+<td>交互类型</td>
+<td>工具调用，结构化输入&#x2F;输出</td>
+<td>对话式，意图导向</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>工具集成，API访问，资源调用</td>
+<td>多Agent协作，任务分解，服务发现</td>
+</tr>
+<tr>
+<td>抽象层次</td>
+<td>低级（具体功能操作）</td>
+<td>高级（目标与能力描述）</td>
+</tr>
+<tr>
+<td>成熟度</td>
+<td>正在标准化</td>
+<td>早期发展阶段</td>
+</tr>
+</tbody></table>
+<p>MCP和A2A并非相互竞争，而是相互补充的协议。在完整的多智能体系统中：</p>
+<ul>
+<li>MCP提供了智能体调用工具和访问资源的标准方式</li>
+<li>A2A提供了智能体之间协作和任务委派的标准方式</li>
+</ul>
+<p>将这两种协议结合使用，可以构建既能与外部世界交互，又能内部高效协作的复杂多智能体系统。</p>
+<h3 id="MCP如何赋能多智能体系统"><a href="#MCP如何赋能多智能体系统" class="headerlink" title="MCP如何赋能多智能体系统"></a>MCP如何赋能多智能体系统</h3><p>MCP为多智能体系统带来了几个关键优势：</p>
+<ol>
+<li><strong>工具使用标准化</strong>：不同Agent可以使用相同的接口访问各种工具和服务，无需为每个Agent单独开发接口</li>
+<li><strong>生态系统扩展性</strong>：随着更多工具和服务支持MCP，智能体系统的能力可以不断扩展</li>
+<li><strong>细粒度权限控制</strong>：MCP提供了清晰的安全边界，可以对不同Agent的工具访问权限进行精细控制</li>
+<li><strong>简化系统架构</strong>：将M×N的集成问题（M个Agent需要连接N种工具）简化为M+N问题</li>
+</ol>
+<p>在实际应用中，各大AI平台如Cloudflare、Cursor和OpenAI等都正在采用MCP协议，使其成为连接AI智能体与外部世界的标准桥梁。</p>
 <h2 id="AgentScope：5分钟上手多智能体开发"><a href="#AgentScope：5分钟上手多智能体开发" class="headerlink" title="AgentScope：5分钟上手多智能体开发"></a>AgentScope：5分钟上手多智能体开发</h2><p>AgentScope是一款开源的多智能体编程框架，它能让开发者轻松实现各种基于大模型和多智能体的应用。下面我们通过一个简单的例子，演示如何在5分钟内使用AgentScope搭建一个智能对话系统。</p>
 <h3 id="第一步：连接大模型"><a href="#第一步：连接大模型" class="headerlink" title="第一步：连接大模型"></a>第一步：连接大模型</h3><p>作为智能体的”大脑”，我们首先需要连接一个大语言模型。AgentScope支持多种模型，包括阿里云DashScope、OpenAI等API服务。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> agentscope</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置DashScope的通义(qwen-max)模型</span></span><br><span class="line">dashscope_config = &#123;</span><br><span class="line">    <span class="string">&quot;model_type&quot;</span>: <span class="string">&quot;dashscope_chat&quot;</span>,</span><br><span class="line">    <span class="string">&quot;config_name&quot;</span>: <span class="string">&quot;tongyi_qwen_config&quot;</span>,</span><br><span class="line">    <span class="string">&quot;model_name&quot;</span>: <span class="string">&quot;qwen-max&quot;</span>,</span><br><span class="line">    <span class="string">&quot;api_key&quot;</span>: <span class="string">f&quot;<span class="subst">&#123;os.environ.get(<span class="string">&#x27;DASHSCOPE_API_KEY&#x27;</span>)&#125;</span>&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化AgentScope环境</span></span><br><span class="line">agentscope.init(</span><br><span class="line">    model_configs=[dashscope_config],</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
@@ -53,6 +117,11 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">as_studio conversation.py</span><br></pre></td></tr></table></figure>
 
 <p>这样就可以在浏览器中打开<a href="http://127.0.0.1:7860，使用一个简易的网页版对话应用！">http://127.0.0.1:7860，使用一个简易的网页版对话应用！</a></p>
+<p><img src="https://api.ibos.cn/v4/weapparticle/accesswximg?aid=79222&url=aHR0cHM6Ly9tbWJpei5xcGljLmNuL21tYml6X3BuZy84Wkx1eWFpYnJaYms0bjdnM2tTQ291aWNSS2htOHVwZ2lhTTFOMDhaeDBPWENoR28zMVZ0ZWdpYUtZemE0ZzlEd2ZXVXlsdkVwVllJZlQ4QW9vck5Uc203encvNjQwP3d4X2ZtdD1wbmcmYW1w;from=appmsg"></p>
+<h3 id="集成MCP：扩展智能体的能力"><a href="#集成MCP：扩展智能体的能力" class="headerlink" title="集成MCP：扩展智能体的能力"></a>集成MCP：扩展智能体的能力</h3><p>为了让我们的智能体能够使用外部工具和服务，我们可以集成MCP。以下是使用AgentScope框架构建一个支持MCP的智能体的示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> agentscope.agents <span class="keyword">import</span> DialogAgent</span><br><span class="line"><span class="keyword">from</span> agentscope.mcp <span class="keyword">import</span> MCPClientManager</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ToolEnabledAgent</span>(<span class="title class_ inherited__">DialogAgent</span>):</span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">on_start</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># 初始化MCP客户端管理器</span></span><br><span class="line">        <span class="variable language_">self</span>.mcp = MCPClientManager(<span class="string">&quot;my-agent&quot;</span>, <span class="string">&quot;1.0.0&quot;</span>, &#123;</span><br><span class="line">            <span class="string">&quot;baseCallbackUri&quot;</span>: <span class="string">&quot;http://localhost:8000/callback&quot;</span>,</span><br><span class="line">            <span class="string">&quot;storage&quot;</span>: <span class="variable language_">self</span>.ctx.storage,</span><br><span class="line">        &#125;)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 连接到MCP服务器</span></span><br><span class="line">        <span class="keyword">await</span> <span class="variable language_">self</span>.mcp.connect(<span class="string">&quot;https://example-mcp-server.com/mcp/sse&quot;</span>)</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">process</span>(<span class="params">self, input_message</span>):</span><br><span class="line">        <span class="comment"># 获取可用工具列表</span></span><br><span class="line">        tools = <span class="variable language_">self</span>.mcp.list_tools()</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 使用LLM决定使用哪个工具</span></span><br><span class="line">        tool_choice = <span class="variable language_">self</span>.select_tool(input_message.content, tools)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> tool_choice:</span><br><span class="line">            <span class="comment"># 调用选定的工具</span></span><br><span class="line">            result = <span class="keyword">await</span> <span class="variable language_">self</span>.mcp.call_tool(tool_choice, &#123;</span><br><span class="line">                <span class="string">&quot;query&quot;</span>: input_message.content</span><br><span class="line">            &#125;)</span><br><span class="line">            <span class="keyword">return</span> <span class="string">f&quot;I used <span class="subst">&#123;tool_choice&#125;</span> and found: <span class="subst">&#123;result&#125;</span>&quot;</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 如果不需要使用工具，直接回答</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">await</span> <span class="built_in">super</span>().process(input_message)</span><br></pre></td></tr></table></figure>
+
+<p>这个示例展示了如何创建一个能够通过MCP协议访问外部工具的智能体。这种方式极大地扩展了智能体的能力范围，使其能够执行更多实际任务。</p>
 <h2 id="多智能体应用场景"><a href="#多智能体应用场景" class="headerlink" title="多智能体应用场景"></a>多智能体应用场景</h2><p>基于AgentScope等框架，我们可以构建各种有趣而实用的多智能体应用：</p>
 <ol>
 <li><p><strong>协作问题解决</strong>：让多个专家Agent协作解决复杂问题，如软件设计、市场分析等</p>
@@ -76,11 +145,13 @@
 </li>
 <li><p><strong>集体智能</strong>：多Agent系统将展示出更高层次的集体智能，解决更复杂的问题</p>
 </li>
+<li><p><strong>标准协议演进</strong>：MCP和A2A等协议将不断发展和完善，促进智能体生态系统的繁荣</p>
+</li>
 <li><p><strong>安全与可靠性</strong>：随着Agent应用范围扩大，安全、可解释性和控制将成为关键挑战</p>
 </li>
 </ol>
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>AI-Agent和多智能体系统代表了AI应用的新前沿。通过AgentScope等工具，开发者可以轻松构建自己的智能体应用，探索这一激动人心的领域。无论是简单的对话助手，还是复杂的多智能体协作系统，Agent技术都在重新定义我们与人工智能交互的方式，为未来创造无限可能。</p>
-<p>随着技术的不断演进，我们期待看到更多创新的Agent应用出现，解决更多实际问题，为人类社会创造更大价值。现在，就让我们拿起这些工具，开始探索AI-Agent的奇妙世界吧！ </p>
+<p>随着MCP和A2A等标准协议的发展，智能体之间的互操作性将大大提升，使得更复杂、更强大的智能体系统成为可能。现在，就让我们拿起这些工具，开始探索AI-Agent的奇妙世界吧！ </p>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2025/03/12/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%20AI%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%AE%9E%E8%B7%B5/">AI笔记系列（二）—— AI工作流实践</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2025-03-12</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/AI/">AI</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/">工作流</a></span><div class="content"><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
 <li><a href="https://michaelmaomao.github.io/2025/01/27/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%20%E7%8E%B0%E4%BB%A3AI%E4%BA%A7%E5%93%81%E5%BD%A2%E6%80%81%E8%A7%A3%E6%9E%90/#AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94-%E7%8E%B0%E4%BB%A3AI%E4%BA%A7%E5%93%81%E5%BD%A2%E6%80%81%E8%A7%A3%E6%9E%90">AI笔记系列（一）—— 现代AI产品形态解析</a></li>
 <li><a href="https://michaelmaomao.github.io/2025/03/12/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%20AI%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%AE%9E%E8%B7%B5/">AI笔记系列（二）—— AI工作流实践</a></li>
@@ -127,6 +198,93 @@
 <li>大模型生成答案：根据知识库内容或自身知识生成回答</li>
 <li>输出答案：将生成的答案返回给用户</li>
 </ol>
+<h2 id="模型上下文协议（MCP）：AI交互的新标准"><a href="#模型上下文协议（MCP）：AI交互的新标准" class="headerlink" title="模型上下文协议（MCP）：AI交互的新标准"></a>模型上下文协议（MCP）：AI交互的新标准</h2><p>随着AI技术的发展，多个AI系统之间的交互变得日益重要。模型上下文协议（Model Context Protocol，简称MCP）是近期兴起的重要标准，它为大语言模型提供了访问外部工具、数据和资源的统一接口。</p>
+<h3 id="MCP的基本架构与工作原理"><a href="#MCP的基本架构与工作原理" class="headerlink" title="MCP的基本架构与工作原理"></a>MCP的基本架构与工作原理</h3><p>MCP的核心架构包括两个主要部分：</p>
+<p><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/20250315140712165.png" alt="MCP架构示意图"></p>
+<ol>
+<li><strong>MCP客户端（Client）</strong>：通常是一个AI模型或应用，需要访问外部功能</li>
+<li><strong>MCP服务器（Server）</strong>：提供各种工具和资源的接入点</li>
+</ol>
+<p>工作流程如下：</p>
+<ul>
+<li>客户端向服务器发出请求，说明需要什么功能</li>
+<li>服务器处理请求，调用相应的工具或资源</li>
+<li>服务器将结果返回给客户端</li>
+<li>客户端基于返回结果继续工作</li>
+</ul>
+<h3 id="MCP-vs-A2A：两种关键协议的比较"><a href="#MCP-vs-A2A：两种关键协议的比较" class="headerlink" title="MCP vs A2A：两种关键协议的比较"></a>MCP vs A2A：两种关键协议的比较</h3><p>在AI架构发展中，除了MCP，还有另一个重要协议——Agent-to-Agent（A2A）协议。这两种协议代表了AI系统交互的不同维度：</p>
+<table>
+<thead>
+<tr>
+<th>方面</th>
+<th>MCP</th>
+<th>A2A</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>核心关注点</td>
+<td>模型与工具的连接</td>
+<td>代理之间的协作</td>
+</tr>
+<tr>
+<td>交互模式</td>
+<td>函数调用，结构化I&#x2F;O</td>
+<td>对话式，长期任务</td>
+</tr>
+<tr>
+<td>应用场景</td>
+<td>工具集成，API调用，资源访问</td>
+<td>多代理协作，复杂任务分解，服务发现</td>
+</tr>
+<tr>
+<td>抽象级别</td>
+<td>低级（具体功能）</td>
+<td>高级（意图和能力）</td>
+</tr>
+<tr>
+<td>标准化状态</td>
+<td>逐步标准化中</td>
+<td>早期开发阶段</td>
+</tr>
+</tbody></table>
+<p>MCP更像是一个”工具车间”，让AI模型知道如何使用各种工具；而A2A更像是一个”会议室”，让不同专业的AI代理坐在一起协作完成复杂任务。</p>
+<h3 id="MCP在实际应用中的意义"><a href="#MCP在实际应用中的意义" class="headerlink" title="MCP在实际应用中的意义"></a>MCP在实际应用中的意义</h3><p>MCP正在成为AI工作流中的关键组件，它解决了几个重要问题：</p>
+<ol>
+<li><strong>统一接口</strong>：将M×N的集成问题（M个应用需要连接N种工具）简化为M+N问题</li>
+<li><strong>能力扩展</strong>：让AI模型能够访问它原本不具备的功能和数据</li>
+<li><strong>安全边界</strong>：为AI模型与外部世界的交互提供了清晰的边界和控制机制</li>
+</ol>
+<p><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/mcp.jpg" alt="MCP实际应用示意图"></p>
+<p>在工作流设计中，MCP提供了与外部工具和服务无缝对接的能力，极大地扩展了AI工作流的应用范围和灵活性。</p>
+<h2 id="DeepSeek高效概念学习提示词：工作流中的实用工具"><a href="#DeepSeek高效概念学习提示词：工作流中的实用工具" class="headerlink" title="DeepSeek高效概念学习提示词：工作流中的实用工具"></a>DeepSeek高效概念学习提示词：工作流中的实用工具</h2><p>在AI工作流实践中，提示词（Prompt）的设计和使用是一个关键环节。DeepSeek高效概念学习提示词是一种经过实践验证的有效学习工具，可以帮助我们快速理解和掌握复杂概念。</p>
+<h3 id="提示词设计的基本原则"><a href="#提示词设计的基本原则" class="headerlink" title="提示词设计的基本原则"></a>提示词设计的基本原则</h3><p>有效的提示词设计需要遵循以下原则：</p>
+<ol>
+<li><strong>明确需求</strong>：在使用AI之前，明确你希望AI帮你做什么</li>
+<li><strong>具体而非笼统</strong>：避免过于宽泛的问题，将问题拆解得更具体</li>
+<li><strong>提供上下文</strong>：给AI足够的背景信息，帮助它更准确地理解问题</li>
+<li><strong>设定角色</strong>：赋予AI特定的角色可以获得更加专业的回答</li>
+<li><strong>指定格式</strong>：指明你期望的输出格式和结构</li>
+</ol>
+<h3 id="“通俗讲解专家”提示词模板"><a href="#“通俗讲解专家”提示词模板" class="headerlink" title="“通俗讲解专家”提示词模板"></a>“通俗讲解专家”提示词模板</h3><p>以下是一个高效的概念学习提示词模板，可以直接用于DeepSeek等大模型：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">## 角色</span><br><span class="line"></span><br><span class="line">你是一位概念通俗讲解专家，能够用深入浅出的方式解答用户的疑惑给出建议等。</span><br><span class="line"></span><br><span class="line">## 技能：深入浅出的讲解</span><br><span class="line"></span><br><span class="line">当用户提出问题或需求时，按照下面格式输出。</span><br><span class="line"></span><br><span class="line">========== 生活化例子 ========== </span><br><span class="line"></span><br><span class="line">提供一些更贴近生活或通俗易懂的例子，帮助用户更容易地理解这个概念或知识点。（如果有多个概念，请分条目展示）</span><br><span class="line"></span><br><span class="line">========== 概念讲解 ========== </span><br><span class="line"></span><br><span class="line">用相对通俗的语言对概念进行详细解释。（如果有多个概念，请分条目展示）</span><br><span class="line"></span><br><span class="line">========== 简单记法 ========== </span><br><span class="line"></span><br><span class="line">对我给出的论述如何能快速有效的记忆，给我一些tips，包括但不限于口诀或其他的简单记忆方法。（如果有多个概念，请分条目展示）</span><br><span class="line"></span><br><span class="line">========== 图示 ========== </span><br><span class="line"></span><br><span class="line">如果有可能，最后通过绘制SVG清晰解释这个概念。</span><br></pre></td></tr></table></figure>
+
+<h3 id="提示词使用技巧"><a href="#提示词使用技巧" class="headerlink" title="提示词使用技巧"></a>提示词使用技巧</h3><p>在AI工作流中使用提示词，还可以考虑以下技巧：</p>
+<ol>
+<li><strong>多轮对话</strong>：不满意的答案可以通过继续追问来优化</li>
+<li><strong>拆分问题</strong>：将复杂问题拆成几个小问题，逐一解决</li>
+<li><strong>使用开放式问题</strong>：开放式问题可以激发更详细的回答</li>
+<li><strong>加入特定关键词</strong>：如”说人话”、”小目标”等关键词能让回答更符合预期</li>
+<li><strong>反馈机制</strong>：直接告诉AI回答的好与不好，帮助它调整</li>
+</ol>
+<h3 id="提示词在工作流中的应用场景"><a href="#提示词在工作流中的应用场景" class="headerlink" title="提示词在工作流中的应用场景"></a>提示词在工作流中的应用场景</h3><p>在AI工作流中，高效的提示词可以应用于多个环节：</p>
+<ol>
+<li><strong>需求分析阶段</strong>：使用提示词帮助明确和细化需求</li>
+<li><strong>内容创作阶段</strong>：通过提示词生成初始内容框架和素材</li>
+<li><strong>问题解决阶段</strong>：使用提示词来分析和解决工作流中遇到的问题</li>
+<li><strong>知识梳理阶段</strong>：通过提示词将复杂知识结构化和通俗化</li>
+<li><strong>测试验证阶段</strong>：利用提示词检验工作流输出的质量和可用性</li>
+</ol>
+<p>提示词设计是一个迭代过程，通过不断调整和优化，可以显著提高AI工作流的效率和输出质量。</p>
 <h2 id="工作流选择原则"><a href="#工作流选择原则" class="headerlink" title="工作流选择原则"></a>工作流选择原则</h2><p>不同工作流类型各有优势，选择时应考虑：</p>
 <ul>
 <li>业务流程复杂度：复杂依赖关系选择DAG工作流</li>
@@ -136,7 +294,9 @@
 <li>规则复杂度：决策规则复杂选择规则驱动型</li>
 <li>人工参与度：创造性工作选择人工驱动型</li>
 </ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>工作流是提升工作效率的关键工具，尤其在AI时代，通过将AI能力融入工作流，我们可以创造出更智能、更高效的自动化系统。无论是依赖驱动、时间驱动还是事件驱动，选择适合业务场景的工作流类型，才能真正发挥其价值。DIFY等现代工作流编排工具的出现，让我们能够更轻松地构建复杂而强大的AI应用，推动工作效率迈向新高度。 </p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>工作流是提升工作效率的关键工具，尤其在AI时代，通过将AI能力融入工作流，我们可以创造出更智能、更高效的自动化系统。无论是依赖驱动、时间驱动还是事件驱动，选择适合业务场景的工作流类型，才能真正发挥其价值。</p>
+<p>MCP作为AI系统互操作的新标准，为工作流提供了强大的扩展能力，使AI工作流能够无缝集成各种外部工具和服务。同时，掌握高效的提示词设计技巧，可以显著提升AI工作流的输出质量和用户体验。</p>
+<p>DIFY等现代工作流编排工具的出现，让我们能够更轻松地构建复杂而强大的AI应用，推动工作效率迈向新高度。随着MCP、A2A等协议的不断发展和完善，我们有理由相信，AI工作流将在未来发挥更加重要的作用，为各行各业带来更多价值。 </p>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2025/01/27/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%20%E7%8E%B0%E4%BB%A3AI%E4%BA%A7%E5%93%81%E5%BD%A2%E6%80%81%E8%A7%A3%E6%9E%90/">AI笔记系列（一）—— 现代AI产品形态解析</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2025-01-27</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/AI/">AI</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/%E4%BA%A7%E5%93%81%E5%BD%A2%E6%80%81/">产品形态</a></span><div class="content"><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
 <li><a href="https://michaelmaomao.github.io/2025/01/27/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%20%E7%8E%B0%E4%BB%A3AI%E4%BA%A7%E5%93%81%E5%BD%A2%E6%80%81%E8%A7%A3%E6%9E%90/#AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94-%E7%8E%B0%E4%BB%A3AI%E4%BA%A7%E5%93%81%E5%BD%A2%E6%80%81%E8%A7%A3%E6%9E%90">AI笔记系列（一）—— 现代AI产品形态解析</a></li>
 <li><a href="https://michaelmaomao.github.io/2025/03/12/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%20AI%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%AE%9E%E8%B7%B5/">AI笔记系列（二）—— AI工作流实践</a></li>
@@ -259,14 +419,28 @@
 <li>健康监测与建议</li>
 <li>学习辅助工具</li>
 </ul>
+<h4 id="提示词工程在个人助理领域的应用"><a href="#提示词工程在个人助理领域的应用" class="headerlink" title="提示词工程在个人助理领域的应用"></a>提示词工程在个人助理领域的应用</h4><p>随着大型语言模型（如DeepSeek、Claude、GPT系列）的发展，提示词工程（Prompt Engineering）成为个人助理领域的关键技术。通过精心设计的提示词，用户可以更有效地与AI助手交互，获取定制化的帮助。</p>
+<p>DeepSeek高效概念学习提示词是这一趋势的优秀代表，它通过结构化的提示模板，帮助用户快速理解复杂概念：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">========== 生活化例子 ========== </span><br><span class="line">提供贴近生活的例子，帮助用户理解概念</span><br><span class="line"></span><br><span class="line">========== 概念讲解 ========== </span><br><span class="line">用通俗语言详细解释概念</span><br><span class="line"></span><br><span class="line">========== 简单记法 ========== </span><br><span class="line">提供记忆技巧，如口诀或助记法</span><br><span class="line"></span><br><span class="line">========== 图示 ========== </span><br><span class="line">通过可视化方式解释概念</span><br></pre></td></tr></table></figure>
+
+<p>这种提示词模板的应用，让个人助理能够更准确地理解用户需求，提供更有价值的信息和服务，从而显著提升用户体验。</p>
 <h2 id="未来发展趋势"><a href="#未来发展趋势" class="headerlink" title="未来发展趋势"></a>未来发展趋势</h2><p>AI产品形态还在不断演进中，未来发展趋势主要包括：</p>
 <h3 id="1-多模态融合"><a href="#1-多模态融合" class="headerlink" title="1. 多模态融合"></a>1. 多模态融合</h3><p>未来的AI产品将更加无缝地整合文本、图像、音频和视频等多种模态，提供更自然、更丰富的交互体验。</p>
 <h3 id="2-工具协同"><a href="#2-工具协同" class="headerlink" title="2. 工具协同"></a>2. 工具协同</h3><p>随着AI系统与各种工具和API的集成更加深入，AI产品将能够访问和操作更广泛的服务和资源，实现更复杂的任务。</p>
 <h3 id="3-个性化定制"><a href="#3-个性化定制" class="headerlink" title="3. 个性化定制"></a>3. 个性化定制</h3><p>AI产品将更加注重个性化体验，通过持续学习用户偏好和行为模式，提供量身定制的服务。</p>
 <h3 id="4-安全与隐私保护"><a href="#4-安全与隐私保护" class="headerlink" title="4. 安全与隐私保护"></a>4. 安全与隐私保护</h3><p>随着AI产品处理的数据越来越敏感，安全与隐私保护将成为产品设计的核心考量。</p>
 <h3 id="5-领域专精化发展"><a href="#5-领域专精化发展" class="headerlink" title="5. 领域专精化发展"></a>5. 领域专精化发展</h3><p>通用型AI之外，专注于特定领域的垂直AI产品将迎来快速发展，提供更专业、更深入的解决方案。</p>
+<h3 id="6-提示词工程的演进"><a href="#6-提示词工程的演进" class="headerlink" title="6. 提示词工程的演进"></a>6. 提示词工程的演进</h3><p>提示词工程（Prompt Engineering）正在从简单的指令输入发展为一门专业学科，影响着AI产品的用户交互设计。未来趋势包括：</p>
+<ul>
+<li><strong>结构化提示词模板</strong>：如DeepSeek高效概念学习提示词，通过明确的结构让AI理解用户意图</li>
+<li><strong>自适应提示词</strong>：根据用户历史交互自动调整提示策略</li>
+<li><strong>提示词市场</strong>：优质提示词将成为可交易的数字资产</li>
+<li><strong>提示词可视化工具</strong>：让非技术用户也能设计复杂提示词</li>
+<li><strong>提示词版本控制</strong>：企业级应用中对提示词进行标准化管理</li>
+</ul>
+<p>这些发展将使AI产品交互更加自然、高效，进一步降低使用门槛，扩大AI应用的覆盖范围。</p>
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>AI产品形态的多样化发展，正在为各行各业带来前所未有的变革。从深度搜索到智能代理，从自动化工作流到交互式内容创作，AI正在以多种形式渗透到我们的工作和生活中。</p>
-<p>对于企业和个人用户来说，了解这些产品形态的特点与应用场景，有助于选择适合自己需求的AI解决方案，充分发挥人工智能的潜力。未来，随着技术的不断进步，我们有理由期待AI产品将呈现出更加智能、自然和个性化的形态，为人类创造更大的价值。 </p>
+<p>对于企业和个人用户来说，了解这些产品形态的特点与应用场景，有助于选择适合自己需求的AI解决方案，充分发挥人工智能的潜力。未来，随着技术的不断进步和提示词工程等关键领域的发展，我们有理由期待AI产品将呈现出更加智能、自然和个性化的形态，为人类创造更大的价值。 </p>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2019/02/16/iOS_RunLoop%E6%8E%A2%E7%A9%B6/">RunLoop究竟是怎么运作的</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-02-16</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/iOS101/">iOS101</a></span><div class="content"><h1 id="解析RunLoop"><a href="#解析RunLoop" class="headerlink" title="解析RunLoop"></a>解析RunLoop</h1><h2 id="RunLoop简介（Introduction）"><a href="#RunLoop简介（Introduction）" class="headerlink" title="RunLoop简介（Introduction）"></a>RunLoop简介（Introduction）</h2><ol>
 <li><p>RunLoop是线程基础架构的一部分。RunLoop存在的目的是让线程在没有任务处理的时候进入休眠，在有任务处理的时候运行。</p>
 </li>
