@@ -13,6 +13,8 @@
 <h2 id="2-开闭原则-Open-closed-Principle"><a href="#2-开闭原则-Open-closed-Principle" class="headerlink" title="2. 开闭原则 Open&#x2F;closed Principle"></a>2. 开闭原则 Open&#x2F;closed Principle</h2><p>对于扩展，类应该是“开放”的；对于修改，类则应是“封闭”的。本原则的主要理念是在实现新功能时能保持已有代码不变。</p>
 <p>如果一个类已经完成开发、测试和审核工作，而且属于某个框架或者可被其他类的代码直接使用的话，对其代码进行修改就是有风险的。你可以创建一个子类并重写原始类的部分内容以完成不同的行为，而不是直接对原始类的代码进行修改。这样你既可以达成自己的目标，但同时又无需修改已有的原始类客户端。</p>
 <p>子类不应该对其父类的问题负责。</p>
+<span id="more"></span>
+
 <h2 id="3-里氏替换原则-Liskov-Substitution-Principle"><a href="#3-里氏替换原则-Liskov-Substitution-Principle" class="headerlink" title="3. 里氏替换原则 Liskov Substitution Principle"></a>3. 里氏替换原则 Liskov Substitution Principle</h2><p>当你扩展一个类时， 记住你应该要能在不修改客户端代码的情况下将子类的对象作为父类对象进行传递。</p>
 <p>替换原则是用于预测子类是否与代码兼容，以及是否能与其超类对象协作的一组检查。这一概念在开发程序库和框架时非常重要，因为其中的类将会在他人的代码中使用——你是无法直接访问和修改这些代码的。</p>
 <h2 id="4-接口隔离原则-Interface-Segregation-Principle"><a href="#4-接口隔离原则-Interface-Segregation-Principle" class="headerlink" title="4. 接口隔离原则 Interface Segregation Principle"></a>4. 接口隔离原则 Interface Segregation Principle</h2><p>尽量缩小接口的范围，使得客户端的类不必实现其不需要的行为。根据接口隔离原则，你必须将“臃肿”的方法拆分为多个颗粒度更小的具体方法。客户端必须仅实现其实际需要的方法。</p>
