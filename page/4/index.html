@@ -7,7 +7,60 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">45</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">23</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a><a class="site-page" href="/gallery">相册</a><a class="site-page" href="/gtd">GTD</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2017/05/16/UML_Graph/">UML类图与类的关系详解</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-16</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Tool/">Tool</a></span><div class="content"><blockquote>
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">47</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">24</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a><a class="site-page" href="/gallery">相册</a><a class="site-page" href="/gtd">GTD</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2017/06/03/Xcode%20Debugging/">Xcode Debugging</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-06-03</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Tool/">Tool</a></span><div class="content"><p><strong>变更记录</strong></p>
+<p>序号 |  	录入时间 | 备注<br> — | — |  — | —<br>1	| 2017-06-03 | 新建文章<br>2	| 2018-02-28 | 更新引言<br>2	| 2018-04-14 | 整理格式</p>
+<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><blockquote>
+<p>你的代码，或者任何人的代码中总会有bug存在，<strong>你可以把调试看做是更好地理解代码的一种方式</strong> —— By Advanced_Apple_Debugging_&amp;_Reverse_Engineering_v0.9.5</p>
+</blockquote>
+<h2 id="The-Debugging-Process"><a href="#The-Debugging-Process" class="headerlink" title="The Debugging Process"></a>The Debugging Process</h2><ol>
+<li><p>Reproduce the problem</p>
+<blockquote>
+<p>if you cannot reproduce the problem, then you (probably) do not understand it.</p>
+</blockquote>
+</li>
+<li><p>Gather Debug Information</p>
+<blockquote>
+<p>Logs, program, state,…<br>What is the value of a variable?<br>What kind of error?(ex.EXC_BAD_ACCESS)<br>What line of code caused the error?<br>Which functions or methods led to the error?</p>
+</blockquote>
+</li>
+<li><p>Form a Hypothesis</p>
+</li>
+<li><p>Try a fix</p>
+<blockquote>
+<p>Maximize the information gained per fix!</p>
+</blockquote>
+</li>
+</ol>
+<p><img src="http://pic-mike.oss-cn-hongkong.aliyuncs.com/qiniu/2017-05-21-14953337356733.jpg"></p></div><a class="more" href="/2017/06/03/Xcode%20Debugging/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2017/05/16/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">如何阅读一本书</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-16</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Tool/">Tool</a></span><div class="content"><h2 id="读书方法"><a href="#读书方法" class="headerlink" title="读书方法"></a>读书方法</h2><table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">不会读书</th>
+<th align="center">会读书</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">选书<br>购书</td>
+<td align="center"><strong>【对书没有形成意识】</strong> <br> 别人推荐什么读什么 <br>没有目的性的读书<br>被广告和销量排行榜左右</td>
+<td align="center"><strong>【搜集信息制作购书清单，按清单购买书】</strong><br>发现并按照自己的需求选书<br>读书目的很明确<br>能排除干扰而不是被动选书<br>有效利用各种信息定制自己需要的书单</td>
+</tr>
+<tr>
+<td align="center">读书</td>
+<td align="center"><strong>【随意读读】</strong>  <br> 读书没有重点，需要很长时间 <br> 读书过程容易变得单调范围 <br> 读过以后很难提炼要点  <br></td>
+<td align="center"><strong>【以记录读书笔记和创造价值的概念读书】</strong>  <br> 目的明确，速度更快<br> 读的过程做记号，读完做笔记，印象深刻 <br> 读完后能够迅速提炼要点 <br></td>
+</tr>
+<tr>
+<td align="center">记录</td>
+<td align="center"><strong>【仅仅是读过】</strong><br> 没有记录回顾 <br> 不记得曾经读过 <br> 无法回忆内容 <br></td>
+<td align="center"><strong>【拥有扎实有价值的个人笔记】</strong> <br>  提炼书中要点 <br>  记录个人感受 <br> 对书中价值点印象深刻 <br> 以书为媒介丰富思想 <br></td>
+</tr>
+<tr>
+<td align="center">活用</td>
+<td align="center"><strong>【书在书架上】</strong><br> 难以进行参考 <br> 书被遗忘在角落 <br> 浪费了时间、空间、金钱 <br></td>
+<td align="center"><strong>【回顾读书笔记】</strong><br> 便于参考 <br> 可以脱离原书 <br> 通过读书笔记吸取知识便于实践和提升 <br></td>
+</tr>
+</tbody></table>
+<h2 id="康奈尔笔记法"><a href="#康奈尔笔记法" class="headerlink" title="康奈尔笔记法"></a>康奈尔笔记法</h2><p><img src="http://pic-mike.oss-cn-hongkong.aliyuncs.com/201612-1494941075788.png"></p></div><a class="more" href="/2017/05/16/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2017/05/16/UML_Graph/">UML类图与类的关系详解</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-05-16</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Tool/">Tool</a></span><div class="content"><blockquote>
 <p>在画类图的时候，理清类和类之间的关系是重点。类的关系有泛化(Generalization)、实现（Realization）、依赖(Dependency)和关联(Association)。其中关联又分为一般关联关系和聚合关系(Aggregation)，合成关系(Composition)。下面我们结合实例理解这些关系。</p>
 </blockquote>
 <p><img src="http://images.ifanr.cn/wp-content/uploads/2016/05/cornell-layout.jpg"></p>
@@ -96,73 +149,5 @@ CDN解析加速</p>
 </li>
 <li><p>根据报表，分析情况，解决完善问题。</p>
 </li>
-</ol></div><a class="more" href="/2017/04/02/Todo/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2017/03/31/Xcode%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3/">Xcode帮助文档</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-03-31</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Docs/">Docs</a></span><div class="content"><p><code>2017-03-31</code> <code>iOS_Docs</code></p>
-<p><strong>变更记录</strong></p>
-<p>序号 |  	录入时间 | 备注<br> — | — |  — | —<br>1	| 2017-03-31 | 新建文章<br>2	| 2018-02-28 | 更新引言</p>
-<p><strong>TODO</strong></p>
-<ul>
-<li><input disabled="" type="checkbox"> 更新Xib和AutoLayout</li>
-</ul>
-<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><blockquote>
-<p>对于iOS开发中，<code>Xcode</code>是我们天天打交道使用的官方开发工具，经过许多个版本的迭代，<code>Xcode</code>已经越来越好用，功能越来越强大，开发者虽然经常使用，但是不一定清楚<code>Xcode</code>的一切奇赢技巧。本篇将介绍从常用快捷键、debug方法以及常见问题等来全面介绍<code>Xcode</code>。</p>
-</blockquote>
-<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p>[Build settings reference](#Build settings reference)<br>[Scheme Menu](#Scheme Menu)<br><a href="#%E6%B7%BB%E5%8A%A0%E6%96%87%E4%BB%B6">添加文件</a><br><a href="#%E6%90%9C%E7%B4%A2">搜索</a><br><a href="#Signing">Signing</a><br><a href="#Distribution%E5%8F%91%E5%B8%83App">Distribution发布App</a><br><a href="#Debug">Debug</a><br>[Code Test](#Code Test)<br><a href="#%E9%99%84%E5%BD%95">附录</a><br><a href="#%E5%8F%82%E8%80%83">参考</a></p></div><a class="more" href="/2017/03/31/Xcode%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2017/03/05/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2-%E7%BB%99Hexo%E6%8D%A2%E7%9A%AE%E8%82%A4/">搭建博客-给Hexo换皮肤</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2017-03-05</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hexo/">Hexo</a></span><div class="content"><p><strong>变更记录</strong></p>
-<table>
-<thead>
-<tr>
-<th>序号</th>
-<th>录入时间</th>
-<th>备注</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>9</td>
-<td>2023-03-28</td>
-<td>完善SSH Key配置说明</td>
-</tr>
-<tr>
-<td>8</td>
-<td>2022-07-16</td>
-<td>优化MarkDown格式</td>
-</tr>
-<tr>
-<td>7</td>
-<td>2019-07-07</td>
-<td>优化hexo搜索和参考ref links.</td>
-</tr>
-<tr>
-<td>6</td>
-<td>2019-02-14</td>
-<td>基于gollum的wiki搭建</td>
-</tr>
-<tr>
-<td>5</td>
-<td>2019-01-27</td>
-<td>使用Cloudflare Free SSL解析</td>
-</tr>
-<tr>
-<td>4</td>
-<td>2019-01-26</td>
-<td>完善博客图床url失效问题</td>
-</tr>
-<tr>
-<td>3</td>
-<td>2018-11-09</td>
-<td>完善SSH Key配置</td>
-</tr>
-<tr>
-<td>2</td>
-<td>2018-02-28</td>
-<td>整理博客配置问题，添加问题8</td>
-</tr>
-<tr>
-<td>1</td>
-<td>2017-03-05</td>
-<td>新建文章</td>
-</tr>
-</tbody></table>
-<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><blockquote>
-<p>一直看到大神们在用 <code>Hexo</code> 搭建博客主题，看起来不错的样纸ヾ(o◕∀◕)ﾉ，再看看自己的博客╮(╯_╰)╭, 肿么总感觉气质上差的不是一点半点呢，对于爱装X的我来说这能忍？(￣ェ￣;)这事一直在我心里”酝酿”着,只由于平时实在太忙(lan).<br>直到这周末，一位童鞋想让我帮忙搭个博客，让俺这懒癌患者都不好推脱，顺便换一下主题吧。本以为熟悉后分分钟的事，然而，对 <code>Git</code> 和 <code>SSH</code> 还不很熟悉的我，为了换掉原来的配置的 <code>SSH</code> 账号，搞到凌晨3点，才把博客部署上去, 搞到后面都快睡着了（¯﹃¯），期间蛋疼不断，没有深入熟悉的事不敢再说简单&lt;(_ _)&gt;，在此记录一笔。</p>
-</blockquote>
-<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p><a href="#%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E5%8F%B2">“博客搭建史”</a><br><a href="#%E6%89%8B%E6%AE%8B%E7%9A%84%E6%88%91">手残的我╮(╯▽╰)╭</a><br><a href="#%E5%A1%AB%E5%9D%91SSH">填坑 <code>SSH</code> </a><br><a href="#%E7%BB%91%E5%AE%9A%E5%9F%9F%E5%90%8D">绑定域名</a><br><a href="#%E8%BF%9B%E9%98%B6%E9%85%8D%E7%BD%AE">进阶配置</a><br><a href="#%E9%85%8D%E7%BD%AE%E9%97%AE%E9%A2%98">配置问题</a><br><a href="#%E6%80%BB%E7%BB%93">总结</a><br><a href="#%E5%8F%82%E8%80%83">参考</a></p></div><a class="more" href="/2017/03/05/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2-%E7%BB%99Hexo%E6%8D%A2%E7%9A%AE%E8%82%A4/#more">阅读更多</a><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/3/">&lt;i class&#x3D;&quot;fa fa-chevron-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">&lt;i class&#x3D;&quot;fa fa-chevron-right&quot;&gt;&lt;&#x2F;i&gt;</a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2025 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+</ol></div><a class="more" href="/2017/04/02/Todo/#more">阅读更多</a><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/3/">&lt;i class&#x3D;&quot;fa fa-chevron-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">&lt;i class&#x3D;&quot;fa fa-chevron-right&quot;&gt;&lt;&#x2F;i&gt;</a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2025 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
  <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
