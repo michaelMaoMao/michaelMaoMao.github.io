@@ -7,7 +7,617 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">47</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">24</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a><a class="site-page" href="/gallery">相册</a><a class="site-page" href="/gtd">GTD</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2025/05/22/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%94%EF%BC%89%E2%80%94%E2%80%94%20RooCode%E6%8F%92%E4%BB%B6%E5%88%86%E6%9E%90/">AI笔记系列（五）—— RooCode插件分析</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2025-05-22</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/AI/">AI</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/VSCode%E6%8F%92%E4%BB%B6/">VSCode插件</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/%E7%BC%96%E7%A8%8B%E5%8A%A9%E6%89%8B/">编程助手</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/RooCode/">RooCode</a></span><div class="content"><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">49</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">29</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a><a class="site-page" href="/gallery">相册</a><a class="site-page" href="/gtd">GTD</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2026/05/12/Claude-Code-Insights-%E7%89%88%E6%9C%AC%E6%BC%94%E8%BF%9B%E8%BF%BD%E8%B8%AA%E4%B8%8E%E7%9F%A5%E8%AF%86%E5%BA%93/">Claude Code Insights - 版本演进追踪与知识库</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2026-05-12</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/AI/">AI</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Claude-Code/">Claude Code</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/%E5%BC%80%E6%BA%90/">开源</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86/">知识管理</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/HTML/">HTML</a></span><div class="content"><blockquote>
+<p><strong>Claude Code Insights</strong> 是一个系统化追踪 Claude Code 版本演进与 Anthropic 技术生态的知识库项目。<br>包含三大模块：版本编年史、文章知识库、HTML 示例集，全部零依赖，浏览器直接打开。</p>
+</blockquote>
+<p>GitHub: <a href="https://github.com/FrizzleFur/claude-code-insights">FrizzleFur&#x2F;claude-code-insights</a></p>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="#%E9%A1%B9%E7%9B%AE%E8%83%8C%E6%99%AF">项目背景</a></li>
+<li><a href="#%E7%89%88%E6%9C%AC%E7%BC%96%E5%B9%B4%E5%8F%B2">版本编年史</a></li>
+<li><a href="#%E6%96%87%E7%AB%A0%E7%9F%A5%E8%AF%86%E5%BA%93">文章知识库</a></li>
+<li><a href="#html-%E7%A4%BA%E4%BE%8B%E9%9B%86">HTML 示例集</a></li>
+<li><a href="#%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82">技术实现细节</a></li>
+<li><a href="#%E9%A2%84%E8%A7%88%E4%B8%8E%E4%BD%BF%E7%94%A8">预览与使用</a></li>
+</ul>
+<hr>
+<h2 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h2><p>作为 Claude Code 的深度用户，我追踪了它从 <strong>v0.2.21 到 v2.1.150</strong> 的完整演进历程。在这个过程中，我发现：</p>
+<ol>
+<li><strong>版本更新极其频繁</strong>（有时一天多个版本），手动追踪不现实</li>
+<li><strong>Anthropic 的技术博客质量极高</strong>，但散落在各处，缺乏系统化整理</li>
+<li><strong>功能演进有清晰的脉络</strong>，但需要时间线视角才能看清</li>
+</ol>
+<p>于是，我构建了三个互补的模块来解决这个问题：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">claude-code-insights/</span><br><span class="line">├── version-chronicle/          # 版本编年史（时间线视角）</span><br><span class="line">│   └── index.html              # ~126K，单页 HTML</span><br><span class="line">├── articles-hub/               # 文章知识库（深度视角）</span><br><span class="line">│   ├── data/articles/          # 37 篇文章 YAML 数据</span><br><span class="line">│   ├── scripts/                # Python 生成脚本</span><br><span class="line">│   └── site/                   # 生成的 HTML 站点</span><br><span class="line">├── html-showcase/              # HTML 示例集（实践视角）</span><br><span class="line">│   ├── index.html</span><br><span class="line">│   └── 01-20 *.html            # 20 个独立演示</span><br><span class="line">└── README.md</span><br></pre></td></tr></table></figure>
+
+<p>三大模块，<strong>零依赖</strong>（纯 HTML&#x2F;CSS&#x2F;JS，无需构建工具），克隆即可浏览。</p>
+<h2 id="版本编年史"><a href="#版本编年史" class="headerlink" title="版本编年史"></a>版本编年史</h2><p>版本编年史追踪了 Claude Code 从诞生到当前的完整演进，按时间线组织为 <strong>4 个时代</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>时代</th>
+<th>版本范围</th>
+<th>主题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>初创期</td>
+<td>v0.2.21 - v0.2.x</td>
+<td>基础能力建设：文件操作、Bash 执行、MCP 协议</td>
+</tr>
+<tr>
+<td>成长期</td>
+<td>v1.0 - v1.2.x</td>
+<td>能力扩展：Agent Teams、权限系统、Hooks</td>
+</tr>
+<tr>
+<td>成熟期</td>
+<td>v1.3 - v2.0.x</td>
+<td>工程化：Plan Mode、SubAgent、上下文管理</td>
+</tr>
+<tr>
+<td>加速期</td>
+<td>v2.1.x - 至今</td>
+<td>生态建设：Skills、Plugins、企业级功能</td>
+</tr>
+</tbody></table>
+<h3 id="核心发现"><a href="#核心发现" class="headerlink" title="核心发现"></a>核心发现</h3><p>通过梳理 <strong>15 个里程碑版本</strong>，几个关键脉络浮现出来：</p>
+<p><strong>脉络 1: 从工具到伙伴的演进</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">v0.2.21: 基础 CLI 工具（文件读写 + Bash 执行）</span><br><span class="line">   │</span><br><span class="line">   ▼</span><br><span class="line">v1.0:    Agent 能力（自主决策 + 多步执行）</span><br><span class="line">   │</span><br><span class="line">   ▼</span><br><span class="line">v1.2:    Agent Teams（多 Agent 协作 + tmux 分屏）</span><br><span class="line">   │</span><br><span class="line">   ▼</span><br><span class="line">v2.0:    Skills 系统（可扩展的能力框架）</span><br><span class="line">   │</span><br><span class="line">   ▼</span><br><span class="line">v2.1:    生态平台（Plugins + 企业级部署）</span><br></pre></td></tr></table></figure>
+
+<p>Claude Code 从一个简单的 CLI 工具，演变为一个完整的 AI 编程平台。这不是功能堆叠，而是<strong>范式的转变</strong> —— 从”人指挥工具”到”人管理 Agent 团队”。</p>
+<p><strong>脉络 2: Context Engineering 的系统化</strong></p>
+<p>版本演进清晰地展示了 Anthropic 对上下文管理的持续投入：</p>
+<ul>
+<li><strong>v0.2.x</strong>: 基础上下文窗口</li>
+<li><strong>v1.0.x</strong>: CLAUDE.md 系统提示词</li>
+<li><strong>v1.2.x</strong>: Compaction（对话历史压缩）</li>
+<li><strong>v1.4.x</strong>: SubAgent（隔离上下文分发）</li>
+<li><strong>v2.0.x</strong>: 上下文优化器（自动压缩策略）</li>
+</ul>
+<p>这与 Anthropic 文章 <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Effective Context Engineering</a> 中阐述的理论完全吻合。</p>
+<p><strong>脉络 3: 模型演进路径</strong></p>
+<p>版本编年史中内置了模型演进卡片，追踪 Claude 模型的迭代路径：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Opus 系列:  Opus 3 → Opus 3.5 → Opus 4 → Opus 4.5 → Opus 4.8</span><br><span class="line">Sonnet 系列: Sonnet 3 → Sonnet 3.5 → Sonnet 4 → Sonnet 4.6</span><br><span class="line">Haiku 系列:  Haiku 3 → Haiku 3.5 → Haiku 4.5</span><br></pre></td></tr></table></figure>
+
+<h3 id="交互功能"><a href="#交互功能" class="headerlink" title="交互功能"></a>交互功能</h3><p>版本编年史提供多种交互方式：</p>
+<ul>
+<li><strong>分类筛选</strong>: 按功能类别（工具&#x2F;架构&#x2F;安全&#x2F;生态）筛选里程碑</li>
+<li><strong>视图切换</strong>: 卡片视图 &#x2F; 时间线视图</li>
+<li><strong>依赖关系图</strong>: 可视化功能之间的依赖关系</li>
+<li><strong>路线图</strong>: 已发布 &#x2F; 快速迭代中 &#x2F; 长期愿景三阶段</li>
+</ul>
+<h2 id="文章知识库"><a href="#文章知识库" class="headerlink" title="文章知识库"></a>文章知识库</h2><p>文章知识库对 <strong>37 篇 Anthropic 技术文章</strong>进行了系统化评分、分类和索引。</p>
+<h3 id="7-维加权评分体系"><a href="#7-维加权评分体系" class="headerlink" title="7 维加权评分体系"></a>7 维加权评分体系</h3><p>每篇文章从 7 个维度评分（1-10 分），通过加权计算得出综合评分：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>权重</th>
+<th>衡量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>技术深度</td>
+<td>1.1</td>
+<td>细节和准确性</td>
+</tr>
+<tr>
+<td><strong>可操作性</strong></td>
+<td><strong>1.3</strong></td>
+<td>能否直接落地</td>
+</tr>
+<tr>
+<td>创新性</td>
+<td>1.0</td>
+<td>是否提出新概念</td>
+</tr>
+<tr>
+<td><strong>影响力</strong></td>
+<td><strong>1.3</strong></td>
+<td>社区传播和衍生项目</td>
+</tr>
+<tr>
+<td>教育价值</td>
+<td>1.1</td>
+<td>学习帮助程度</td>
+</tr>
+<tr>
+<td>时效性</td>
+<td>1.0</td>
+<td>长期保值程度</td>
+</tr>
+<tr>
+<td>可复现性</td>
+<td>1.0</td>
+<td>能否照着做</td>
+</tr>
+</tbody></table>
+<p><strong>为什么”可操作性”权重最高（1.3）？</strong> 作为学习项目，核心目标是”看完能做什么”。可操作性直接决定学习投资回报 —— 一篇理论精深但无从下手的文章，学习价值不如一篇”即拷即用”的实操指南。</p>
+<h3 id="评分示例"><a href="#评分示例" class="headerlink" title="评分示例"></a>评分示例</h3><p>以评分最高的 <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Effective Context Engineering</a>（9.0&#x2F;10）为例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">评分拆解:</span><br><span class="line">  技术深度: 9/10 — 详细的上下文管理架构剖析</span><br><span class="line">  可操作性: 9/10 — 三种长程策略可直接落地</span><br><span class="line">  创新性:   9/10 — 提出 Context Engineering 概念范式</span><br><span class="line">  影响力:   9/10 — 社区广泛讨论，衍生多个开源项目</span><br><span class="line">  教育价值: 10/10 — 完整的 Q&amp;A 链式深度讲解</span><br><span class="line">  时效性:   8/10 — 核心原则长期保值</span><br><span class="line">  可复现性: 7/10 — 需要一定的工程基础</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-类分类体系"><a href="#5-类分类体系" class="headerlink" title="5 类分类体系"></a>5 类分类体系</h3><p>文章按内容分为 5 大类：</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>篇数</th>
+<th>代表文章</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Agent 开发</strong></td>
+<td>8</td>
+<td>Building Effective Agents, Context Engineering</td>
+</tr>
+<tr>
+<td><strong>工程实践</strong></td>
+<td>12</td>
+<td>Claude Code 系列更新, Tool Use 指南</td>
+</tr>
+<tr>
+<td><strong>模型研究</strong></td>
+<td>9</td>
+<td>Constitutional AI, Scaling 研究</td>
+</tr>
+<tr>
+<td><strong>工具平台</strong></td>
+<td>5</td>
+<td>MCP 协议, Claude Code 路线图</td>
+</tr>
+<tr>
+<td><strong>安全政策</strong></td>
+<td>3</td>
+<td>安全评估, 对齐研究</td>
+</tr>
+</tbody></table>
+<h3 id="GitHub-项目映射"><a href="#GitHub-项目映射" class="headerlink" title="GitHub 项目映射"></a>GitHub 项目映射</h3><p>每篇文章关联了 85+ Anthropic 仓库和社区衍生项目。例如：</p>
+<ul>
+<li><strong>Context Engineering</strong> → <code>anthropics/claude-code</code>（125K Stars） — 文章中描述的 Compaction 策略在 claude-code 中直接实现</li>
+<li><strong>Building Effective Agents</strong> → <code>anthropics/anthropic-cookbook</code> — Agent 编排模式的项目化落地</li>
+<li><strong>MCP 协议</strong> → <code>modelcontextprotocol</code> — Model Context Protocol 的官方实现</li>
+</ul>
+<h3 id="深度分析功能"><a href="#深度分析功能" class="headerlink" title="深度分析功能"></a>深度分析功能</h3><p>文章知识库不只提供评分，还包含<strong>链式深度讲解</strong>（Q&amp;A Chain）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Q: &quot;Prompt Engineering 不够用吗？&quot;</span><br><span class="line">A: Prompt Engineering 关注单次输入优化，Context Engineering 管理的是 Agent 整个生命周期的上下文状态</span><br><span class="line">    │</span><br><span class="line">    ▼ (深度+1)</span><br><span class="line">Q: &quot;Agent 是&#x27;持续的项目会议&#x27;具体是什么意思？&quot;</span><br><span class="line">A: 想象 Agent 重构代码：读取→分析→计划→修改。每步需要不同信息...</span><br><span class="line">    │</span><br><span class="line">    ▼ (深度+1)</span><br><span class="line">Q: &quot;为什么 Context Rot 70% 是临界点？&quot;</span><br><span class="line">A: Anthropic 内部测试发现，上下文填充超过 70% 后推理准确率显著跳水...</span><br></pre></td></tr></table></figure>
+
+<p>每个问题都有深度标记（depth: 0&#x2F;1&#x2F;2），读者可以按需深入。</p>
+<h2 id="HTML-示例集"><a href="#HTML-示例集" class="headerlink" title="HTML 示例集"></a>HTML 示例集</h2><p>HTML 示例集包含 <strong>20 个零依赖交互演示</strong>，展示 HTML 作为通用输出格式的强大能力。</p>
+<blockquote>
+<p>基于 <a href="https://github.com/anthropics/html-effectiveness">Anthropic “The unreasonable effectiveness of HTML”</a> 项目。</p>
+</blockquote>
+<h3 id="示例分类"><a href="#示例分类" class="headerlink" title="示例分类"></a>示例分类</h3><table>
+<thead>
+<tr>
+<th>类别</th>
+<th>示例</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>探索</strong></td>
+<td>代码方案、视觉设计</td>
+<td>AI 生成多种方案供选择</td>
+</tr>
+<tr>
+<td><strong>代码</strong></td>
+<td>Code Review、设计系统、组件变体</td>
+<td>代码理解和质量保证</td>
+</tr>
+<tr>
+<td><strong>原型</strong></td>
+<td>动画、交互</td>
+<td>快速原型验证</td>
+</tr>
+<tr>
+<td><strong>沟通</strong></td>
+<td>幻灯片、状态报告、PR 文档</td>
+<td>团队协作可视化</td>
+</tr>
+<tr>
+<td><strong>图表</strong></td>
+<td>流程图、功能&#x2F;概念解释器</td>
+<td>知识可视化</td>
+</tr>
+<tr>
+<td><strong>编辑器 UI</strong></td>
+<td>分诊看板、Feature Flags、Prompt 调参器</td>
+<td>工具界面</td>
+</tr>
+</tbody></table>
+<h3 id="精选展示"><a href="#精选展示" class="headerlink" title="精选展示"></a>精选展示</h3><p><strong>流程图演示</strong> — 直接在 HTML 中绘制可交互的流程图：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入任务描述</span><br><span class="line">    │</span><br><span class="line">    ├─ 分析 → 识别关键步骤</span><br><span class="line">    ├─ 设计 → 选择流程模式</span><br><span class="line">    └─ 输出 → SVG 可交互流程图</span><br></pre></td></tr></table></figure>
+
+<p><strong>Prompt 调参器</strong> — 实时调整 Prompt 参数，观察输出变化：</p>
+<ul>
+<li>温度滑块</li>
+<li>最大 token 数控制</li>
+<li>系统提示词编辑器</li>
+<li>实时预览输出</li>
+</ul>
+<p><strong>PR 文档生成器</strong> — 输入代码 diff，自动生成结构化的 PR 描述：</p>
+<ul>
+<li>变更摘要</li>
+<li>影响分析</li>
+<li>测试建议</li>
+<li>风险评估</li>
+</ul>
+<h2 id="技术实现细节"><a href="#技术实现细节" class="headerlink" title="技术实现细节"></a>技术实现细节</h2><h3 id="零依赖架构"><a href="#零依赖架构" class="headerlink" title="零依赖架构"></a>零依赖架构</h3><p>整个项目的核心设计原则是 <strong>零依赖</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">传统方案:  npm install → 构建打包 → 部署</span><br><span class="line">本项目:    纯 HTML/CSS/JS → 浏览器直接打开</span><br><span class="line"></span><br><span class="line">为什么？</span><br><span class="line">1. 无需 Node.js 环境</span><br><span class="line">2. 无需构建步骤</span><br><span class="line">3. 仓库即站点（GitHub Pages 直接服务）</span><br><span class="line">4. 离线可用</span><br></pre></td></tr></table></figure>
+
+<h3 id="版本编年史技术栈"><a href="#版本编年史技术栈" class="headerlink" title="版本编年史技术栈"></a>版本编年史技术栈</h3><ul>
+<li><strong>~126K 单页 HTML</strong>，包含完整的 CSS 和 JS</li>
+<li><strong>SVG 图表</strong>: 环形图、热力图、面积图、里程碑时间线（全部手写 SVG，无图表库）</li>
+<li><strong>CSS 自定义属性</strong>: 主题色系统，易于定制</li>
+<li><strong>Intersection Observer</strong>: 滚动触发的动画效果</li>
+<li><strong>CSS Grid&#x2F;Flexbox</strong>: 响应式布局</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 版本编年史的配色系统 */</span></span><br><span class="line"><span class="selector-pseudo">:root</span> &#123;</span><br><span class="line">  <span class="attr">--ivory</span>: <span class="number">#FAF9F5</span>;     <span class="comment">/* 背景 */</span></span><br><span class="line">  <span class="attr">--slate</span>: <span class="number">#141413</span>;     <span class="comment">/* 文字 */</span></span><br><span class="line">  <span class="attr">--clay</span>: <span class="number">#D97757</span>;      <span class="comment">/* 主色 */</span></span><br><span class="line">  <span class="attr">--olive</span>: <span class="number">#788C5D</span>;     <span class="comment">/* 辅色 */</span></span><br><span class="line">  <span class="attr">--blue</span>: <span class="number">#4A6FA5</span>;      <span class="comment">/* 信息 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="文章知识库技术栈"><a href="#文章知识库技术栈" class="headerlink" title="文章知识库技术栈"></a>文章知识库技术栈</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">数据层:   YAML 文章数据 + JSON 索引</span><br><span class="line">生成层:   Python 脚本（generate_detail_pages.py）</span><br><span class="line">输出层:   静态 HTML（42 篇详情页 + 仪表盘）</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么用 Python 生成而非纯静态？</strong></p>
+<p>37 篇文章的详情页结构统一（评分拆解 + 核心要点 + 关联资源 + 思维导图 + 深度分析），但数据量大。Python 脚本从 YAML 数据生成 HTML，保证一致性，修改数据后一键重新生成。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 一篇文章的数据结构（以 Context Engineering 为例）</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">&quot;Effective Context Engineering for AI Agents&quot;</span></span><br><span class="line"><span class="attr">scores:</span></span><br><span class="line">  <span class="attr">technical_depth:</span> <span class="number">9</span></span><br><span class="line">  <span class="attr">actionability:</span> <span class="number">9</span></span><br><span class="line">  <span class="attr">novelty:</span> <span class="number">9</span></span><br><span class="line">  <span class="attr">impact:</span> <span class="number">9</span></span><br><span class="line"><span class="attr">overall_score:</span> <span class="number">9.0</span></span><br><span class="line"><span class="attr">related_github_projects:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">&quot;claude-code&quot;</span></span><br><span class="line">    <span class="attr">stars:</span> <span class="number">125000</span></span><br><span class="line"><span class="attr">key_takeaways:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;Context Engineering 是 Prompt Engineering 的自然演进&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;上下文是有限资源，有边际收益递减&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;三种长程策略: Compaction / Structured Notes / Sub-agent&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="数据来源"><a href="#数据来源" class="headerlink" title="数据来源"></a>数据来源</h3><table>
+<thead>
+<tr>
+<th>来源</th>
+<th>覆盖范围</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://claudelog.com/claude-code-changelog/">ClaudeLog</a></td>
+<td>完整版本历史（11,376 行）</td>
+<td>版本编年史数据</td>
+</tr>
+<tr>
+<td><a href="https://github.com/anthropics/claude-code/releases">GitHub Releases</a></td>
+<td>最新版本</td>
+<td>实时更新</td>
+</tr>
+<tr>
+<td><a href="https://www.anthropic.com/blog">Anthropic Blog</a></td>
+<td>Engineering + Research 文章</td>
+<td>文章知识库数据</td>
+</tr>
+<tr>
+<td>Code with Claude 2026 Keynote</td>
+<td>路线图信息</td>
+<td>未来规划</td>
+</tr>
+</tbody></table>
+<h2 id="预览与使用"><a href="#预览与使用" class="headerlink" title="预览与使用"></a>预览与使用</h2><h3 id="本地预览"><a href="#本地预览" class="headerlink" title="本地预览"></a>本地预览</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/FrizzleFur/claude-code-insights.git</span><br><span class="line"><span class="built_in">cd</span> claude-code-insights</span><br><span class="line"></span><br><span class="line"><span class="comment"># 版本编年史</span></span><br><span class="line">open version-chronicle/index.html</span><br><span class="line"></span><br><span class="line"><span class="comment"># 文章知识库</span></span><br><span class="line">open articles-hub/site/index.html</span><br><span class="line"></span><br><span class="line"><span class="comment"># HTML 示例集</span></span><br><span class="line">open html-showcase/index.html</span><br></pre></td></tr></table></figure>
+
+<p>零安装零构建，浏览器直接打开。</p>
+<h3 id="数据更新"><a href="#数据更新" class="headerlink" title="数据更新"></a>数据更新</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加新文章</span></span><br><span class="line"><span class="built_in">cd</span> articles-hub</span><br><span class="line">python scripts/generate_detail_pages.py   <span class="comment"># 重新生成 HTML</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 版本数据更新</span></span><br><span class="line"><span class="comment"># 编辑 version-chronicle/index.html 中的里程碑数据</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="相关项目"><a href="#相关项目" class="headerlink" title="相关项目"></a>相关项目</h2><ul>
+<li><strong>FlowKit</strong> (AI 工作流编排工具集): <a href="https://github.com/FrizzleFur/flowkit">github.com&#x2F;FrizzleFur&#x2F;flowkit</a></li>
+<li><strong>Anthropic HTML Effectiveness</strong>: <a href="https://github.com/anthropics/html-effectiveness">github.com&#x2F;anthropics&#x2F;html-effectiveness</a></li>
+</ul>
+<hr>
+<p><em>Claude Code Insights 使用 MIT 协议开源。HTML 示例集保留 Anthropic Apache License 2.0。</em></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2026/05/05/FlowKit-AI%E5%8E%9F%E7%94%9F%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%BC%96%E6%8E%92%E5%B7%A5%E5%85%B7%E9%9B%86/">FlowKit - AI 原生工作流编排工具集</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2026-05-05</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/AI/">AI</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Agent/">Agent</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Claude-Code/">Claude Code</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/%E5%BC%80%E6%BA%90/">开源</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%BC%96%E6%8E%92/">工作流编排</a></span><div class="content"><blockquote>
+<p><strong>FlowKit</strong> 是一套为 AI 编程助手设计的结构化任务编排工具集，核心解决一个问题：<strong>Agent 能力很强但缺乏纪律性</strong>。<br>本文从设计动机、核心架构到具体 Skill 模块，完整介绍这个项目。</p>
+</blockquote>
+<p>GitHub: <a href="https://github.com/FrizzleFur/flowkit">FrizzleFur&#x2F;flowkit</a></p>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%A0%E8%BF%99%E4%B8%AA%E8%BD%AE%E5%AD%90">为什么造这个轮子</a></li>
+<li><a href="#pipeline-%E6%9E%B6%E6%9E%84%E6%80%BB%E8%A7%88">Pipeline 架构总览</a></li>
+<li><a href="#%E6%A0%B8%E5%BF%83%E8%AE%BE%E8%AE%A1%E7%90%86%E5%BF%B5">核心设计理念</a></li>
+<li><a href="#%E5%9B%9B%E4%B8%AA-skill-%E8%AF%A6%E8%A7%A3">四个 Skill 详解</a></li>
+<li><a href="#%E8%AE%BE%E8%AE%A1%E5%86%B3%E7%AD%96%E4%B8%8E%E8%B8%A9%E5%9D%91%E7%BB%8F%E9%AA%8C">设计决策与踩坑经验</a></li>
+<li><a href="#%E4%B8%8E%E7%A4%BE%E5%8C%BA%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94">与社区方案对比</a></li>
+<li><a href="#%E5%AE%9E%E9%99%85%E4%BD%BF%E7%94%A8%E6%95%88%E6%9E%9C">实际使用效果</a></li>
+</ul>
+<hr>
+<h2 id="为什么造这个轮子"><a href="#为什么造这个轮子" class="headerlink" title="为什么造这个轮子"></a>为什么造这个轮子</h2><p>使用 Claude Code、Cursor 这类 AI 编程助手时，我发现了一个反复出现的模式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">用户: &quot;帮我重构这个模块&quot;</span><br><span class="line"></span><br><span class="line">Agent:</span><br><span class="line">  1. 直接开始写代码 ✓</span><br><span class="line">  2. 跳过测试 ✗</span><br><span class="line">  3. 跳过边界情况检查 ✗</span><br><span class="line">  4. 用 &quot;应该可以了&quot; 宣布完成 ✗</span><br><span class="line">  5. 用户发现 bug，重新来过 ✗</span><br></pre></td></tr></table></figure>
+
+<p>Agent 的能力毋庸置疑，但它们<strong>缺乏工程纪律</strong>。它们会跳过验证、忽略边界情况、用模糊措辞宣布完成。根本原因是：AI Agent 没有内置软件工程的”检查清单”。</p>
+<p>FlowKit 的核心思路是：<strong>把软件工程的严谨性注入 AI Agent 工作流，让”感觉驱动的编码”变成可重复的工程流程。</strong></p>
+<h2 id="Pipeline-架构总览"><a href="#Pipeline-架构总览" class="headerlink" title="Pipeline 架构总览"></a>Pipeline 架构总览</h2><p>FlowKit 的核心是一个 5 阶段管道（Pipeline），每个阶段解决一个特定的工程问题：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">                            ┌──────────────────────────────────────────────────┐</span><br><span class="line">                            │                  FlowKit 管道                    │</span><br><span class="line">                            └──────────────────────────────────────────────────┘</span><br><span class="line">       ┌───────────┐   ┌───────────┐   ┌───────────┐   ┌───────────┐</span><br><span class="line">Input──▶│  Stage 0  │──▶│  Stage 1  │──▶│  Stage 2  │──▶│  Stage 3  │──┐</span><br><span class="line">       │ 前置检查  │   │ Prompt优化│   │ 深度思考  │   │ 确定性规划│  │</span><br><span class="line">       └───────────┘   └───────────┘   └───────────┘   └───────────┘  │</span><br><span class="line">                                                                          │</span><br><span class="line">       ┌──────────────────────────────────────────────────────────────────┘</span><br><span class="line">       │</span><br><span class="line">       ▼</span><br><span class="line">  ┌───────────┐   ┌───────────┐   ┌───────────┐   ┌───────────┐</span><br><span class="line">  │ Stage 3.5 │──▶│ Stage 3.6 │──▶│  Stage 4  │──▶│  Stage 5  │──┐</span><br><span class="line">  │ Plan Review│  │ 多角色面板│   │ 多Agent执行│  │  完成验证 │  │</span><br><span class="line">  └───────────┘   └───────────┘   └───────────┘   └───────────┘  │</span><br><span class="line">                                                                     │</span><br><span class="line">       ┌──────────────────────────────────────────────────────────────┘</span><br><span class="line">       ▼</span><br><span class="line">  ┌─────────────────┐</span><br><span class="line">  │  Stage 5.5/5.7  │  ── 未达标时自动迭代</span><br><span class="line">  │  自主迭代引擎   │</span><br><span class="line">  └─────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p>每个 Stage 的职责：</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>解决什么问题</th>
+<th>核心机制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Stage 0</td>
+<td>能力发现 — 确认工具链就绪</td>
+<td>扫描 skills 目录，生成可用能力矩阵</td>
+</tr>
+<tr>
+<td>Stage 1</td>
+<td>Prompt 质量 — 垃圾进垃圾出</td>
+<td>乔哈里视窗 + 3S 原则量化评分</td>
+</tr>
+<tr>
+<td>Stage 2</td>
+<td>深度思考 — 避免”动手太快”</td>
+<td>Sequential Thinking + Mermaid + 三角色讨论</td>
+</tr>
+<tr>
+<td>Stage 3</td>
+<td>确定性规划 — 先想后做</td>
+<td>Plan Mode 只读沙箱 + plan-quality Checklist</td>
+</tr>
+<tr>
+<td>Stage 3.5</td>
+<td>Plan Review — 消除沉没成本偏差</td>
+<td>独立 Agent 审查（全新上下文）</td>
+</tr>
+<tr>
+<td>Stage 3.6</td>
+<td>多角色面板 — 消除单角色盲区</td>
+<td>3-5 个专业角色并行评审 + Auto-Decide</td>
+</tr>
+<tr>
+<td>Stage 4</td>
+<td>并发执行 — 效率与安全</td>
+<td>tmux 分屏并行 + 退回 Plan 协议</td>
+</tr>
+<tr>
+<td>Stage 5</td>
+<td>完成验证 — 禁止”应该可以”</td>
+<td>新鲜证据铁律，禁止模糊措辞</td>
+</tr>
+<tr>
+<td>Stage 5.5</td>
+<td>迭代优化 — 不达标不罢休</td>
+<td>keep&#x2F;revert 循环 + 渐进式 Guard</td>
+</tr>
+</tbody></table>
+<h2 id="核心设计理念"><a href="#核心设计理念" class="headerlink" title="核心设计理念"></a>核心设计理念</h2><h3 id="1-Iron-Laws-——-不可协商的执行铁律"><a href="#1-Iron-Laws-——-不可协商的执行铁律" class="headerlink" title="1. Iron Laws —— 不可协商的执行铁律"></a>1. Iron Laws —— 不可协商的执行铁律</h3><p>四条规则，每条配备<strong>合理化辩解对照表</strong>，防止 LLM 自我辩解跳过：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">IL-1 · TDD: 无失败测试不写生产代码</span><br><span class="line">  &quot;太简单了不需要测试&quot; → rebuttal: 简单到不需要测试的代码也简单到可以先写测试</span><br><span class="line"></span><br><span class="line">IL-2 · Verify: 无新鲜证据不宣布完成</span><br><span class="line">  &quot;应该可以了&quot; → rebuttal: &quot;应该&quot;不是证据，运行结果才是</span><br><span class="line"></span><br><span class="line">IL-3 · Debug: 无根因确认不改代码</span><br><span class="line">  &quot;让我试试这个改动&quot; → rebuttal: 没有根因的修复只是掩盖症状</span><br><span class="line"></span><br><span class="line">IL-4 · Review: 审查只读永不修改</span><br><span class="line">  &quot;顺手改一下这个 typo&quot; → rebuttal: 审查的角色是审查者不是实现者</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么需要合理化对照表？</strong> 因为 LLM 极其擅长自我辩解。当它想跳过某个步骤时，会生成看似合理的理由。对照表预先定义了每个借口的标准反驳，让系统在 Agent 试图跳过时自动拦截。</p>
+<h3 id="2-Auto-Decide-Layer-——-减少-80-人工评审"><a href="#2-Auto-Decide-Layer-——-减少-80-人工评审" class="headerlink" title="2. Auto-Decide Layer —— 减少 80% 人工评审"></a>2. Auto-Decide Layer —— 减少 80% 人工评审</h3><p>多角色面板评审中，如果 20 个发现项都要人工判断，用户会被淹没。Auto-Decide Layer 用 6 条原则自动分类：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">P1 · 行业标准 ── 违反 → 自动修复</span><br><span class="line">P2 · 风险阈值 ── 高风险修复 / 低风险通过</span><br><span class="line">P3 · 一致性   ── 与已有一致 → 自动通过</span><br><span class="line">P4 · YAGNI    ── 过度设计 → 上浮给用户 ⚖️</span><br><span class="line">P5 · 安全优先 ── 安全相关 → 自动修复</span><br><span class="line">P6 · 不可逆性 ── 不可逆 → 上浮给用户 ⚖️</span><br><span class="line"></span><br><span class="line">结果: 80% 自动处理（静默），只有 &lt; 5 条 Taste Decision 需要人工</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-STATE-md-——-跨会话恢复"><a href="#3-STATE-md-——-跨会话恢复" class="headerlink" title="3. STATE.md —— 跨会话恢复"></a>3. STATE.md —— 跨会话恢复</h3><p>管道内置崩溃恢复机制。当 Claude Code 会话因上下文溢出等原因中断时：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">会话在 Stage 4 Phase 2 中断</span><br><span class="line">          │</span><br><span class="line">          ▼</span><br><span class="line">    .plan/STATE.md 记录:</span><br><span class="line">      current_stage: 4</span><br><span class="line">      current_phase: 2</span><br><span class="line">      next_action: &quot;Stage 5&quot;</span><br><span class="line">      progress: 65%</span><br><span class="line">          │</span><br><span class="line">          ▼</span><br><span class="line">新会话读取 STATE.md → &quot;恢复还是重新开始？&quot; → 从断点精确恢复</span><br></pre></td></tr></table></figure>
+
+<p>这是社区框架（GSD、GStack）中均未出现的能力。</p>
+<h3 id="4-Fallback-协议-——-遇错先问-Plan"><a href="#4-Fallback-协议-——-遇错先问-Plan" class="headerlink" title="4. Fallback 协议 —— 遇错先问 Plan"></a>4. Fallback 协议 —— 遇错先问 Plan</h3><p>执行中遇到意外时，第一反应不是”怎么修”，而是”Plan 哪里假设错了”：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">执行偏差 → 直接修复（小偏差）</span><br><span class="line">Plan 假设有误 → Plan Fallback（暂停 → 记录 → 更新 Plan → 用户确认 → 继续）</span><br><span class="line">同一 Phase 失败 2 次 → 退回 Stage 2 重新分析</span><br></pre></td></tr></table></figure>
+
+<h2 id="四个-Skill-详解"><a href="#四个-Skill-详解" class="headerlink" title="四个 Skill 详解"></a>四个 Skill 详解</h2><p>FlowKit 包含四个独立的 Skill 模块，可以单独使用也可以组合编排。</p>
+<h3 id="Skill-1-flow-—-轻量编排引擎"><a href="#Skill-1-flow-—-轻量编排引擎" class="headerlink" title="Skill 1: /flow — 轻量编排引擎"></a>Skill 1: <code>/flow</code> — 轻量编排引擎</h3><p><strong>定位</strong>: 按需启用，通过参数控制管道阶段。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/flow [options] &lt;任务表述&gt;</span><br><span class="line"></span><br><span class="line">阶段控制:                          思考增强:</span><br><span class="line">  --no-prompt   跳过 Stage 1         --think         Sequential Thinking (4K)</span><br><span class="line">  --no-plan     跳过 Stage 3         --think-hard    Sequential Thinking (10K)</span><br><span class="line">  --no-multi    跳过 Stage 4(串行)    --mermaid       Mermaid 图可视化</span><br><span class="line">                                    --discuss       三角色讨论</span><br><span class="line">预设 (互斥):</span><br><span class="line">  --quick     ≡ --no-prompt --no-plan --no-multi</span><br><span class="line">  --standard  完整三步流程（默认）</span><br><span class="line">  --deep      ≡ --think --mermaid --discuss + 并行分发</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用场景</strong>:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 快速验证一个小想法</span></span><br><span class="line">/flow --quick 给这个函数加个缓存</span><br><span class="line"></span><br><span class="line"><span class="comment"># 标准流程：优化 → 思考 → 规划 → 执行</span></span><br><span class="line">/flow 重构认证模块</span><br><span class="line"></span><br><span class="line"><span class="comment"># 深度分析：全量思考 + 多角色评审</span></span><br><span class="line">/flow --deep 重新设计支付系统，支持多币种</span><br></pre></td></tr></table></figure>
+
+<p><strong>核心特点</strong>:</p>
+<ul>
+<li>Stage 3 默认进入 <strong>Plan Mode</strong>（只读沙箱），强制”先想后做”</li>
+<li><code>--plan-review</code> 启用独立 Agent 审查，消除沉没成本偏差</li>
+<li><code>--iterate N</code> 启用自主迭代，验证不达标自动 keep&#x2F;revert 循环</li>
+</ul>
+<h3 id="Skill-2-flow-deep-—-全量深度引擎"><a href="#Skill-2-flow-deep-—-全量深度引擎" class="headerlink" title="Skill 2: /flow-deep — 全量深度引擎"></a>Skill 2: <code>/flow-deep</code> — 全量深度引擎</h3><p><strong>定位</strong>: 强制全开，所有关卡不可跳过。适用于复杂&#x2F;重要&#x2F;高风险任务。</p>
+<p>与 <code>/flow</code> 的核心区别：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th><code>/flow</code></th>
+<th><code>/flow-deep</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>前置检查</td>
+<td>可跳过</td>
+<td><strong>强制</strong></td>
+</tr>
+<tr>
+<td>深度思考</td>
+<td>可选 (<code>--think</code>)</td>
+<td><strong>强制</strong>（ST + Mermaid + 三角色）</td>
+</tr>
+<tr>
+<td>Plan Mode</td>
+<td>默认开启，可关闭</td>
+<td><strong>不可关闭</strong></td>
+</tr>
+<tr>
+<td>Plan Review</td>
+<td>可选</td>
+<td><strong>强制</strong></td>
+</tr>
+<tr>
+<td>多角色面板</td>
+<td>无</td>
+<td><strong>默认 3-5 角色</strong></td>
+</tr>
+<tr>
+<td>TDD 注入</td>
+<td>可选</td>
+<td><strong>自动注入</strong></td>
+</tr>
+<tr>
+<td>完成验证</td>
+<td>可跳过</td>
+<td><strong>不可跳过</strong></td>
+</tr>
+<tr>
+<td>Ralph Loop</td>
+<td>手动触发</td>
+<td>迭代用完<strong>自动触发</strong></td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/flow-deep 重新设计支付系统，支持多币种</span><br><span class="line">→ Stage 0: 前置检查 ✓</span><br><span class="line">→ Stage 1: Prompt 优化</span><br><span class="line">→ Stage 2: 深度思考 + 技能匹配(TDD+并行+审查)</span><br><span class="line">→ Stage 3: Plan Mode → Stage 3.5: Plan Review → Stage 3.6: 多角色面板评审</span><br><span class="line">→ Stage 4: multi-agent 并发执行（TDD 模式）</span><br><span class="line">→ Stage 5: 完成验证 ✓</span><br></pre></td></tr></table></figure>
+
+<h3 id="Skill-3-multi-agent-—-多-Agent-协作引擎"><a href="#Skill-3-multi-agent-—-多-Agent-协作引擎" class="headerlink" title="Skill 3: /multi-agent — 多 Agent 协作引擎"></a>Skill 3: <code>/multi-agent</code> — 多 Agent 协作引擎</h3><p><strong>定位</strong>: Agent Teams 方案生成与执行引擎，通过 tmux 分屏实现真正的并行执行。</p>
+<p><strong>核心架构</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">用户输入</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">Step 0: 项目上下文感知（扫描 CLAUDE.md / package.json / git log）</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">Step 1: 资源检测（可用 Agent 类型、MCP 工具、已安装插件）</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">Step 2: 任务分析 + 角色匹配（12 种角色类型自动匹配）</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">Step 3: 协作式方案生成（直接输出完整方案 → 用户微调）</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">Step 4: 评分检查（任务清晰度 25% + 角色匹配 25% + 文件分配 15% + 依赖 15% + 上下文 20%）</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">Step 5: 执行（tmux 分屏 + TeamCreate + 文件隔离 + 即时清理）</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键设计决策</strong>:</p>
+<ol>
+<li><strong>tmux-split 唯一模式</strong>: 不使用 <code>run_in_background</code>，所有 Agent 在 tmux 分屏中运行，可实时查看状态</li>
+<li><strong>文件边界隔离</strong>: 每个 Agent 有明确的可编辑&#x2F;只读&#x2F;禁止文件列表，防止冲突</li>
+<li><strong>Phase 间复用</strong>: 不销毁 team，空闲 Agent 通过 SendMessage 接收新任务</li>
+<li><strong>Delegate 模式</strong>: 主 Agent 是 Coordinator 不是 Implementor，专注分配&#x2F;追踪&#x2F;汇总</li>
+</ol>
+<p><strong>使用示例</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/MultiAgent 实现用户认证功能</span><br><span class="line"></span><br><span class="line">方案草案:</span><br><span class="line">| 队友 | 角色 | 文件范围 | 依赖 |</span><br><span class="line">|------|------|---------|------|</span><br><span class="line">| api | backend-developer | src/api/auth/* | - |</span><br><span class="line">| test | test-automator | tests/auth/* | api |</span><br><span class="line"></span><br><span class="line">用户微调 → 确认 → 并行执行</span><br></pre></td></tr></table></figure>
+
+<h3 id="Skill-4-prompt-—-Prompt-量化评分"><a href="#Skill-4-prompt-—-Prompt-量化评分" class="headerlink" title="Skill 4: /prompt — Prompt 量化评分"></a>Skill 4: <code>/prompt</code> — Prompt 量化评分</h3><p><strong>定位</strong>: 基于<strong>乔哈里视窗理论</strong>和 <strong>3S 原则</strong>的 Prompt 自动评分与优化工具。</p>
+<p><strong>乔哈里视窗四象限</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">              AI 知道           AI 不知道</span><br><span class="line">          ┌──────────────┬──────────────┐</span><br><span class="line">人知道    │ Q1 公共知识   │ Q4 独有知识 ⚠│</span><br><span class="line">          │ 直接描述即可  │ 必须喂模式    │</span><br><span class="line">          ├──────────────┼──────────────┤</span><br><span class="line">人不知道  │ Q2 AI 专业   │ Q3 探索创新   │</span><br><span class="line">          │ 信任 AI 即可  │ 协同探索      │</span><br><span class="line">          └──────────────┴──────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键发现</strong>: 大多数 Prompt 质量问题出在第四象限（人知道但 AI 不知道的独有知识）。当 Prompt 包含团队黑话、内部系统名称等独有知识但未提供解释时，评分直接降到 2&#x2F;10。</p>
+<p><strong>3S 原则</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>原则</th>
+<th>含义</th>
+<th>检测方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Single</strong></td>
+<td>单任务聚焦</td>
+<td>检测”和”、”并”等连接词</td>
+</tr>
+<tr>
+<td><strong>Specific</strong></td>
+<td>明确详细</td>
+<td>有格式+范围+示例 → 9-10分</td>
+</tr>
+<tr>
+<td><strong>Short</strong></td>
+<td>简洁扼要</td>
+<td>冗余修饰 → 4-6分</td>
+</tr>
+</tbody></table>
+<p><strong>评分体系</strong>:</p>
+<ul>
+<li>基础评分（所有 Prompt）: 目标明确性 40% + 3S 原则 30% + 基础清晰度 30%</li>
+<li>深度评分（条件触发）: 约束完整性 25% + 技能匹配 25% + 工作流清晰度 25% + 示例完整性 25%</li>
+</ul>
+<p><strong>使用示例</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/prompt 审查我们公司的 XYZ 系统代码，确保遵循 YYY 规范</span><br><span class="line"></span><br><span class="line">评分报告:</span><br><span class="line">  象限: 第四象限 (独有知识)</span><br><span class="line">  问题: XYZ、YYY 未定义，AI 无法理解</span><br><span class="line">  总分: 2.0/10 (Critical)</span><br><span class="line"></span><br><span class="line">优化后 (8.5/10):</span><br><span class="line">  审查 XYZ 系统代码，确保遵循 YYY 规范。</span><br><span class="line">  定义: XYZ = 内部微服务框架(Spring Boot) | YYY = PascalCase 类名规范</span><br><span class="line">  示例: ❌ user_service | ✓ UserService</span><br></pre></td></tr></table></figure>
+
+<h2 id="设计决策与踩坑经验"><a href="#设计决策与踩坑经验" class="headerlink" title="设计决策与踩坑经验"></a>设计决策与踩坑经验</h2><h3 id="决策-1-为什么用-tmux-分屏而非-in-process-模式"><a href="#决策-1-为什么用-tmux-分屏而非-in-process-模式" class="headerlink" title="决策 1: 为什么用 tmux 分屏而非 in-process 模式"></a>决策 1: 为什么用 tmux 分屏而非 in-process 模式</h3><p><strong>问题</strong>: Claude Code 支持两种 Agent 执行方式 —— <code>run_in_background</code>（in-process）和 <code>tmux split</code>（分屏）。</p>
+<p><strong>选择</strong>: tmux-split 唯一模式。</p>
+<p><strong>原因</strong>:</p>
+<ul>
+<li>in-process 模式下 Agent 失败是静默的，用户无法实时查看</li>
+<li>tmux 分屏让每个 Agent 的执行过程可视化，出现问题时可直接介入</li>
+<li>Phase 间可以复用分屏，避免资源浪费</li>
+</ul>
+<p><strong>踩坑</strong>: 早期使用 <code>run_in_background</code> 时，多个 Agent 同时编辑同一文件导致冲突难以追踪。切换到 tmux 后，文件边界隔离问题自然解决。</p>
+<h3 id="决策-2-Plan-Mode-为什么不可跳过（flow-deep）"><a href="#决策-2-Plan-Mode-为什么不可跳过（flow-deep）" class="headerlink" title="决策 2: Plan Mode 为什么不可跳过（flow-deep）"></a>决策 2: Plan Mode 为什么不可跳过（flow-deep）</h3><p><strong>问题</strong>: 很多时候开发者（包括我自己）觉得”这个任务我很清楚，不需要 Plan”。</p>
+<p><strong>选择</strong>: flow-deep 中 Plan Mode 不可关闭。</p>
+<p><strong>原因</strong>: “我很清楚”恰恰是最危险的状态。Plan Mode 的只读沙箱不是限制能力，而是<strong>防止”边想边改”的冲动</strong>。实际使用中发现，即使是经验丰富的工程师，进入 Plan Mode 后也会发现之前忽略的边界情况。</p>
+<p><strong>踩坑</strong>: 曾经在”很简单”的认证模块重构中跳过了 Plan，结果遗漏了一个并发 token 刷新的竞态条件，导致线上问题。从此 Plan Mode 成为不可跳过的步骤。</p>
+<h3 id="决策-3-为什么-Plan-Review-用独立-Agent"><a href="#决策-3-为什么-Plan-Review-用独立-Agent" class="headerlink" title="决策 3: 为什么 Plan Review 用独立 Agent"></a>决策 3: 为什么 Plan Review 用独立 Agent</h3><p><strong>问题</strong>: Plan 写完了，为什么不让同一个 Agent 审查？</p>
+<p><strong>选择</strong>: 启动独立 Agent（全新上下文）审查。</p>
+<p><strong>原因</strong>: <strong>沉没成本偏差</strong>。第一个 Claude 花了很多时间设计 Plan，心理上不愿推翻自己的方案。审查 Agent 没有这个包袱，更容易发现盲点。</p>
+<p><strong>实际效果</strong>: 约 30% 的 Plan Review 发现了原始 Plan 中的遗漏项，主要集中在边界情况和安全风险。</p>
+<h3 id="决策-4-Auto-Decide-Layer-的-P4-YAGNI-原则"><a href="#决策-4-Auto-Decide-Layer-的-P4-YAGNI-原则" class="headerlink" title="决策 4: Auto-Decide Layer 的 P4 YAGNI 原则"></a>决策 4: Auto-Decide Layer 的 P4 YAGNI 原则</h3><p><strong>问题</strong>: 多角色评审经常产生”要不要加这个功能”的争议。</p>
+<p><strong>选择</strong>: P4 原则 —— 如果某个建议属于”有了更好但没有也行”，上浮给用户做 Taste Decision。</p>
+<p><strong>原因</strong>: 工程决策中，”做”的成本是明确的，但”不做”的风险是隐性的。Auto-Decide 无法替用户做这个权衡，只能提供信息让用户自己判断。</p>
+<h2 id="与社区方案对比"><a href="#与社区方案对比" class="headerlink" title="与社区方案对比"></a>与社区方案对比</h2><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>FlowKit</th>
+<th>GSD</th>
+<th>Superpowers</th>
+<th>GStack</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>结构化管道</td>
+<td>5 阶段 + 子阶段</td>
+<td>Phase 模式</td>
+<td>按需组合</td>
+<td>Checklist</td>
+</tr>
+<tr>
+<td>Plan Mode</td>
+<td>只读沙箱（系统级强制）</td>
+<td>无</td>
+<td>无</td>
+<td>无</td>
+</tr>
+<tr>
+<td>Plan Review</td>
+<td>独立 Agent（消除偏差）</td>
+<td>无</td>
+<td>无</td>
+<td>无</td>
+</tr>
+<tr>
+<td>多角色评审</td>
+<td>3-5 角色 + Auto-Decide</td>
+<td>无</td>
+<td>无</td>
+<td>无</td>
+</tr>
+<tr>
+<td>跨会话恢复</td>
+<td>STATE.md</td>
+<td>无</td>
+<td>无</td>
+<td>无</td>
+</tr>
+<tr>
+<td>自主迭代</td>
+<td>keep&#x2F;revert + Ralph Loop</td>
+<td>无</td>
+<td>auto-iterate</td>
+<td>无</td>
+</tr>
+<tr>
+<td>Prompt 评分</td>
+<td>乔哈里视窗 + 3S</td>
+<td>无</td>
+<td>无</td>
+<td>无</td>
+</tr>
+<tr>
+<td>多 Agent</td>
+<td>tmux 分屏 + 文件隔离</td>
+<td>无</td>
+<td>dispatching</td>
+<td>无</td>
+</tr>
+</tbody></table>
+<p><strong>原创贡献</strong>（社区框架中均未出现）:</p>
+<ul>
+<li><strong>STATE.md 崩溃恢复</strong> — 跨会话断点续传</li>
+<li><strong>Auto-Decide Layer</strong> — 6 原则自动决策，减少 80% 人工评审</li>
+<li><strong>Ralph Loop 集成</strong> — Stop Hook + auto-iterate 双层迭代</li>
+<li><strong>乔哈里视窗 Prompt 评分</strong> — 从认知科学角度量化 Prompt 质量</li>
+</ul>
+<h2 id="实际使用效果"><a href="#实际使用效果" class="headerlink" title="实际使用效果"></a>实际使用效果</h2><p>FlowKit 目前已作为 Claude Code Skill 在日常开发中持续使用，核心数据：</p>
+<ul>
+<li><strong>日常使用频率</strong>: 约 10+ 次&#x2F;天的 <code>/flow</code> 调用</li>
+<li><strong>Plan Review 有效率</strong>: ~30% 的 Plan Review 发现了原始 Plan 的遗漏项</li>
+<li><strong>Auto-Decide 自动处理率</strong>: ~80% 的评审发现项被自动处理</li>
+<li><strong>跨会话恢复</strong>: 在长任务（5+ 阶段）中，约 20% 的场景需要 STATE.md 恢复</li>
+</ul>
+<hr>
+<h2 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h2><ul>
+<li><strong>GitHub</strong>: <a href="https://github.com/FrizzleFur/flowkit">github.com&#x2F;FrizzleFur&#x2F;flowkit</a></li>
+<li><strong>Claude Code Insights</strong> (另一个开源项目): <a href="https://github.com/FrizzleFur/claude-code-insights">github.com&#x2F;FrizzleFur&#x2F;claude-code-insights</a></li>
+</ul>
+<hr>
+<p><em>FlowKit 使用 MIT 协议开源。如果对 AI Agent 工作流编排感兴趣，欢迎 Star 和交流。</em></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2025/05/22/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%94%EF%BC%89%E2%80%94%E2%80%94%20RooCode%E6%8F%92%E4%BB%B6%E5%88%86%E6%9E%90/">AI笔记系列（五）—— RooCode插件分析</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2025-05-22</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/AI/">AI</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/VSCode%E6%8F%92%E4%BB%B6/">VSCode插件</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/%E7%BC%96%E7%A8%8B%E5%8A%A9%E6%89%8B/">编程助手</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/RooCode/">RooCode</a></span><div class="content"><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
 <li><a href="#1-roocode%E6%A6%82%E8%BF%B0%E4%B8%8E%E5%AE%98%E6%96%B9%E4%BF%A1%E6%81%AF">1. RooCode概述与官方信息</a></li>
 <li><a href="#2-roocode%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD">2. RooCode架构设计与核心功能</a></li>
 <li><a href="#3-roocode%E7%BB%84%E4%BB%B6%E4%BA%A4%E4%BA%92%E5%85%B3%E7%B3%BB%E5%9B%BE">3. RooCode组件交互关系图</a></li>
@@ -190,20 +800,5 @@
 <li><p>只有子线程的RunLoop需要手动启动，主线程的RunLoop在App启动调用Main函数时就已运行。</p>
 </li>
 </ol>
-<p><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/20190216141120.png"></p></div><a class="more" href="/2019/02/16/iOS_RunLoop%E6%8E%A2%E7%A9%B6/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/12/29/ReactiveCocoa%E7%AC%94%E8%AE%B0(%E4%BA%8C)%20%E2%80%94%E2%80%94%20%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/">ReactiveCocoa笔记(二）—— 源码探究</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-12-29</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/ReactiveCocoa/">ReactiveCocoa</a></span><div class="content"><ul>
-<li>看完源码画的流程图：</li>
-</ul>
-<p><img src="https://i.loli.net/2018/12/29/5c2747bc93ed6.png" alt="RACSignal流程"></p>
-<h2 id="理解RAC"><a href="#理解RAC" class="headerlink" title="理解RAC"></a>理解RAC</h2><p>初学者总是容易被一堆概念搞得晕头转向，我想其实无非是这几种：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">RACSignal *signal = [RACSignal createSignal:^RACDisposable *(<span class="type">id</span>&lt;RACSubscriber&gt; subscriber)&#123;</span><br><span class="line">            [subscriber sendNext:@(<span class="number">1</span>)];</span><br><span class="line">            [subscriber sendCompleted];</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">        &#125;];</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>  1、createSignal好难啊；<br>  2、subscriber是什么？<br>  3、这个block什么时候调用？</p></div><a class="more" href="/2018/12/29/ReactiveCocoa%E7%AC%94%E8%AE%B0(%E4%BA%8C)%20%E2%80%94%E2%80%94%20%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/12/29/ReactiveCocoa%E7%AC%94%E8%AE%B0(%E4%B8%80)%20%E2%80%94%E2%80%94%20%E6%A1%86%E6%9E%B6%E6%A6%82%E8%A7%88/">ReactiveCocoa笔记(一）—— 框架概览</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-12-29</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/ReactiveCocoa/">ReactiveCocoa</a></span><div class="content"><blockquote>
-<p>对于一个应用来说，绝大部分的时间都是在等待某些事件的发生或响应某些状态的变化，比如用户的触摸事件、应用进入后台、网络请求成功刷新界面等等，而维护这些状态的变化，常常会使代码变得非常复杂，难以扩展。而 ReactiveCocoa 给出了一种非常好的解决方案，它使用信号来代表这些异步事件，提供了一种统一的方式来处理所有异步的行为，包括代理方法、block 回调、target-action 机制、通知、KVO 等：<br>然而，这些还只是 ReactiveCocoa 的冰山一角，它真正强大的地方在于我们可以对这些不同的信号进行任意地组合和链式操作，从最原始的输入 input 开始直至得到最终的输出 output为止</p>
-</blockquote>
-<h2 id="ReactiveCocoa解决的问题"><a href="#ReactiveCocoa解决的问题" class="headerlink" title="ReactiveCocoa解决的问题:"></a>ReactiveCocoa解决的问题:</h2><ol>
-<li>传统iOS开发过程中,<strong>状态以及状态之间依赖过多的问题</strong></li>
-<li>传统MVC架构的问题:Controller比较复杂,可测试性差</li>
-<li><strong>提供统一的消息传递机制</strong></li>
-<li>RAC使用信号监听，类似OC中的<code>KVO</code>机制，使用<code>Block</code>聚合代码逻辑，所以被称为：函数响应式编程。</li>
-</ol></div><a class="more" href="/2018/12/29/ReactiveCocoa%E7%AC%94%E8%AE%B0(%E4%B8%80)%20%E2%80%94%E2%80%94%20%E6%A1%86%E6%9E%B6%E6%A6%82%E8%A7%88/#more">阅读更多</a><hr></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-chevron-right&quot;&gt;&lt;&#x2F;i&gt;</a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+<p><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/20190216141120.png"></p></div><a class="more" href="/2019/02/16/iOS_RunLoop%E6%8E%A2%E7%A9%B6/#more">阅读更多</a><hr></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-chevron-right&quot;&gt;&lt;&#x2F;i&gt;</a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
  <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
