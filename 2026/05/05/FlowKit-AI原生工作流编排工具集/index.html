@@ -20,7 +20,9 @@
 <li><a href="#%E8%AE%BE%E8%AE%A1%E5%93%B2%E5%AD%A6">设计哲学</a></li>
 </ul>
 <hr>
-<h2 id="为什么造这个轮子"><a href="#为什么造这个轮子" class="headerlink" title="为什么造这个轮子"></a>为什么造这个轮子</h2><p>使用 Claude Code、Cursor 这类 AI 编程助手时，我发现了一个反复出现的模式：</p>
+<h2 id="为什么造这个轮子"><a href="#为什么造这个轮子" class="headerlink" title="为什么造这个轮子"></a>为什么造这个轮子</h2><span id="more"></span>
+
+<p>使用 Claude Code、Cursor 这类 AI 编程助手时，我发现了一个反复出现的模式：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">用户: &quot;帮我重构这个模块&quot;</span><br><span class="line"></span><br><span class="line">Agent:</span><br><span class="line">  1. 直接开始写代码</span><br><span class="line">  2. 跳过测试</span><br><span class="line">  3. 跳过边界情况检查</span><br><span class="line">  4. 用 &quot;应该可以了&quot; 宣布完成</span><br><span class="line">  5. 用户发现 bug，重新来过</span><br></pre></td></tr></table></figure>
 
 <p><strong>Agent 能力很强但缺乏纪律性</strong>。它们会跳过验证、忽略边界情况、用模糊措辞宣布完成。</p>
