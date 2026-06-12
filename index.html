@@ -17,7 +17,6 @@
 <li><a href="#%E6%96%87%E7%AB%A0%E7%9F%A5%E8%AF%86%E5%BA%93">文章知识库</a></li>
 <li><a href="#html-%E7%A4%BA%E4%BE%8B%E9%9B%86">HTML 示例集</a></li>
 <li><a href="#%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82">技术实现细节</a></li>
-<li><a href="#%E9%A2%84%E8%A7%88%E4%B8%8E%E4%BD%BF%E7%94%A8">预览与使用</a></li>
 </ul>
 <hr>
 <h2 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h2><p>作为 Claude Code 的深度用户，我追踪了它从 <strong>v0.2.21 到 v2.1.150</strong> 的完整演进历程。在这个过程中，我发现：</p>
@@ -30,7 +29,12 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">claude-code-insights/</span><br><span class="line">├── version-chronicle/          # 版本编年史（时间线视角）</span><br><span class="line">│   └── index.html              # ~126K，单页 HTML</span><br><span class="line">├── articles-hub/               # 文章知识库（深度视角）</span><br><span class="line">│   ├── data/articles/          # 37 篇文章 YAML 数据</span><br><span class="line">│   ├── scripts/                # Python 生成脚本</span><br><span class="line">│   └── site/                   # 生成的 HTML 站点</span><br><span class="line">├── html-showcase/              # HTML 示例集（实践视角）</span><br><span class="line">│   ├── index.html</span><br><span class="line">│   └── 01-20 *.html            # 20 个独立演示</span><br><span class="line">└── README.md</span><br></pre></td></tr></table></figure>
 
 <p>三大模块，<strong>零依赖</strong>（纯 HTML&#x2F;CSS&#x2F;JS，无需构建工具），克隆即可浏览。</p>
-<h2 id="版本编年史"><a href="#版本编年史" class="headerlink" title="版本编年史"></a>版本编年史</h2><p>版本编年史追踪了 Claude Code 从诞生到当前的完整演进，按时间线组织为 <strong>4 个时代</strong>：</p>
+<h2 id="版本编年史"><a href="#版本编年史" class="headerlink" title="版本编年史"></a>版本编年史</h2><blockquote>
+<p><strong><a href="/claude-code-insights/version-chronicle/index.html#overview">打开完整交互版</a></strong></p>
+</blockquote>
+<iframe src="/claude-code-insights/version-chronicle/index.html" width="100%" height="600" frameborder="0" style="border:1px solid #e0e0e0;border-radius:8px;margin:16px 0;" loading="lazy"></iframe>
+
+<p>版本编年史追踪了 Claude Code 从诞生到当前的完整演进，按时间线组织为 <strong>4 个时代</strong>：</p>
 <table>
 <thead>
 <tr>
@@ -86,7 +90,24 @@
 <li><strong>依赖关系图</strong>: 可视化功能之间的依赖关系</li>
 <li><strong>路线图</strong>: 已发布 &#x2F; 快速迭代中 &#x2F; 长期愿景三阶段</li>
 </ul>
-<h2 id="文章知识库"><a href="#文章知识库" class="headerlink" title="文章知识库"></a>文章知识库</h2><p>文章知识库对 <strong>37 篇 Anthropic 技术文章</strong>进行了系统化评分、分类和索引。</p>
+<h3 id="路线图卡片（交互式）"><a href="#路线图卡片（交互式）" class="headerlink" title="路线图卡片（交互式）"></a>路线图卡片（交互式）</h3><blockquote>
+<p><strong><a href="/claude-code-insights/version-chronicle/index.html#roadmap">打开完整版路线图</a></strong></p>
+</blockquote>
+<iframe src="/claude-code-insights/roadmap-embed.html" width="100%" height="800" frameborder="0" style="border:1px solid #e0e0e0;border-radius:8px;margin:16px 0;" loading="lazy"></iframe>
+
+<p>上面嵌入的路线图卡片支持：</p>
+<ul>
+<li><strong>分类筛选</strong>: 点击 “全部 &#x2F; Agent 能力 &#x2F; 平台支持 &#x2F; 安全合规 &#x2F; 生态扩展” 按钮过滤</li>
+<li><strong>进度条</strong>: 每个功能卡片显示开发进度百分比</li>
+<li><strong>详情展开</strong>: 点击 “查看详情” 展开技术实现细节和依赖关系</li>
+<li><strong>三阶段视图</strong>: 已发布（绿色）→ 快速迭代中（橙色）→ 长期愿景（蓝色）</li>
+</ul>
+<h2 id="文章知识库"><a href="#文章知识库" class="headerlink" title="文章知识库"></a>文章知识库</h2><blockquote>
+<p><strong><a href="/claude-code-insights/articles-hub/index.html">打开完整交互版</a></strong></p>
+</blockquote>
+<iframe src="/claude-code-insights/articles-hub/index.html" width="100%" height="600" frameborder="0" style="border:1px solid #e0e0e0;border-radius:8px;margin:16px 0;" loading="lazy"></iframe>
+
+<p>文章知识库对 <strong>37 篇 Anthropic 技术文章</strong>进行了系统化评分、分类和索引。</p>
 <h3 id="7-维加权评分体系"><a href="#7-维加权评分体系" class="headerlink" title="7 维加权评分体系"></a>7 维加权评分体系</h3><p>每篇文章从 7 个维度评分（1-10 分），通过加权计算得出综合评分：</p>
 <table>
 <thead>
@@ -181,7 +202,12 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Q: &quot;Prompt Engineering 不够用吗？&quot;</span><br><span class="line">A: Prompt Engineering 关注单次输入优化，Context Engineering 管理的是 Agent 整个生命周期的上下文状态</span><br><span class="line">    │</span><br><span class="line">    ▼ (深度+1)</span><br><span class="line">Q: &quot;Agent 是&#x27;持续的项目会议&#x27;具体是什么意思？&quot;</span><br><span class="line">A: 想象 Agent 重构代码：读取→分析→计划→修改。每步需要不同信息...</span><br><span class="line">    │</span><br><span class="line">    ▼ (深度+1)</span><br><span class="line">Q: &quot;为什么 Context Rot 70% 是临界点？&quot;</span><br><span class="line">A: Anthropic 内部测试发现，上下文填充超过 70% 后推理准确率显著跳水...</span><br></pre></td></tr></table></figure>
 
 <p>每个问题都有深度标记（depth: 0&#x2F;1&#x2F;2），读者可以按需深入。</p>
-<h2 id="HTML-示例集"><a href="#HTML-示例集" class="headerlink" title="HTML 示例集"></a>HTML 示例集</h2><p>HTML 示例集包含 <strong>20 个零依赖交互演示</strong>，展示 HTML 作为通用输出格式的强大能力。</p>
+<h2 id="HTML-示例集"><a href="#HTML-示例集" class="headerlink" title="HTML 示例集"></a>HTML 示例集</h2><blockquote>
+<p><strong><a href="/claude-code-insights/html-showcase/index.html">打开完整交互版</a></strong></p>
+</blockquote>
+<iframe src="/claude-code-insights/html-showcase/index.html" width="100%" height="500" frameborder="0" style="border:1px solid #e0e0e0;border-radius:8px;margin:16px 0;" loading="lazy"></iframe>
+
+<p>HTML 示例集包含 <strong>20 个零依赖交互演示</strong>，展示 HTML 作为通用输出格式的强大能力。</p>
 <blockquote>
 <p>基于 <a href="https://github.com/anthropics/html-effectiveness">Anthropic “The unreasonable effectiveness of HTML”</a> 项目。</p>
 </blockquote>
@@ -195,32 +221,32 @@
 </thead>
 <tbody><tr>
 <td><strong>探索</strong></td>
-<td>代码方案、视觉设计</td>
+<td><a href="/claude-code-insights/html-showcase/01-exploration-code-approaches.html">代码方案</a> · <a href="/claude-code-insights/html-showcase/02-exploration-visual-designs.html">视觉设计</a></td>
 <td>AI 生成多种方案供选择</td>
 </tr>
 <tr>
 <td><strong>代码</strong></td>
-<td>Code Review、设计系统、组件变体</td>
+<td><a href="/claude-code-insights/html-showcase/03-code-review-pr.html">Code Review</a> · <a href="/claude-code-insights/html-showcase/04-code-understanding.html">代码理解</a> · <a href="/claude-code-insights/html-showcase/05-design-system.html">设计系统</a> · <a href="/claude-code-insights/html-showcase/06-component-variants.html">组件变体</a></td>
 <td>代码理解和质量保证</td>
 </tr>
 <tr>
 <td><strong>原型</strong></td>
-<td>动画、交互</td>
+<td><a href="/claude-code-insights/html-showcase/07-prototype-animation.html">动画</a> · <a href="/claude-code-insights/html-showcase/08-prototype-interaction.html">交互</a></td>
 <td>快速原型验证</td>
 </tr>
 <tr>
 <td><strong>沟通</strong></td>
-<td>幻灯片、状态报告、PR 文档</td>
+<td><a href="/claude-code-insights/html-showcase/09-slide-deck.html">幻灯片</a> · <a href="/claude-code-insights/html-showcase/11-status-report.html">状态报告</a> · <a href="/claude-code-insights/html-showcase/17-pr-writeup.html">PR 文档</a></td>
 <td>团队协作可视化</td>
 </tr>
 <tr>
 <td><strong>图表</strong></td>
-<td>流程图、功能&#x2F;概念解释器</td>
+<td><a href="/claude-code-insights/html-showcase/13-flowchart-diagram.html">流程图</a> · <a href="/claude-code-insights/html-showcase/15-research-concept-explainer.html">概念解释器</a></td>
 <td>知识可视化</td>
 </tr>
 <tr>
-<td><strong>编辑器 UI</strong></td>
-<td>分诊看板、Feature Flags、Prompt 调参器</td>
+<td><strong>编辑器</strong></td>
+<td><a href="/claude-code-insights/html-showcase/20-editor-prompt-tuner.html">Prompt 调参器</a> · <a href="/claude-code-insights/html-showcase/19-editor-feature-flags.html">Feature Flags</a> · <a href="/claude-code-insights/html-showcase/18-editor-triage-board.html">分诊看板</a></td>
 <td>工具界面</td>
 </tr>
 </tbody></table>
@@ -288,11 +314,6 @@
 <td>未来规划</td>
 </tr>
 </tbody></table>
-<h2 id="预览与使用"><a href="#预览与使用" class="headerlink" title="预览与使用"></a>预览与使用</h2><h3 id="本地预览"><a href="#本地预览" class="headerlink" title="本地预览"></a>本地预览</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/FrizzleFur/claude-code-insights.git</span><br><span class="line"><span class="built_in">cd</span> claude-code-insights</span><br><span class="line"></span><br><span class="line"><span class="comment"># 版本编年史</span></span><br><span class="line">open version-chronicle/index.html</span><br><span class="line"></span><br><span class="line"><span class="comment"># 文章知识库</span></span><br><span class="line">open articles-hub/site/index.html</span><br><span class="line"></span><br><span class="line"><span class="comment"># HTML 示例集</span></span><br><span class="line">open html-showcase/index.html</span><br></pre></td></tr></table></figure>
-
-<p>零安装零构建，浏览器直接打开。</p>
-<h3 id="数据更新"><a href="#数据更新" class="headerlink" title="数据更新"></a>数据更新</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加新文章</span></span><br><span class="line"><span class="built_in">cd</span> articles-hub</span><br><span class="line">python scripts/generate_detail_pages.py   <span class="comment"># 重新生成 HTML</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 版本数据更新</span></span><br><span class="line"><span class="comment"># 编辑 version-chronicle/index.html 中的里程碑数据</span></span><br></pre></td></tr></table></figure>
-
 <hr>
 <h2 id="相关项目"><a href="#相关项目" class="headerlink" title="相关项目"></a>相关项目</h2><ul>
 <li><strong>FlowKit</strong> (AI 工作流编排工具集): <a href="https://github.com/FrizzleFur/flowkit">github.com&#x2F;FrizzleFur&#x2F;flowkit</a></li>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anthropic Articles — 精华博客知识管理系统</title>
+<style>
+:root {
+  --ivory: #FAF9F5;
+  --paper: #FFFFFF;
+  --slate: #141413;
+  --clay: #D97757;
+  --oat: #E3DACC;
+  --olive: #788C5D;
+  --g100: #F5F5F4;
+  --g300: #D6D3D1;
+  --g500: #78716C;
+  --g700: #44403C;
+  --serif: Georgia, 'Times New Roman', serif;
+  --sans: system-ui, -apple-system, sans-serif;
+  --mono: 'SF Mono', Menlo, monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--sans); background: var(--ivory); color: var(--slate); line-height: 1.6; }
+a { color: var(--clay); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+header { background: var(--slate); color: var(--ivory); padding: 2rem; }
+header h1 { font-family: var(--serif); font-size: 2rem; margin-bottom: 0.5rem; }
+header p { color: var(--g300); font-size: 0.95rem; }
+
+nav { background: var(--paper); border-bottom: 1px solid var(--g300); padding: 0 2rem; display: flex; gap: 1.5rem; }
+nav a { color: var(--slate); padding: 0.75rem 0; font-size: 0.9rem; border-bottom: 2px solid transparent; }
+nav a:hover { border-bottom-color: var(--clay); text-decoration: none; }
+nav a.active { border-bottom-color: var(--clay); font-weight: 600; }
+
+main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.stat-card { background: var(--paper); border: 1px solid var(--g300); border-radius: 8px; padding: 1.25rem; }
+.stat-card h3 { font-family: var(--serif); font-size: 0.85rem; color: var(--g500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+.stat-card .value { font-size: 2rem; font-weight: 700; }
+.stat-card .value span { font-size: 1rem; color: var(--g500); font-weight: 400; }
+
+.section-title { font-family: var(--serif); font-size: 1.5rem; margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--clay); }
+
+.top-list { display: grid; gap: 0.75rem; margin-bottom: 2rem; }
+.article-row { background: var(--paper); border: 1px solid var(--g300); border-radius: 8px; padding: 1rem 1.25rem; display: grid; grid-template-columns: 40px 1fr 80px 100px 60px; align-items: center; gap: 1rem; }
+.article-row:hover { border-color: var(--clay); }
+.rank { font-family: var(--serif); font-size: 1.25rem; font-weight: 700; color: var(--clay); text-align: center; }
+.article-info h4 { font-family: var(--serif); font-size: 1rem; margin-bottom: 0.25rem; }
+.article-info .meta { font-size: 0.8rem; color: var(--g500); }
+.score-badge { text-align: center; }
+.score-badge .score { font-size: 1.5rem; font-weight: 700; }
+.score-badge .grade { font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+.grade-S { background: #FDE68A; color: #92400E; }
+.grade-A { background: #BBF7D0; color: #166534; }
+.grade-B { background: #BFDBFE; color: #1E40AF; }
+.grade-C { background: var(--g100); color: var(--g700); }
+.grade-D { background: var(--g300); color: var(--g500); }
+.section-tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; background: var(--oat); }
+.difficulty-tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; background: var(--g100); }
+
+.category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.cat-card { background: var(--paper); border: 1px solid var(--g300); border-radius: 8px; padding: 1.25rem; }
+.cat-card h4 { font-family: var(--serif); margin-bottom: 0.5rem; }
+.cat-card .count { font-size: 2rem; font-weight: 700; color: var(--clay); }
+.cat-card p { font-size: 0.85rem; color: var(--g500); }
+
+footer { text-align: center; padding: 2rem; color: var(--g500); font-size: 0.85rem; border-top: 1px solid var(--g300); margin-top: 2rem; }
+
+@media (max-width: 768px) {
+  .article-row { grid-template-columns: 30px 1fr 60px; }
+  .section-tag, .difficulty-tag { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Anthropic Articles</h1>
+  <p>精华博客知识管理系统 — 评分、分类、关联 GitHub 项目、思维流程导图</p>
+</header>
+
+<nav>
+  <a href="index.html" class="active">总览</a>
+  <a href="rankings.html">排行榜</a>
+  <a href="categories.html">分类浏览</a>
+  <a href="relations.html">文章关系图</a>
+  <a href="github-map.html">GitHub 映射</a>
+</nav>
+
+<main>
+  <!-- 统计概览 -->
+  <div class="stats">
+    <div class="stat-card">
+      <h3>文章总数</h3>
+      <div class="value">37 <span>篇</span></div>
+    </div>
+    <div class="stat-card">
+      <h3>Engineering</h3>
+      <div class="value">24 <span>篇</span></div>
+    </div>
+    <div class="stat-card">
+      <h3>Research</h3>
+      <div class="value">13 <span>篇</span></div>
+    </div>
+    <div class="stat-card">
+      <h3>S 级文章</h3>
+      <div class="value">2 <span>篇</span></div>
+    </div>
+    <div class="stat-card">
+      <h3>A 级文章</h3>
+      <div class="value">9 <span>篇</span></div>
+    </div>
+    <div class="stat-card">
+      <h3>关联 GitHub</h3>
+      <div class="value">14 <span>个项目</span></div>
+    </div>
+  </div>
+
+  <!-- Top 10 排行榜 -->
+  <h2 class="section-title">Top 10 高价值文章</h2>
+  <div class="top-list">
+    <div class="article-row">
+      <div class="rank">1</div>
+      <div class="article-info"><h4><a href="articles/effective-context-engineering.html">Effective Context Engineering for AI Agents</a></h4><div class="meta">Engineering | 2025-09-29 | Context Engineering</div></div>
+      <div class="score-badge"><div class="score">9.0</div><div class="grade grade-S">S</div></div>
+      <div class="section-tag">C2 工程实践</div>
+      <div class="difficulty-tag">L2</div>
+    </div>
+    <div class="article-row">
+      <div class="rank">2</div>
+      <div class="article-info"><h4><a href="articles/advanced-tool-use.html">Introducing Advanced Tool Use on the Claude Developer Platform</a></h4><div class="meta">Engineering | 2025-11-24 | Tool Search, Programmatic Calling</div></div>
+      <div class="score-badge"><div class="score">8.9</div><div class="grade grade-S">S</div></div>
+      <div class="section-tag">C4 工具平台</div>
+      <div class="difficulty-tag">L3</div>
+    </div>
+    <div class="article-row">
+      <div class="rank">3</div>
+      <div class="article-info"><h4><a href="articles/contextual-retrieval.html">Introducing Contextual Retrieval</a></h4><div class="meta">Engineering | 2024-09-19 | RAG, Embeddings</div></div>
+      <div class="score-badge"><div class="score">8.9</div><div class="grade grade-S">S</div></div>
+      <div class="section-tag">C2 工程实践</div>
+      <div class="difficulty-tag">L2</div>
+    </div>
+    <div class="article-row">
+      <div class="rank">4</div>
+      <div class="article-info"><h4><a href="articles/building-effective-agents.html">Building Effective AI Agents</a></h4><div class="meta">Engineering | 2024-12-19 | Agent Architecture</div></div>
+      <div class="score-badge"><div class="score">8.8</div><div class="grade grade-A">A</div></div>
+      <div class="section-tag">C1 Agent 开发</div>
+      <div class="difficulty-tag">L2</div>
+    </div>
+    <div class="article-row">
+      <div class="rank">5</div>
+      <div class="article-info"><h4><a href="articles/writing-effective-tools.html">Writing Effective Tools for AI Agents — with Agents</a></h4><div class="meta">Engineering | 2025-09-11 | Tool Design, MCP</div></div>
+      <div class="score-badge"><div class="score">8.7</div><div class="grade grade-A">A</div></div>
+      <div class="section-tag">C2 工程实践</div>
+      <div class="difficulty-tag">L2</div>
+    </div>
+    <div class="article-row">
+      <div class="rank">6</div>
+      <div class="article-info"><h4><a href="articles/claude-code-best-practices.html">Claude Code: Best Practices for Agentic Coding</a></h4><div class="meta">Engineering | 2025-04-18 | Coding Best Practices</div></div>
+      <div class="score-badge"><div class="score">8.3</div><div class="grade grade-A">A</div></div>
+      <div class="section-tag">C2 工程实践</div>
+      <div class="difficulty-tag">L1</div>
+    </div>
+    <div class="article-row">
+      <div class="rank">7</div>
+      <div class="article-info"><h4><a href="articles/think-tool.html">The "Think" Tool: Enabling Claude to Stop and Think</a></h4><div class="meta">Engineering | 2025-03-20 | Prompt Engineering</div></div>
+      <div class="score-badge"><div class="score">8.3</div><div class="grade grade-A">A</div></div>
+      <div class="section-tag">C2 工程实践</div>
+      <div class="difficulty-tag">L2</div>
+    </div>
+    <div class="article-row">
+      <div class="rank">8</div>
+      <div class="article-info"><h4><a href="articles/multi-agent-research-system.html">How We Built Our Multi-Agent Research System</a></h4><div class="meta">Engineering | 2025-06-13 | Multi-Agent</div></div>
+      <div class="score-badge"><div class="score">8.2</div><div class="grade grade-A">A</div></div>
+      <div class="section-tag">C1 Agent 开发</div>
+      <div class="difficulty-tag">L3</div>
+    </div>
+    <div class="article-row">
+      <div class="rank">9</div>
+      <div class="article-info"><h4><a href="articles/desktop-extensions-mcp.html">Desktop Extensions: One-Click MCP Server Installation</a></h4><div class="meta">Engineering | 2025-06-26 | MCP, Packaging</div></div>
+      <div class="score-badge"><div class="score">8.0</div><div class="grade grade-A">A</div></div>
+      <div class="section-tag">C4 工具平台</div>
+      <div class="difficulty-tag">L2</div>
+    </div>
+    <div class="article-row">
+      <div class="rank">10</div>
+      <div class="article-info"><h4><a href="articles/code-execution-mcp.html">Code Execution with MCP: Building More Efficient Agents</a></h4><div class="meta">Engineering | 2025-11-04 | MCP, Code Execution</div></div>
+      <div class="score-badge"><div class="score">7.9</div><div class="grade grade-A">A</div></div>
+      <div class="section-tag">C4 工具平台</div>
+      <div class="difficulty-tag">L2</div>
+    </div>
+  </div>
+
+  <!-- 分类统计 -->
+  <h2 class="section-title">分类统计</h2>
+  <div class="category-grid">
+    <div class="cat-card">
+      <h4>C1 Agent 开发</h4>
+      <div class="count">10</div>
+      <p>架构设计、评估、多 Agent、Harness</p>
+    </div>
+    <div class="cat-card">
+      <h4>C2 工程实践</h4>
+      <div class="count">6</div>
+      <p>编码最佳实践、上下文工程、工具设计</p>
+    </div>
+    <div class="cat-card">
+      <h4>C3 模型研究</h4>
+      <div class="count">9</div>
+      <p>可解释性、对齐、社会影响、科学</p>
+    </div>
+    <div class="cat-card">
+      <h4>C4 工具与平台</h4>
+      <div class="count">6</div>
+      <p>Claude Code、MCP、SDK</p>
+    </div>
+    <div class="cat-card">
+      <h4>C5 安全与政策</h4>
+      <div class="count">4</div>
+      <p>安全研究、政策讨论、经济研究</p>
+    </div>
+  </div>
+
+  <!-- 评分体系说明 -->
+  <h2 class="section-title">评分体系</h2>
+  <div style="background: var(--paper); border: 1px solid var(--g300); border-radius: 8px; padding: 1.5rem; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--g300);">
+          <th style="text-align: left; padding: 0.5rem;">维度</th>
+          <th style="text-align: center; padding: 0.5rem;">权重</th>
+          <th style="text-align: center; padding: 0.5rem;">1分</th>
+          <th style="text-align: center; padding: 0.5rem;">5分</th>
+          <th style="text-align: center; padding: 0.5rem;">10分</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid var(--g100);"><td>技术深度</td><td style="text-align:center;">1.1</td><td style="text-align:center;">表面描述</td><td style="text-align:center;">有技术细节</td><td style="text-align:center;">深度剖析+代码</td></tr>
+        <tr style="border-bottom: 1px solid var(--g100);"><td><strong>可操作性</strong></td><td style="text-align:center;"><strong>1.3</strong></td><td style="text-align:center;">纯理论</td><td style="text-align:center;">有方向指导</td><td style="text-align:center;">可直接复制实践</td></tr>
+        <tr style="border-bottom: 1px solid var(--g100);"><td>创新性</td><td style="text-align:center;">1.0</td><td style="text-align:center;">常识复述</td><td style="text-align:center;">新视角</td><td style="text-align:center;">开创性概念</td></tr>
+        <tr style="border-bottom: 1px solid var(--g100);"><td><strong>影响力</strong></td><td style="text-align:center;"><strong>1.3</strong></td><td style="text-align:center;">小众关注</td><td style="text-align:center;">行业关注</td><td style="text-align:center;">广泛引用+衍生项目</td></tr>
+        <tr style="border-bottom: 1px solid var(--g100);"><td>教育价值</td><td style="text-align:center;">1.1</td><td style="text-align:center;">难以理解</td><td style="text-align:center;">有学习收获</td><td style="text-align:center;">思维模型级启发</td></tr>
+        <tr style="border-bottom: 1px solid var(--g100);"><td>时效性</td><td style="text-align:center;">1.0</td><td style="text-align:center;">短期价值</td><td style="text-align:center;">1-2年有效</td><td style="text-align:center;">常青内容</td></tr>
+        <tr><td>可复现性</td><td style="text-align:center;">1.0</td><td style="text-align:center;">无法复现</td><td style="text-align:center;">部分可复现</td><td style="text-align:center;">完整可复现</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<footer>
+  Anthropic Articles Knowledge Management System | 数据来源: <a href="https://www.anthropic.com/engineering">Anthropic Engineering Blog</a> & <a href="https://www.anthropic.com/research">Research Blog</a> | 学习项目，仅供个人研究
+</footer>
+
+</body>
+</html>

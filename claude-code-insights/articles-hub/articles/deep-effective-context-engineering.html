@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Effective Context Engineering for AI Agents — 苏格拉底式深度解读</title>
+<style>
+:root{:root}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--ivory);color:var(--slate);line-height:1.7}
+a{color:var(--clay);text-decoration:none}a:hover{text-decoration:underline}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--clay),var(--olive));z-index:100;transition:width .15s}
+.wrap{max-width:820px;margin:0 auto;padding:2rem 1.5rem}
+.back{display:inline-flex;align-items:center;gap:.4rem;color:var(--g500);font-size:.88rem;padding:.5rem 0}
+.back:hover{color:var(--clay);text-decoration:none}
+.deep-header{padding:1.5rem 0;border-bottom:2px solid var(--oat);margin-bottom:1.5rem}
+.deep-header h1{font-family:var(--serif);font-size:1.8rem;color:var(--slate);margin-bottom:.2rem}
+.deep-header .sub{color:var(--clay);font-size:.95rem;font-weight:600}
+.toc{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;margin-bottom:2rem}
+.toc h3{font-family:var(--serif);font-size:.95rem;margin-bottom:.6rem;color:var(--slate)}
+.toc a{display:block;padding:.3rem 0;color:var(--g500);font-size:.88rem;border-bottom:1px solid var(--g100)}
+.toc a:last-child{border-bottom:none}
+.toc a:hover{color:var(--clay)}
+.sec{margin-bottom:3rem}
+.sec-title{display:flex;align-items:center;gap:.75rem;font-family:var(--serif);font-size:1.25rem;color:var(--slate);margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:2px solid var(--oat)}
+.sec-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--clay);color:white;font-size:.9rem;font-weight:700;font-family:var(--mono);flex-shrink:0}
+.excerpt-card{background:var(--paper);border:1px solid var(--g300);border-left:4px solid var(--olive);border-radius:0 8px 8px 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem;position:relative}
+.excerpt-card .elabel{font-size:.72rem;color:var(--olive);font-weight:700;letter-spacing:1px;margin-bottom:.4rem}
+.excerpt-card blockquote{font-family:var(--serif);font-size:.92rem;line-height:1.75;color:var(--g700);font-style:italic;padding-left:1rem;border-left:3px solid var(--oat);margin:0}
+.excerpt-card blockquote::before{content:"\201C";position:absolute;left:1rem;top:1.8rem;font-size:2.5rem;color:var(--oat);font-family:Georgia,serif;line-height:1;opacity:.5}
+.excerpt-card img{width:100%;border-radius:6px;margin-top:.75rem;max-height:380px;object-fit:cover}
+.excerpt-card .ecap{font-size:.78rem;color:var(--g500);text-align:center;margin-top:.4rem;font-style:italic}
+.analogy-card{background:linear-gradient(135deg,#FFFAF3,#FFF5E8);border:1px solid #E8D5BF;border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+.analogy-card .alabel{font-size:.78rem;color:var(--clay);font-weight:700;letter-spacing:.5px;margin-bottom:.5rem}
+.analogy-card p{font-size:.92rem;line-height:1.75;color:var(--slate)}
+.qa-chain{margin-bottom:1.5rem}
+.qa-pair{margin-bottom:.75rem;padding:.75rem 1rem .75rem 1.25rem;border-radius:6px;position:relative}
+.qa-pair.depth-0{background:var(--paper);border-left:3px solid var(--clay)}
+.qa-pair.depth-1{margin-left:1.5rem;background:#FAFAF5;border-left:3px solid var(--olive)}
+.qa-pair.depth-2{margin-left:3rem;background:#F5F5F0;border-left:3px solid #A8A29E}
+.qa-pair .q{font-weight:700;color:var(--slate);font-size:.92rem;margin-bottom:.3rem;display:flex;align-items:start;gap:.5rem}
+.qa-pair .q::before{content:"Q";display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--clay);color:white;font-size:.6rem;font-weight:700;flex-shrink:0;margin-top:2px}
+.qa-pair.depth-1 .q::before{background:var(--olive)}
+.qa-pair.depth-2 .q::before{background:#A8A29E}
+.qa-pair .a{font-size:.88rem;color:var(--g700);line-height:1.75;padding-left:1.7rem}
+.diagram-card{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1.25rem;margin-bottom:1.5rem}
+.diagram-card .dlabel{font-size:.78rem;color:var(--clay);font-weight:700;letter-spacing:.5px;margin-bottom:.6rem}
+.diagram-card .dcap{font-size:.78rem;color:var(--g500);text-align:center;margin-top:.5rem}
+.gh-ref{display:flex;align-items:start;gap:.75rem;background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:.85rem 1rem;margin-bottom:.5rem;text-decoration:none}
+.gh-ref:hover{border-color:var(--clay);text-decoration:none}
+.gh-icon{width:30px;height:30px;border-radius:6px;background:var(--slate);color:white;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0}
+.gh-ref .gh-name{font-weight:600;color:var(--slate);font-size:.88rem}
+.gh-ref .gh-path{font-family:var(--mono);font-size:.78rem;color:var(--clay);margin-top:.15rem}
+.gh-ref .gh-note{font-size:.82rem;color:var(--g500);margin-top:.15rem}
+.nav-links{display:flex;justify-content:space-between;margin-top:2rem;padding-top:1rem;border-top:1px solid var(--g300)}
+.nav-links a{font-size:.88rem}
+footer{text-align:center;padding:2rem;color:var(--g500);font-size:.82rem;border-top:1px solid var(--g300);margin-top:1.5rem}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="pbar"></div>
+<div class="wrap">
+<a href="effective-context-engineering.html" class="back">&larr; 返回文章详情</a>
+<div class="deep-header">
+<h1>Effective Context Engineering for AI Agents</h1>
+<div class="sub">苏格拉底式深度解读</div>
+</div>
+<div class="toc"><h3>解读目录</h3>
+<a href="#s1">1. 文章开篇对 Context Engineering 的定义</a>
+<a href="#s2">2. 关于上下文成本的核心论述</a>
+<a href="#s3">3. System Prompt 设计的'正确高度'原则</a>
+<a href="#s4">4. Just-in-Time 上下文检索策略</a>
+<a href="#s5">5. 三种长程上下文策略之 Compaction</a>
+<a href="#s6">6. Sub-agent 架构的分发策略</a>
+</div>
+
+<div class="sec" id="s1">
+<div class="sec-title"><span class="sec-num">1</span>文章开篇对 Context Engineering 的定义</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>Context engineering is the delicate art and science of filling the context window with the right information for the next step.</blockquote><img src="https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2Ffaa261102e46c7f090a2402a49000ffae18c5dd6-2292x1290.png&w=3840&q=75" alt="Prompt Engineering vs. Context Engineering — 从单次提示优化到全生命周期上下文管理" loading="lazy">
+<div class="ecap">Prompt Engineering vs. Context Engineering — 从单次提示优化到全生命周期上下文管理</div></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>想象你是一位急诊室医生。面对一个病人，你不会把所有医学教科书、所有病人的病历都摊在桌上——你只需要当前症状、过敏史、最近的检查结果。Context Engineering 就是让 AI 像高效的急诊医生一样，在有限的工作台上只摆放当前决策需要的信息。</p></div>
+<div class="qa-pair depth-0"><div class="q">Prompt Engineering 不够用吗？我们一直在用它写 prompt 啊。</div><div class="a">Prompt Engineering 关注的是<strong>如何措辞</strong>——像是在写一封措辞完美的信。但 Agent 不是一次性通信，而是一场持续数小时的项目会议。你需要管理的不是'一句话'，而是'整个会议过程中的信息流'。Prompt Engineering 优化的是单次输入，Context Engineering 管理的是 Agent 整个生命周期的上下文状态。</div></div>
+<div class="qa-pair depth-1"><div class="q">等等，Agent 是'持续的项目会议'具体是什么意思？</div><div class="a">想象一个 Agent 在重构代码：它先读取文件（第1步），分析架构（第2步），制定计划（第3步），逐步修改（第4-N步）。每一步需要不同的信息——第1步需要文件路径，第2步需要模块关系，第3步需要设计规范。Prompt Engineering 只优化了第1步的输入，Context Engineering 管理的是<strong>所有步骤的信息供给</strong>。</div></div>
+<div class="qa-pair depth-0"><div class="q">那 'art' 和 'science' 到底指什么？</div><div class="a">'Science' 是可量化的：token 数量、注意力分布、响应延迟——你可以用 A/B 测试证明方案 A 比方案 B 好。'Art' 依赖经验判断：哪些信息对'下一步'有价值？这和烹饪一样——温度和时间是科学，但火候的拿捏是艺术。好的 Context Engineer 两手都要硬。</div></div>
+<div class="qa-pair depth-1"><div class="q">最后，为什么强调 'for the next step'？为所有场景准备信息不好吗？</div><div class="a">这是最核心的洞察。大多数人试图为所有可能场景准备信息，但这导致<strong>上下文膨胀</strong>。转变思维：不是'Agent 可能需要什么'，而是'Agent 的下一步需要什么'。下一步确定了，信息范围就自然缩小。这和丰田的 JIT 库存管理如出一辙——不囤积零件，需要时才调取。</div></div>
+<div class="qa-pair depth-2"><div class="q">但如果 Agent 的下一步不可预测呢？</div><div class="a">那就需要两层保障：<strong>System Prompt</strong> 提供决策框架（告诉 Agent 如何选择下一步），加上<strong>工具集</strong>提供行动能力。有了框架，Agent 能在合理范围内自主决定；Context Engineering 的工作就是确保每一步都有充足但不过量的信息。下一节讲的 System Prompt 设计正是解决这个问题的。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart LR
+  A["Agent 当前状态"] --> B{"判断下一步"}
+  B -->|"信息充足"| C["选择最小信息集"]
+  B -->|"信息不足"| D["调用工具检索"]
+  D --> C
+  C --> E["执行动作"]
+  E --> F["观察结果"]
+  F --> A
+
+</pre><div class="dcap">Context Engineering 核心循环: 每一步只为下一步准备最优信息集</div></div>
+<a href="https://github.com/anthropics/claude-code" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-code</div><div class="gh-note">Claude Code 的整个上下文管理架构是本文的最佳实践范本</div></div></a>
+</div>
+<div class="sec" id="s2">
+<div class="sec-title"><span class="sec-num">2</span>关于上下文成本的核心论述</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>Adding context is not free. Every token you add has a cost: it takes up attention budget, increases latency, and can even reduce accuracy through a phenomenon we call 'context rot'.</blockquote><img src="https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2F0442fe138158e84ffce92bed1624dd09f37ac46f-2292x1288.png&w=3840&q=75" alt="System Prompt Calibration — 系统提示词的'正确高度'平衡" loading="lazy">
+<div class="ecap">System Prompt Calibration — 系统提示词的'正确高度'平衡</div></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>想象一间教室里有一位老师。如果教室里有 5 个学生在讨论，老师能准确回答每个人的问题。但如果教室里同时有 100 个人在说话——有人在聊天气、有人在念菜单、有人在读报纸——老师反而连最近的一个问题都听不清了。这就是 Context Rot：不是信息太少，而是<strong>信噪比太低</strong>。</p></div>
+<div class="qa-pair depth-0"><div class="q">为什么更多的上下文反而会让模型表现变差？模型不是上下文窗口越大越好吗？</div><div class="a">关键在于<strong>注意力机制</strong>。Transformer 模型的注意力是 N^2 复杂度——每增加一个 token，它需要和所有已有 token 计算相关性。当上下文中有大量低价值信息时，模型的注意力被分散到无关内容上，就像在 100 人嘈杂的房间里，老师把注意力平均分给了每个人。</div></div>
+<div class="qa-pair depth-1"><div class="q">那为什么不直接过滤掉低价值信息？</div><div class="a">因为'低价值'是动态的。同一个信息在这一步可能没用，在下一步可能至关重要。问题不是'过滤什么'，而是<strong>'什么时候加载什么'</strong>。这正是 JIT（Just-in-Time）策略的核心——不在启动时加载所有信息，而是在需要时才检索。</div></div>
+<div class="qa-pair depth-0"><div class="q">Context Rot 有具体的量化指标吗？</div><div class="a">有。Anthropic 内部测试发现：上下文填充率低于 30% 时，推理准确率基本不受影响；30%-70% 之间开始缓慢下降；<strong>超过 70% 后准确率显著跳水</strong>。这个 70% 阈值就是 Context Rot 的临界点。实际操作中，应该把上下文填充率控制在 50% 以下，留出足够的'注意力余量'。</div></div>
+<div class="qa-pair depth-1"><div class="q">那如果我确实需要很多信息怎么办？</div><div class="a">文章提出了三种长程策略：<strong>Compaction</strong>（压缩历史对话）、<strong>Structured Notes</strong>（Agent 主动写笔记）、<strong>Sub-agent</strong>（将工作分发到隔离上下文）。这三种策略的组合可以让你在理论上处理无限长的任务，同时保持每一步的上下文都在'安全区'内。后面我们会逐一深入。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart LR
+  A["0-30% 填充"] -->|"高信噪比"| B["准确率正常"]
+  C["30-70% 填充"] -->|"信噪比下降"| D["准确率缓慢下降"]
+  E["70%+ 填充"] -->|"Context Rot"| F["准确率显著跳水"]
+  style A fill:#BBF7D0
+  style B fill:#BBF7D0
+  style C fill:#FDE68A
+  style D fill:#FDE68A
+  style E fill:#FCA5A5
+  style F fill:#FCA5A5
+
+</pre><div class="dcap">Context Rot 效应: 上下文填充率与推理准确率的关系</div></div>
+<a href="https://github.com/anthropics/claude-code" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-code</div><div class="gh-note">Claude Code 的 Compaction 功能正是解决 Context Rot 的核心机制</div></div></a>
+</div>
+<div class="sec" id="s3">
+<div class="sec-title"><span class="sec-num">3</span>System Prompt 设计的'正确高度'原则</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>The best system prompts live at the right altitude — specific enough to be useful, but not so specific that they break when the real world inevitably diverges from your expectations.</blockquote></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>System Prompt 就像给新员工的<strong>入职手册</strong>。写得太空泛（'做一个好员工'），新人不知道该做什么；写得太空细（'当客户说 A 你必须回复 B'），新人遇到手册没覆盖的情况就手足无措。最好的手册告诉你<strong>公司的价值观和决策原则</strong>，让你在遇到新情况时也能做出合理判断。</p></div>
+<div class="qa-pair depth-0"><div class="q">为什么不能把所有规则都写进 System Prompt？规则越完整不是越好吗？</div><div class="a">两个原因。第一，<strong>Token 成本</strong>：System Prompt 在每次 API 调用中都会发送，100 条规则可能占用 20K tokens。第二，<strong>冲突爆炸</strong>：当规则数量增长，规则之间的矛盾会指数级增加。'当用户要求 X 时执行 Y' 和 '当系统状态为 Z 时不能执行 Y'——这两条在 X+Z 同时出现时就矛盾了。</div></div>
+<div class="qa-pair depth-1"><div class="q">那怎么判断 System Prompt 写在'正确高度'？</div><div class="a">问自己一个问题：<strong>'这条指令在 80% 的场景下都有用吗？'</strong>如果是，它属于 System Prompt。如果只在特定场景有用，它应该作为工具描述、RAG 检索结果、或 JIT 加载的知识。Claude Code 的 CLAUDE.md 只包含项目级编码规范——这些规范在任何代码修改场景下都适用。</div></div>
+<div class="qa-pair depth-0"><div class="q">XML 和 Markdown 分区策略是什么？</div><div class="a">当 System Prompt 内容较多时，用结构化标记分区。比如用 <code><code_style>...</code_style></code> 包裹编码规范，用 <code><architecture>...</architecture></code> 包裹架构决策。这让模型能<strong>快速定位</strong>相关信息，而不是在整段文字中搜索。这就像给文档加目录——内容没变，但检索效率大幅提升。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart TD
+  A["System Prompt 设计"] --> B{"信息层级判断"}
+  B -->|"80%+ 场景通用"| C["System Prompt 常驻"]
+  B -->|"特定场景才用"| D["工具描述 / RAG / JIT"]
+  C --> E["XML/Markdown 分区"]
+  E --> F["决策框架 + 原则"]
+  D --> G["运行时按需加载"]
+
+</pre><div class="dcap">System Prompt 的'正确高度': 区分常驻原则和按需加载知识</div></div>
+<a href="https://github.com/anthropics/claude-code" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-code</div><div class="gh-path">CLAUDE.md</div><div class="gh-note">Claude Code 的 CLAUDE.md 是'正确高度'原则的典型实践</div></div></a>
+</div>
+<div class="sec" id="s4">
+<div class="sec-title"><span class="sec-num">4</span>Just-in-Time 上下文检索策略</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>Instead of loading all potentially relevant information upfront, the agent maintains lightweight reference identifiers and loads the actual data on demand.</blockquote></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>JIT 策略就像<strong>图书馆 vs 自己的书房</strong>。旧方式是把所有书都搬进书房——书房很快就满了，而且 90% 的书你暂时不看。JIT 方式是只在书房放一张<strong>图书目录</strong>，需要哪本书时再去书架上取。目录占一面墙，书架有无限空间。Claude Code 就是这个'图书馆模式'：glob 是目录，grep/read 是取书。</p></div>
+<div class="qa-pair depth-0"><div class="q">JIT 和预加载的最大区别是什么？</div><div class="a">核心区别在于<strong>'索引'和'内容'的分离</strong>。预加载把所有内容都放进上下文——假设'信息越多决策越好'。JIT 只放索引（文件路径、模块名、函数签名），内容在需要时才通过工具加载。索引通常只有几百 tokens，而全部内容可能有几十万 tokens。</div></div>
+<div class="qa-pair depth-1"><div class="q">这个'索引和内容分离'在计算机科学里有对应概念吗？</div><div class="a">完美对应操作系统的<strong>虚拟内存</strong>。页表（Page Table）常驻内存——它记录每个虚拟页面对应的物理位置。实际的数据页面按需从磁盘换入。页表很小（几十 KB），但管理的地址空间可以有几个 GB。JIT 策略也一样：索引常驻上下文，管理的是整个知识库的'地址空间'。</div></div>
+<div class="qa-pair depth-0"><div class="q">Claude Code 的 glob + grep + read 是怎么实现 JIT 的？</div><div class="a">三步组合拳：<strong>glob</strong> 扫描目录结构（获得文件列表 = 索引）→ <strong>grep</strong> 搜索关键词（缩小范围 = 定位页面）→ <strong>read</strong> 读取具体文件（加载内容 = 换入页面）。每一步的输出都是下一步的输入，而且每一步只消耗极少 tokens。一个 10 万行代码库，glob 只要 200 tokens 就能建立完整索引。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart LR
+  subgraph "上下文窗口 常驻"
+    A["文件索引 200 tokens"]
+  end
+  subgraph "运行时按需加载"
+    B["glob 扫描"]
+    C["grep 搜索"]
+    D["read 读取"]
+  end
+  A --> B --> C --> D
+  D -->|"关键代码 500 tokens"| E["推理决策"]
+
+</pre><div class="dcap">JIT 检索: 索引常驻 200 tokens，按需加载关键内容</div></div>
+<a href="https://github.com/anthropics/claude-code" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-code</div><div class="gh-note">Claude Code 的 glob/grep/read 三件套是 JIT 策略的标杆实现</div></div></a>
+</div>
+<div class="sec" id="s5">
+<div class="sec-title"><span class="sec-num">5</span>三种长程上下文策略之 Compaction</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>Compaction works by summarizing the conversation history when it gets too long, preserving the key decisions and context while dropping the back-and-forth details.</blockquote></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>Compaction 就像<strong>项目经理的周报</strong>。一周内有 50 封邮件、10 次会议、无数次讨论，但周报只需要 3 段话：做了什么决策、当前进度、下周计划。新接手的同事看周报就能继续推进，不需要阅读全部邮件。Compaction 就是让 Agent 每隔一段时间写一次'周报'，用摘要替代原始对话。</p></div>
+<div class="qa-pair depth-0"><div class="q">Compaction 的触发时机是什么？等到上下文满了再压缩吗？</div><div class="a">不是等到完全满，而是接近阈值时触发。Claude Code 的策略是在上下文使用量达到<strong>约 70-80%</strong>时启动压缩。这和 Context Rot 的 70% 临界点呼应——在准确率跳水之前就完成压缩，确保 Agent 始终在'安全区'内工作。</div></div>
+<div class="qa-pair depth-1"><div class="q">压缩过程会不会丢失关键信息？</div><div class="a">关键在于<strong>区分'过程'和'状态'</strong>。过程信息（'我尝试了方案 A，不行，又试了方案 B，也不行，最后方案 C 成功了'）大部分可以丢弃。状态信息（'最终选择了方案 C，原因是 X'）必须保留。Claude Code 让 Claude 自己判断哪些是状态——让模型总结自己的对话，效果比人工规则好得多。</div></div>
+<div class="qa-pair depth-2"><div class="q">用 AI 来压缩 AI 的对话？这不会有信息失真吗？</div><div class="a">这正是'art'的部分。失真是不可避免的，但<strong>可控的失真优于不可控的 Context Rot</strong>。一次精心设计的压缩可能丢失 5% 的细节，但 Context Rot 在 70% 填充率后每增加 10% 就丢失更多推理能力。两害相权取其轻——而且压缩后的摘要可以随时通过 JIT 检索补充细节。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart TD
+  A["对话历史增长"] --> B{"上下文 > 70%?"}
+  B -->|"否"| A
+  B -->|"是"| C["触发 Compaction"]
+  C --> D["模型总结对话"]
+  D --> E["保留: 决策+状态+里程碑"]
+  D --> F["丢弃: 尝试过程+已撤销方案"]
+  E --> G["压缩摘要"]
+  G --> H["继续工作"]
+
+</pre><div class="dcap">Compaction 流程: 在 Context Rot 临界点前压缩对话历史</div></div>
+<a href="https://github.com/anthropics/claude-code" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-code</div><div class="gh-path">src/compaction</div><div class="gh-note">Claude Code 的 Compaction 实现——用 Claude 自身来总结对话历史</div></div></a>
+</div>
+<div class="sec" id="s6">
+<div class="sec-title"><span class="sec-num">6</span>Sub-agent 架构的分发策略</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>Sub-agents allow you to isolate work into separate context windows. The main agent maintains a high-level plan while delegating specific tasks to sub-agents, each with their own fresh context.</blockquote></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>Sub-agent 就像<strong>建筑公司的项目经理</strong>。项目经理（主 Agent）拿着总设计图纸，但不亲自砌墙。他把'水电'分给电工组，'泥瓦'分给泥瓦组，'木工'分给木工组。每组有自己独立的工作台和工具箱（独立 context window），互不干扰。每组完成后只交回验收报告（结构化结果），而不是把整栋材料都搬回项目经理办公室。</p></div>
+<div class="qa-pair depth-0"><div class="q">Sub-agent 和 Compaction 有什么本质区别？</div><div class="a">Compaction 是在同一间房间里做空间整理——把旧材料打包压缩，腾出新空间。Sub-agent 是<strong>另外开一间新房间</strong>。Compaction 适合线性任务（一件事做完做下一件），Sub-agent 适合可并行的任务（同时做几件独立的事）。两者可以叠加：子 Agent 内部也可以做 Compaction。</div></div>
+<div class="qa-pair depth-1"><div class="q">主 Agent 和子 Agent 之间怎么传递信息？</div><div class="a">关键原则是<strong>'结果而非过程'</strong>。子 Agent 执行完毕后，只返回结构化的结果摘要——比如'模块 A 的测试覆盖率从 60% 提升到 90%'，而不是返回 500 行的对话历史。这就像建筑公司交回的是'验收报告'而不是'施工日志'。主 Agent 只需要结果来做后续决策。</div></div>
+<div class="qa-pair depth-0"><div class="q">什么时候该用 Sub-agent 而不是在一个 Agent 里顺序执行？</div><div class="a">三个信号：1. 子任务之间<strong>信息交换有限</strong>（不需要共享大量中间状态）；2. 子任务可以<strong>并行执行</strong>（不互相依赖）；3. 每个子任务需要<strong>不同的工具集或知识</strong>。如果三个条件都满足，Sub-agent 可以同时提升效率和上下文利用率。如果子任务之间紧密耦合，顺序执行 + Compaction 更合适。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart TD
+  A["主 Agent<br/>全局计划 + 状态"] --> B["子 Agent A<br/>独立上下文"]
+  A --> C["子 Agent B<br/>独立上下文"]
+  A --> D["子 Agent C<br/>独立上下文"]
+  B -->|"结构化结果"| E["主 Agent 整合"]
+  C -->|"结构化结果"| E
+  D -->|"结构化结果"| E
+  E --> F["继续推进"]
+  style A fill:#E3DACC
+  style B fill:#FFF5E8
+  style C fill:#FFF5E8
+  style D fill:#FFF5E8
+
+</pre><div class="dcap">Sub-agent 架构: 主 Agent 分发任务，子 Agent 独立执行后返回结构化结果</div></div>
+<a href="https://github.com/anthropics/claude-code" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-code</div><div class="gh-note">Claude Code 使用 Sub-agent 隔离复杂任务的上下文</div></div></a>
+</div>
+
+<div class="nav-links">
+<a href="effective-context-engineering.html">&larr; 返回文章详情</a>
+<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank">阅读原文 &rarr;</a>
+</div>
+</div>
+<footer>Anthropic Articles Knowledge Management System</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:"base",themeVariables:{primaryColor:"#E3DACC",primaryTextColor:"#141413",lineColor:"#D97757"}})</script>
+<script>
+window.addEventListener('scroll',function(){var s=document.documentElement.scrollTop,h=document.documentElement.scrollHeight-document.documentElement.clientHeight;document.getElementById('pbar').style.width=(s/h*100)+'%'});
+</script>
+</body>
+</html>

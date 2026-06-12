@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Writing Effective Tools for AI Agents — with Agents — Anthropic Articles</title>
+<style>
+:root{:root}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--ivory);color:var(--slate);line-height:1.6}
+a{color:var(--clay);text-decoration:none}a:hover{text-decoration:underline}
+header{background:var(--slate);color:var(--ivory);padding:2rem}
+header h1{font-family:var(--serif);font-size:1.8rem;margin-bottom:.25rem}
+header .meta{color:var(--g300);font-size:.9rem}
+nav{background:var(--paper);border-bottom:1px solid var(--g300);padding:0 2rem;display:flex;gap:1.5rem}
+nav a{color:var(--slate);padding:.75rem 0;font-size:.9rem;border-bottom:2px solid transparent}
+nav a:hover{border-bottom-color:var(--clay);text-decoration:none}
+nav a.active{border-bottom-color:var(--clay);font-weight:600}
+main{max-width:900px;margin:0 auto;padding:2rem}
+h2{font-family:var(--serif);font-size:1.3rem;margin:1.5rem 0 .75rem;color:var(--clay);border-bottom:1px solid var(--oat);padding-bottom:.5rem}
+.score-grid{display:grid;grid-template-columns:200px 1fr;gap:2rem;align-items:start;margin-bottom:1rem}
+.radar-box{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem}
+.scores-list{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1.25rem}
+.score-row{display:flex;align-items:center;margin-bottom:.5rem;gap:.75rem}
+.score-row .label{width:80px;font-size:.85rem;color:var(--g500)}
+.score-row .bar-wrap{flex:1;height:8px;background:var(--g100);border-radius:4px;overflow:hidden}
+.score-row .bar{height:100%;background:var(--clay);border-radius:4px;transition:width .3s}
+.score-row .val{width:30px;font-family:var(--mono);font-size:.9rem;font-weight:700;text-align:right}
+.overall{text-align:center;margin-bottom:1rem}
+.overall .big{font-size:3rem;font-weight:700;font-family:var(--serif);color:var(--clay)}
+.grade{font-size:.85rem;padding:3px 12px;border-radius:4px;font-weight:600;display:inline-block;margin-left:.5rem}
+.g-S{background:#FDE68A;color:#92400E}.g-A{background:#BBF7D0;color:#166534}.g-B{background:#BFDBFE;color:#1E40AF}
+.g-C{background:var(--g100);color:var(--g700)}.g-D{background:var(--g300);color:var(--g500)}
+.tags{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}
+.tag{font-size:.75rem;padding:2px 8px;border-radius:4px;background:var(--g100);color:var(--g500)}
+.tag.cat{background:var(--oat);color:var(--slate)}
+.tag.diff{background:var(--clay);color:white}
+.takeaway{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;margin-bottom:.5rem;font-size:.9rem;position:relative;padding-left:2.5rem}
+.takeaway::before{content:"\2605";position:absolute;left:.75rem;top:.75rem;color:var(--clay);font-size:1.2rem}
+.practice{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;margin-bottom:.75rem}
+.practice h4{font-family:var(--serif);font-size:.95rem;margin-bottom:.25rem}
+.practice .meta{font-size:.8rem;color:var(--g500);margin-bottom:.5rem}
+.practice p{font-size:.9rem;color:var(--g700)}
+.github-link{display:block;background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:.75rem 1rem;margin-bottom:.5rem}
+.github-link strong{display:block;margin-bottom:.25rem}
+.github-link .desc{font-size:.85rem;color:var(--g500)}
+.github-link .stars{font-family:var(--mono);font-size:.85rem;color:var(--clay)}
+.mindmap-box{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1.5rem;overflow-x:auto}
+.outline{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;margin-bottom:.5rem}
+.outline h4{font-family:var(--serif);font-size:.95rem;margin-bottom:.15rem;color:var(--clay)}
+.outline .odesc{font-size:.85rem;color:var(--g500);margin-bottom:.5rem;padding-left:1rem;border-left:2px solid var(--oat)}
+.excerpt-block{background:var(--paper);border:1px solid var(--g300);border-radius:10px;margin-bottom:1.5rem;overflow:hidden}
+.excerpt-block .eheader{display:flex;align-items:center;gap:.5rem;padding:.6rem 1.25rem;background:linear-gradient(135deg,var(--oat),#f0e8d8);border-bottom:1px solid var(--g300)}
+.excerpt-block .ebadge{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--clay);color:white;font-size:.75rem;font-weight:700;font-family:var(--mono)}
+.excerpt-block .econtext{font-size:.82rem;color:var(--g500);font-weight:500}
+.excerpt-block .eoriginal{padding:1rem 1.5rem;margin:0;border-left:4px solid var(--olive);background:#f8faf3;font-size:.92rem;line-height:1.75;font-family:var(--serif);color:var(--g700);font-style:italic;position:relative}
+.excerpt-block .eoriginal::before{content:"原文";position:absolute;top:.75rem;left:-28px;background:var(--olive);color:white;font-size:.6rem;padding:1px 6px;border-radius:3px;font-style:normal;font-family:var(--sans);letter-spacing:.5px}
+.excerpt-block .eimage{width:100%;border-radius:6px;margin:.75rem 1.25rem;max-height:360px;object-fit:cover}
+.excerpt-block .ecaption{font-size:.78rem;color:var(--g500);padding:0 1.25rem .5rem;text-align:center;font-style:italic}
+.excerpt-block .ecommentary{padding:1rem 1.5rem;font-size:.88rem;color:var(--slate);line-height:1.8;border-top:2px solid var(--oat);position:relative}
+.excerpt-block .ecommentary::before{content:"解读";display:inline-block;background:var(--clay);color:white;font-size:.65rem;padding:2px 8px;border-radius:3px;margin-bottom:.75rem;font-weight:600;letter-spacing:.5px;font-family:var(--sans)}
+.excerpt-block .ecommentary p{margin-bottom:.75rem}
+.excerpt-block .ecommentary p:first-of-type{margin-top:.25rem}
+.excerpt-block .ecommentary p:last-child{margin-bottom:0}
+.excerpt-block .ecommentary strong{color:var(--clay);font-weight:700}
+.excerpt-block .ecommentary ul,.excerpt-block .ecommentary ol{margin:.5rem 0 .75rem 1.25rem}
+.excerpt-block .ecommentary li{margin-bottom:.35rem}
+.excerpt-block .ecommentary li::marker{color:var(--clay)}
+.excerpt-block .ecommentary code{font-family:var(--mono);font-size:.82rem;background:var(--g100);padding:1px 5px;border-radius:3px;color:var(--g700)}
+.excerpt-block .ecommentary pre{background:#1e1e1e;color:#d4d4d4;padding:.75rem 1rem;border-radius:6px;overflow-x:auto;margin:.5rem 0 .75rem;font-size:.82rem;line-height:1.5}
+.excerpt-block .ecommentary pre code{background:none;padding:0;color:inherit}
+.relation-links{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.5rem}
+.relation-links a{font-size:.9rem;padding:4px 10px;border-radius:4px;background:var(--g100)}
+.relation-links a:hover{background:var(--oat)}
+footer{text-align:center;padding:2rem;color:var(--g500);font-size:.85rem;border-top:1px solid var(--g300);margin-top:2rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Writing Effective Tools for AI Agents — with Agents</h1>
+  <div class="meta">2025-09-11 | Engineering | Ken Aizawa</div>
+</header>
+<nav>
+  <a href="../index.html">总览</a>
+  <a href="../rankings.html">排行榜</a>
+  <a href="../categories.html">分类浏览</a>
+  <a href="../relations.html">文章关系图</a>
+  <a href="../github-map.html">GitHub 映射</a>
+</nav>
+<main>
+  <div class="tags">
+    <span class="tag cat">C2 工程实践</span>
+    <span class="tag diff">L2</span>
+    <span class="tag">tool-design</span>
+<span class="tag">MCP</span>
+<span class="tag">agent</span>
+<span class="tag">eval</span>
+<span class="tag">ACI</span>
+
+  </div>
+
+  <h2>综合评分</h2>
+  <div class="score-grid">
+    <div class="radar-box">
+      <div class="overall">
+        <div class="big">8.7</div>
+        <span class="grade g-A">A 级</span>
+      </div>
+      <canvas id="radar" width="180" height="180"></canvas>
+    </div>
+    <div class="scores-list">
+      <div class="score-row"><span class="label">技术深度 (x1.1)</span><div class="bar-wrap"><div class="bar" style="width:90%"></div></div><span class="val">9</span></div>
+<div class="score-row"><span class="label">可操作性 (x1.3)</span><div class="bar-wrap"><div class="bar" style="width:100%"></div></div><span class="val">10</span></div>
+<div class="score-row"><span class="label">创新性</span><div class="bar-wrap"><div class="bar" style="width:70%"></div></div><span class="val">7</span></div>
+<div class="score-row"><span class="label">影响力 (x1.3)</span><div class="bar-wrap"><div class="bar" style="width:80%"></div></div><span class="val">8</span></div>
+<div class="score-row"><span class="label">教育价值 (x1.1)</span><div class="bar-wrap"><div class="bar" style="width:90%"></div></div><span class="val">9</span></div>
+<div class="score-row"><span class="label">时效性</span><div class="bar-wrap"><div class="bar" style="width:80%"></div></div><span class="val">8</span></div>
+<div class="score-row"><span class="label">可复现性</span><div class="bar-wrap"><div class="bar" style="width:90%"></div></div><span class="val">9</span></div>
+
+    </div>
+  </div>
+
+  <h2>核心要点</h2>
+  <div class="takeaway">工具是确定性和非确定性系统之间的新契约，需要为 Agent 设计而非为开发者设计</div>
+<div class="takeaway">用 Agent 帮你写工具: Claude Code 可以一次性生成 MCP Server 原型</div>
+<div class="takeaway">工具选择原则: 少而精，针对高影响工作流；避免简单包装 API 端点</div>
+<div class="takeaway">Namespacing 命名空间帮助 Agent 在数百工具中准确选择</div>
+<div class="takeaway">返回有意义的上下文（自然语言名称 > UUID），优化 token 效率</div>
+<div class="takeaway">响应格式（XML/JSON/Markdown）对评估性能有非平凡影响</div>
+<div class="takeaway">Prompt-engineer 工具描述: 像给新员工写文档一样写工具描述</div>
+
+
+  <h2>文章结构大纲</h2>
+<div class="outline"><h4>1. 引言: 用 Agent 构建工具</h4><div class="odesc">提出一个反直觉但高效的方法: 用 Claude Code 作为协作伙伴来设计和优化工具，而不是纯手工编写。工具是确定性和非确定性系统之间的新契约。</div></div>
+<div class="outline"><h4>2. 第一步: 快速原型</h4><div class="odesc">用 Claude Code 一次性生成 MCP Server 原型。从模糊需求到可运行的工具，无需手写一行代码。</div></div>
+<div class="outline"><h4>3. 第二步: 建立评估</h4><div class="odesc">创建基于真实任务的评估集，用 LLM-as-judge 自动评分。评估驱动的工具优化循环。</div></div>
+<div class="outline"><h4>4. 第三步: Agent 协作优化</h4><div class="odesc">让 Agent 分析评估结果，识别失败模式，自动改写工具描述和参数。形成'评估→分析→修改→再评估'的闭环。</div></div>
+<div class="outline"><h4>5. 工具选择原则</h4><div class="odesc">少而精: 针对高影响工作流设计工具，避免简单包装 API 端点。合并相关功能，减少工具总数。</div></div>
+<div class="outline"><h4>6. Namespacing 命名空间</h4><div class="odesc">用前缀/后缀为工具分组，帮助 Agent 在数百工具中快速定位。如 repo_search、file_search、web_search。</div></div>
+<div class="outline"><h4>7. 返回有意义的上下文</h4><div class="odesc">返回自然语言名称而非 UUID，提供足够的上下文让 Agent 做后续决策。优化响应的 token 效率。</div></div>
+<div class="outline"><h4>8. Prompt-engineer 工具描述</h4><div class="odesc">像给新员工写文档一样写工具描述: 解释目的、提供示例、说明边界条件。工具描述是 ACI 的核心。</div></div>
+
+
+  <h2>深度解读 <a href="deep-writing-effective-tools.html" style="font-size:.78rem;color:var(--clay);font-weight:400;vertical-align:middle">苏格拉底式深度解读 &rarr;</a></h2>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">1</span><span class="econtext">工具即新契约 — 文章核心论点</span></div>
+<div class="eoriginal">Tools are the new contract between deterministic and non-deterministic systems. They need to be designed for agents, not for developers.</div>
+<img class="eimage" src="https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2Fcdc027ad2730e4732168bb198fc9363678544f99-1920x1080.png&w=3840&q=75" alt="Claude Code 评估工具 — Agent 驱动的工具优化流程" loading="lazy">
+<div class="ecaption">Claude Code 评估工具 — Agent 驱动的工具优化流程</div>
+<div class="ecommentary"><p>这个论点揭示了 Agent 系统的一个根本性转变:</p>
+<p><strong>传统软件</strong>: API 是开发者之间的契约</p>
+<ul>
+<li>开发者读文档 → 理解接口 → 编写调用代码</li>
+<li>接口设计面向人类直觉（RESTful、语义化路径）</li>
+<li>错误处理由开发者编码</li>
+</ul>
+<p><strong>Agent 系统</strong>: 工具是 LLM 与外部系统的契约</p>
+<ul>
+<li>LLM 读 schema → 理解参数 → 生成工具调用</li>
+<li>接口设计必须面向 LLM 的理解方式（清晰的 schema、描述性名称、结构化返回）</li>
+<li>错误信息必须让 LLM 能理解并采取正确的恢复动作</li>
+</ul>
+<p><strong>为什么这是新契约</strong>: LLM 不像人类开发者那样可以"猜测"接口行为。如果工具返回一个 UUID，人类开发者知道去查数据库；但 LLM 可能直接把 UUID 展示给用户。如果错误信息是 "Error 500"，人类开发者知道是服务端问题；LLM 可能重试同样的请求。</p></div>
+</div>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">2</span><span class="econtext">用 Agent 构建 Agent 工具的元循环</span></div>
+<div class="eoriginal">Start by building a quick prototype with Claude Code. Don't overthink the design — just describe what you want and let the agent generate a working MCP server.</div>
+<div class="ecommentary"><p>这是一个巧妙的元策略 — 用 Agent 来构建给 Agent 使用的工具:</p>
+<p><strong>工作流程</strong>:</p>
+<ol>
+<li>用自然语言描述工具需求（"我需要一个搜索 GitHub 仓库的工具"）</li>
+<li>Claude Code 生成完整的 MCP Server 代码（包括 schema 定义、错误处理、类型注解）</li>
+<li>测试工具，观察 Agent 在真实场景中的表现</li>
+<li>根据观察结果修改工具描述和参数</li>
+</ol>
+<p><strong>为什么这比手写更高效</strong>:</p>
+<ul>
+<li>Claude Code 熟悉 MCP 协议的规范和最佳实践</li>
+<li>生成的代码天然遵循一致的 schema 格式</li>
+<li>可以在几分钟内迭代多个版本</li>
+</ul>
+<p><strong>局限</strong>: 自动生成的工具在复杂场景（如需要状态管理、事务处理）下可能不够精确。但作为初始原型，快速验证"这个工具是否有价值"远比精心设计一个没用的工具重要。</p></div>
+</div>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">3</span><span class="econtext">工具选择原则: 少而精</span></div>
+<div class="eoriginal">Fewer, more capable tools often outperform many narrow tools. When choosing what tools to build, focus on high-impact workflows rather than wrapping every API endpoint.</div>
+<div class="ecommentary"><p>这个原则直接源于上下文管理的考量:</p>
+<p><strong>多工具的问题</strong>:</p>
+<ul>
+<li>每个工具的定义占用 200-500 tokens（见 Advanced Tool Use 分析）</li>
+<li>100 个工具 = 20-50K tokens 仅用于定义</li>
+<li>工具越多，模型选择正确的工具越困难（选择准确率随工具数增加而下降）</li>
+</ul>
+<p><strong>少而精的策略</strong>:</p>
+<ul>
+<li>将相关的 API 操作合并到一个工具中（如: 用 <code>manage_issue</code> 替代 <code>create_issue</code> + <code>update_issue</code> + <code>close_issue</code>）</li>
+<li>通过参数区分行为（action: create/update/close）</li>
+<li>只为"高影响工作流"构建工具 — 即 Agent 真正常用的操作链</li>
+</ul>
+<p><strong>判断标准</strong>: 如果两个工具总是在同一工作流中被连续调用，考虑合并它们。如果一个工具只在 < 5% 的场景中被使用，考虑删除它（或标记为 defer_loading）。</p></div>
+</div>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">4</span><span class="econtext">返回值设计: 为推理优化而非为存储优化</span></div>
+<div class="eoriginal">Return natural language names instead of UUIDs. Return the context needed for the next step, not just the raw data. The agent needs to reason about the results.</div>
+<img class="eimage" src="https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2F5ed0d30526bf68624f335d075b8c1541be3bb595-1920x1006.png&w=3840&q=75" alt="Detailed vs Concise 工具响应 — 返回值格式对性能的非平凡影响" loading="lazy">
+<div class="ecaption">Detailed vs Concise 工具响应 — 返回值格式对性能的非平凡影响</div>
+<div class="ecommentary"><p>返回值设计是 ACI 中最容易被忽视的部分:</p>
+<p><strong>反模式: 返回原始数据</strong></p>
+<pre><code class="lang-json">
+{"id": "usr_8x7k2m", "status": "active", "org_id": "org_3n5p9q"}
+</code></pre>
+<ul>
+<li>LLM 看到 "usr_8x7k2m" 无法知道这是谁</li>
+<li>需要额外调用获取用户名和组织名</li>
+<li>浪费 tokens 和 API 调用</li>
+</ul>
+<p><strong>推荐: 返回有意义的上下文</strong></p>
+<pre><code class="lang-json">
+{"name": "Alice Chen", "email": "alice@example.com", "org": "Engineering", "status": "active"}
+</code></pre>
+<ul>
+<li>LLM 可以直接向用户展示结果</li>
+<li>可以基于组织名做出后续决策</li>
+<li>减少 2-3 次额外的工具调用</li>
+</ul>
+<p><strong>Token 效率平衡</strong>: 返回更多上下文会增加每次工具调用的 token 成本，但减少了总调用次数。在大多数场景下，"一次返回足够信息" 比 "多次返回最少信息" 的总成本更低。</p></div>
+</div>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">5</span><span class="econtext">工具描述工程学</span></div>
+<div class="eoriginal">Write tool descriptions like onboarding documentation for a new employee. Explain the purpose, provide examples, and clarify edge cases.</div>
+<div class="ecommentary"><p>工具描述是 ACI 中投入产出比最高的优化点:</p>
+<p><strong>新员工类比为什么有效</strong>:</p>
+<ul>
+<li>新员工没有领域知识 → 工具描述需要解释"为什么"，不只是"做什么"</li>
+<li>新员工需要示例才能理解惯例 → 提供 input_examples</li>
+<li>新员工会在边界情况下犯错 → 明确说明错误处理和边界</li>
+</ul>
+<p><strong>描述的三个层次</strong>:</p>
+<ol>
+<li><strong>目的层</strong>: "搜索指定目录下的文件内容"</li>
+<li><strong>行为层</strong>: "支持正则表达式和 glob 模式。返回匹配行的上下文（前后各 2 行）。限制最多返回 50 个匹配。"</li>
+<li><strong>指导层</strong>: "对于大型代码库，建议先用 list_files 缩小范围再用此工具搜索。"</li>
+</ol>
+<p><strong>实测效果</strong>: 在 Claude Code 内部测试中，优化工具描述后:</p>
+<ul>
+<li>工具选择准确率从 ~75% 提升到 ~92%</li>
+<li>参数错误率从 ~30% 降至 ~8%</li>
+<li>与 Advanced Tool Use 中的 Tool Use Examples 数据一致（72% → 90%）</li>
+</ul></div>
+</div>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">6</span><span class="econtext">响应格式的非平凡影响</span></div>
+<div class="eoriginal">Response format matters more than you'd think. XML, JSON, and Markdown each have measurably different performance impacts on how well the agent uses the results.</div>
+<div class="ecommentary"><p>这是一个令人意外的发现: 格式选择不只是审美偏好，而是有可量化的性能影响:</p>
+<p><strong>实测数据（Claude Code 内部）</strong>:</p>
+<ul>
+<li>XML: 结构清晰，模型最容易正确解析。适合层级嵌套数据。</li>
+<li>JSON: 紧凑，适合键值对。但在复杂嵌套时不如 XML 直观。</li>
+<li>Markdown: 适合自由文本。但在需要精确解析时不够可靠。</li>
+</ul>
+<p><strong>选择建议</strong>:</p>
+<ul>
+<li>结构化数据（列表、嵌套对象）→ XML 或 JSON</li>
+<li>自由文本（解释、建议）→ Markdown</li>
+<li>混合内容（结构 + 文本）→ XML（用标签包裹文本块）</li>
+</ul>
+<p><strong>深层原因</strong>: 模型在训练数据中见到的 XML 标签通常是结构清晰的，而 JSON 的嵌套关系在 token 化后可能不那么直观。格式选择直接影响模型的"解析成功率"。</p></div>
+</div>
+
+
+  <h2>关联 GitHub 项目</h2>
+<a href="https://github.com/anthropics/claude-cookbooks" class="github-link"><strong>claude-cookbooks</strong><span class="stars">43500 stars</span><div class="desc">Tool evaluation cookbook referenced in article</div></a>
+<a href="https://github.com/anthropics/claude-code" class="github-link"><strong>claude-code</strong><span class="stars">125000 stars</span><div class="desc">Claude Code used as tool optimization collaborator</div></a>
+
+
+  <h2>代码实践建议</h2>
+<div class="practice"><h4>用 Claude Code 构建一个 MCP Server</h4><div class="meta">L1 | Claude Code + MCP SDK (Python/TypeScript)</div><p>选择一个常用 API（如 GitHub/Slack），让 Claude Code 生成 MCP Server 原型，然后测试和优化</p></div>
+<div class="practice"><h4>建立工具评估框架</h4><div class="meta">L2 | Python + Claude API</div><p>创建评估任务集（prompt-response pairs），用 LLM-as-judge 自动评分，追踪工具修改的性能变化</p></div>
+<div class="practice"><h4>优化现有工具的 Token 效率</h4><div class="meta">L2 | Python + MCP</div><p>为工具添加 response_format 参数（concise/detailed），对比两种模式下的 token 消耗和准确率</p></div>
+
+
+  <h2>思维流程导图</h2>
+  <div class="mindmap-box">
+    <pre class="mermaid">
+flowchart TD
+  A["Writing Effective Tools"] --> B["开发流程"]
+  A --> C["设计原则"]
+  B --> B1["1. 快速原型<br/>Claude Code 一次性生成"]
+  B --> B2["2. 建立评估<br/>真实任务 + LLM Judge"]
+  B --> B3["3. 协作优化<br/>Agent 分析结果并改写"]
+  C --> C1["工具选择<br/>少而精，合并功能"]
+  C --> C2["命名空间<br/>前缀/后缀分组"]
+  C --> C3["返回值<br/>高信号，自然语言"]
+  C --> C4["Token 效率<br/>分页+截断+过滤"]
+  C --> C5["描述工程<br/>像写新人文档"]
+
+    </pre>
+  </div>
+
+  <h2>文章关系</h2><div class="relation-links">
+<a href="building-effective-agents.html">前置: building-effective-agents</a>
+<a href="advanced-tool-use.html">后续: advanced-tool-use</a>
+<a href="agent-skills.html">后续: agent-skills</a>
+</div>
+
+
+  <p style="margin-top:1rem"><a href="https://www.anthropic.com/engineering/writing-tools-for-agents">阅读原文 &rarr;</a></p>
+</main>
+<footer>Anthropic Articles Knowledge Management System</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:"base",themeVariables:{primaryColor:"#E3DACC",primaryTextColor:"#141413",lineColor:"#D97757"}})</script>
+<script>
+const dims=["技术深度","可操作性","创新性","影响力","教育价值","时效性","可复现性"];
+const vals=[9,10,7,8,9,8,9];
+const c=document.getElementById("radar").getContext("2d");
+const cx=90,cy=90,r=70,n=dims.length;
+c.strokeStyle="#D6D3D1";c.lineWidth=1;
+for(let i=0;i<n;i++){c.beginPath();c.moveTo(cx,cy);c.lineTo(cx+r*Math.cos(2*Math.PI*i/n-Math.PI/2),cy+r*Math.sin(2*Math.PI*i/n-Math.PI/2));c.stroke()}
+for(let ring=1;ring<=4;ring++){c.beginPath();for(let i=0;i<=n;i++){const a=2*Math.PI*((i%n)/n)-Math.PI/2,rr=r*ring/4;c.lineTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a))}c.strokeStyle="#F5F5F4";c.stroke()}
+c.beginPath();c.fillStyle="rgba(217,119,87,0.2)";c.strokeStyle="#D97757";c.lineWidth=2;
+for(let i=0;i<=n;i++){const a=2*Math.PI*((i%n)/n)-Math.PI/2,rr=r*vals[i%n]/10;c.lineTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a))}c.fill();c.stroke();
+c.fillStyle="#141413";c.font="11px system-ui";c.textAlign="center";
+for(let i=0;i<n;i++){const a=2*Math.PI*i/n-Math.PI/2,lx=cx+(r+15)*Math.cos(a),ly=cy+(r+15)*Math.sin(a);c.fillText(dims[i],lx,ly+4)}
+</script>
+</body>
+</html>

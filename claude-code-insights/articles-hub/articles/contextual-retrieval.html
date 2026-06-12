@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introducing Contextual Retrieval — Anthropic Articles</title>
+<style>
+:root{:root}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--ivory);color:var(--slate);line-height:1.6}
+a{color:var(--clay);text-decoration:none}a:hover{text-decoration:underline}
+header{background:var(--slate);color:var(--ivory);padding:2rem}
+header h1{font-family:var(--serif);font-size:1.8rem;margin-bottom:.25rem}
+header .meta{color:var(--g300);font-size:.9rem}
+nav{background:var(--paper);border-bottom:1px solid var(--g300);padding:0 2rem;display:flex;gap:1.5rem}
+nav a{color:var(--slate);padding:.75rem 0;font-size:.9rem;border-bottom:2px solid transparent}
+nav a:hover{border-bottom-color:var(--clay);text-decoration:none}
+nav a.active{border-bottom-color:var(--clay);font-weight:600}
+main{max-width:900px;margin:0 auto;padding:2rem}
+h2{font-family:var(--serif);font-size:1.3rem;margin:1.5rem 0 .75rem;color:var(--clay);border-bottom:1px solid var(--oat);padding-bottom:.5rem}
+.score-grid{display:grid;grid-template-columns:200px 1fr;gap:2rem;align-items:start;margin-bottom:1rem}
+.radar-box{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem}
+.scores-list{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1.25rem}
+.score-row{display:flex;align-items:center;margin-bottom:.5rem;gap:.75rem}
+.score-row .label{width:80px;font-size:.85rem;color:var(--g500)}
+.score-row .bar-wrap{flex:1;height:8px;background:var(--g100);border-radius:4px;overflow:hidden}
+.score-row .bar{height:100%;background:var(--clay);border-radius:4px;transition:width .3s}
+.score-row .val{width:30px;font-family:var(--mono);font-size:.9rem;font-weight:700;text-align:right}
+.overall{text-align:center;margin-bottom:1rem}
+.overall .big{font-size:3rem;font-weight:700;font-family:var(--serif);color:var(--clay)}
+.grade{font-size:.85rem;padding:3px 12px;border-radius:4px;font-weight:600;display:inline-block;margin-left:.5rem}
+.g-S{background:#FDE68A;color:#92400E}.g-A{background:#BBF7D0;color:#166534}.g-B{background:#BFDBFE;color:#1E40AF}
+.g-C{background:var(--g100);color:var(--g700)}.g-D{background:var(--g300);color:var(--g500)}
+.tags{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}
+.tag{font-size:.75rem;padding:2px 8px;border-radius:4px;background:var(--g100);color:var(--g500)}
+.tag.cat{background:var(--oat);color:var(--slate)}
+.tag.diff{background:var(--clay);color:white}
+.takeaway{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;margin-bottom:.5rem;font-size:.9rem;position:relative;padding-left:2.5rem}
+.takeaway::before{content:"\2605";position:absolute;left:.75rem;top:.75rem;color:var(--clay);font-size:1.2rem}
+.practice{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;margin-bottom:.75rem}
+.practice h4{font-family:var(--serif);font-size:.95rem;margin-bottom:.25rem}
+.practice .meta{font-size:.8rem;color:var(--g500);margin-bottom:.5rem}
+.practice p{font-size:.9rem;color:var(--g700)}
+.github-link{display:block;background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:.75rem 1rem;margin-bottom:.5rem}
+.github-link strong{display:block;margin-bottom:.25rem}
+.github-link .desc{font-size:.85rem;color:var(--g500)}
+.github-link .stars{font-family:var(--mono);font-size:.85rem;color:var(--clay)}
+.mindmap-box{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1.5rem;overflow-x:auto}
+.outline{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;margin-bottom:.5rem}
+.outline h4{font-family:var(--serif);font-size:.95rem;margin-bottom:.15rem;color:var(--clay)}
+.outline .odesc{font-size:.85rem;color:var(--g500);margin-bottom:.5rem;padding-left:1rem;border-left:2px solid var(--oat)}
+.excerpt-block{background:var(--paper);border:1px solid var(--g300);border-radius:10px;margin-bottom:1.5rem;overflow:hidden}
+.excerpt-block .eheader{display:flex;align-items:center;gap:.5rem;padding:.6rem 1.25rem;background:linear-gradient(135deg,var(--oat),#f0e8d8);border-bottom:1px solid var(--g300)}
+.excerpt-block .ebadge{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--clay);color:white;font-size:.75rem;font-weight:700;font-family:var(--mono)}
+.excerpt-block .econtext{font-size:.82rem;color:var(--g500);font-weight:500}
+.excerpt-block .eoriginal{padding:1rem 1.5rem;margin:0;border-left:4px solid var(--olive);background:#f8faf3;font-size:.92rem;line-height:1.75;font-family:var(--serif);color:var(--g700);font-style:italic;position:relative}
+.excerpt-block .eoriginal::before{content:"原文";position:absolute;top:.75rem;left:-28px;background:var(--olive);color:white;font-size:.6rem;padding:1px 6px;border-radius:3px;font-style:normal;font-family:var(--sans);letter-spacing:.5px}
+.excerpt-block .eimage{width:100%;border-radius:6px;margin:.75rem 1.25rem;max-height:360px;object-fit:cover}
+.excerpt-block .ecaption{font-size:.78rem;color:var(--g500);padding:0 1.25rem .5rem;text-align:center;font-style:italic}
+.excerpt-block .ecommentary{padding:1rem 1.5rem;font-size:.88rem;color:var(--slate);line-height:1.8;border-top:2px solid var(--oat);position:relative}
+.excerpt-block .ecommentary::before{content:"解读";display:inline-block;background:var(--clay);color:white;font-size:.65rem;padding:2px 8px;border-radius:3px;margin-bottom:.75rem;font-weight:600;letter-spacing:.5px;font-family:var(--sans)}
+.excerpt-block .ecommentary p{margin-bottom:.75rem}
+.excerpt-block .ecommentary p:first-of-type{margin-top:.25rem}
+.excerpt-block .ecommentary p:last-child{margin-bottom:0}
+.excerpt-block .ecommentary strong{color:var(--clay);font-weight:700}
+.excerpt-block .ecommentary ul,.excerpt-block .ecommentary ol{margin:.5rem 0 .75rem 1.25rem}
+.excerpt-block .ecommentary li{margin-bottom:.35rem}
+.excerpt-block .ecommentary li::marker{color:var(--clay)}
+.excerpt-block .ecommentary code{font-family:var(--mono);font-size:.82rem;background:var(--g100);padding:1px 5px;border-radius:3px;color:var(--g700)}
+.excerpt-block .ecommentary pre{background:#1e1e1e;color:#d4d4d4;padding:.75rem 1rem;border-radius:6px;overflow-x:auto;margin:.5rem 0 .75rem;font-size:.82rem;line-height:1.5}
+.excerpt-block .ecommentary pre code{background:none;padding:0;color:inherit}
+.relation-links{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.5rem}
+.relation-links a{font-size:.9rem;padding:4px 10px;border-radius:4px;background:var(--g100)}
+.relation-links a:hover{background:var(--oat)}
+footer{text-align:center;padding:2rem;color:var(--g500);font-size:.85rem;border-top:1px solid var(--g300);margin-top:2rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Introducing Contextual Retrieval</h1>
+  <div class="meta">2024-09-19 | Engineering | Anthropic</div>
+</header>
+<nav>
+  <a href="../index.html">总览</a>
+  <a href="../rankings.html">排行榜</a>
+  <a href="../categories.html">分类浏览</a>
+  <a href="../relations.html">文章关系图</a>
+  <a href="../github-map.html">GitHub 映射</a>
+</nav>
+<main>
+  <div class="tags">
+    <span class="tag cat">C2 工程实践</span>
+    <span class="tag diff">L2</span>
+    <span class="tag">RAG</span>
+<span class="tag">retrieval</span>
+<span class="tag">contextual-embeddings</span>
+<span class="tag">contextual-bm25</span>
+<span class="tag">chunking</span>
+
+  </div>
+
+  <h2>综合评分</h2>
+  <div class="score-grid">
+    <div class="radar-box">
+      <div class="overall">
+        <div class="big">8.9</div>
+        <span class="grade g-A">A 级</span>
+      </div>
+      <canvas id="radar" width="180" height="180"></canvas>
+    </div>
+    <div class="scores-list">
+      <div class="score-row"><span class="label">技术深度 (x1.1)</span><div class="bar-wrap"><div class="bar" style="width:90%"></div></div><span class="val">9</span></div>
+<div class="score-row"><span class="label">可操作性 (x1.3)</span><div class="bar-wrap"><div class="bar" style="width:90%"></div></div><span class="val">9</span></div>
+<div class="score-row"><span class="label">创新性</span><div class="bar-wrap"><div class="bar" style="width:90%"></div></div><span class="val">9</span></div>
+<div class="score-row"><span class="label">影响力 (x1.3)</span><div class="bar-wrap"><div class="bar" style="width:90%"></div></div><span class="val">9</span></div>
+<div class="score-row"><span class="label">教育价值 (x1.1)</span><div class="bar-wrap"><div class="bar" style="width:90%"></div></div><span class="val">9</span></div>
+<div class="score-row"><span class="label">时效性</span><div class="bar-wrap"><div class="bar" style="width:80%"></div></div><span class="val">8</span></div>
+<div class="score-row"><span class="label">可复现性</span><div class="bar-wrap"><div class="bar" style="width:90%"></div></div><span class="val">9</span></div>
+
+    </div>
+  </div>
+
+  <h2>核心要点</h2>
+  <div class="takeaway">Contextual Retrieval 用两个子技术大幅改善 RAG 检索: Contextual Embeddings + Contextual BM25</div>
+<div class="takeaway">核心思路: 将 chunk 放入其所在文档的上下文中，让嵌入和检索更准确</div>
+<div class="takeaway">使用 Claude 为每个 chunk 添加上下文前缀，然后重新嵌入</div>
+<div class="takeaway">结合 Contextual Embeddings + Contextual BM25 效果最佳</div>
+
+
+  <h2>文章结构大纲</h2>
+<div class="outline"><h4>1. 引言: RAG 的上下文丢失问题</h4><div class="odesc">传统 RAG 在分块时丢失了文档上下文，导致检索不准确。提出 Contextual Retrieval 方案，包含两个子技术: Contextual Embeddings 和 Contextual BM25。</div></div>
+<div class="outline"><h4>2. RAG 基础: 从向量检索到混合检索</h4><div class="odesc">回顾 RAG 的工作流程: 分块 → 嵌入 → 向量数据库 → 语义检索。引入 BM25 作为精确匹配补充，混合检索优于单一方法。</div></div>
+<div class="outline"><h4>3. 上下文丢失问题: SEC 填报案例</h4><div class="odesc">用一个具体案例说明: 分块后的 'The company's revenue grew by 3%' 丢失了公司名称和时间信息，导致检索失败。</div></div>
+<div class="outline"><h4>4. Contextual Retrieval 实现</h4><div class="odesc">用 Claude 为每个 chunk 生成简洁的上下文前缀（50-100 tokens），然后重新嵌入和索引。结合 Prompt Caching 降低成本至 $1.02/百万 tokens。</div></div>
+<div class="outline"><h4>5. 性能数据: 49% 检索失败率降低</h4><div class="odesc">Contextual Embeddings 降低 35%，加上 Contextual BM25 降低 49%。结合 Reranking 进一步降低 67%。</div></div>
+<div class="outline"><h4>6. Reranking: 进一步提升的叠加策略</h4><div class="odesc">先用混合检索取 top-150，再用 Reranker 精排到 top-20。叠加后检索失败率从 5.7% 降至 1.9%。</div></div>
+<div class="outline"><h4>7. 结论与实施建议</h4><div class="odesc">六大发现总结: Embeddings+BM25 > 单一方法; Voyage/Gemini 最佳; 20 chunks > 10/5; 上下文增强有效; Reranking 有帮助; 所有收益可叠加。</div></div>
+
+
+  <h2>深度解读 <a href="deep-contextual-retrieval.html" style="font-size:.78rem;color:var(--clay);font-weight:400;vertical-align:middle">苏格拉底式深度解读 &rarr;</a></h2>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">1</span><span class="econtext">分块上下文丢失的经典案例</span></div>
+<div class="eoriginal">The company's revenue grew by 3% over the previous quarter. → This chunk is from an SEC filing on ACME corp's performance in Q2 2023; the previous quarter's revenue was $314 million.</div>
+<img class="eimage" src="https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2F45603646e979c62349ce27744a940abf30200d57-3840x2160.png&w=3840&q=75" alt="Standard RAG — 传统分块丢失文档上下文导致检索失败" loading="lazy">
+<div class="ecaption">Standard RAG — 传统分块丢失文档上下文导致检索失败</div>
+<div class="ecommentary"><p>这个案例精确揭示了 RAG 的核心缺陷:</p>
+<p><strong>问题本质</strong>: 传统 RAG 的分块粒度（通常几百 tokens）在语义上是"原子"的，但原子化必然丢失"分子级"的上下文。</p>
+<ul>
+<li>原始句子: "The company's revenue grew by 3% over the previous quarter."</li>
+<li>向量嵌入编码的语义: "收入增长 3%" — 但这是谁的收入？哪个季度？</li>
+<li>当用户查询 "ACME Corp Q2 2023 revenue growth" 时，嵌入向量无法匹配到这个 chunk</li>
+</ul>
+<p><strong>Contextual Retrieval 的解决方式</strong>:</p>
+<ul>
+<li>不是改变分块策略，而是在 chunk 前面添加上下文前缀</li>
+<li>前缀由 Claude 自动生成，把"这是 ACME Corp 的 2023 Q2 SEC 填报"这一信息重新注入</li>
+<li>嵌入向量现在编码的是 "ACME Corp Q2 2023 + 收入增长 3%"，检索精度大幅提升</li>
+</ul>
+<p><strong>为什么不是简单地用更大的 chunk</strong>: 大 chunk 解决了部分上下文问题，但引入新问题 — 嵌入粒度变粗，语义稀释。一个 2000 token 的 chunk 包含多个主题，嵌入向量无法精确代表任何一个。Contextual Retrieval 在保持细粒度的同时恢复了上下文。</p></div>
+</div>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">2</span><span class="econtext">Claude 生成上下文前缀的 prompt</span></div>
+<div class="eoriginal">Please give a short succinct context to situate this chunk within the overall document for the purposes of improving search retrieval of the chunk.</div>
+<div class="ecommentary"><p>这个 prompt 的设计有几个精妙之处:</p>
+<ol>
+<li><strong>"short succinct"</strong> — 限制输出长度（50-100 tokens），避免上下文前缀本身变成新的噪声</li>
+<li><strong>"situate this chunk within the overall document"</strong> — 明确目标是定位，不是总结或扩展</li>
+<li><strong>"for the purposes of improving search retrieval"</strong> — 让模型知道上下文的用途是检索优化，不是信息补充</li>
+<li><strong>输入包含整个文档（<document>）+ 当前 chunk（<chunk>）</strong> — 模型能看到全局上下文</li>
+</ol>
+<p><strong>成本控制</strong>: 使用 Claude 3 Haiku（而非 Opus/Sonnet）生成上下文，结合 Prompt Caching:</p>
+<ul>
+<li>文档只加载一次到缓存</li>
+<li>每个 chunk 只需传入 chunk 内容</li>
+<li>实际成本: $1.02/百万文档 tokens — 极其低廉</li>
+</ul>
+<p><strong>与 JIT 策略的关系</strong>: 这是一种"预处理阶段的 JIT" — 在索引时（而非查询时）为每个 chunk 添加上下文。与 Effective Context Engineering 的 JIT 检索形成互补: 前者优化"找到什么"，后者优化"用什么"。</p></div>
+</div>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">3</span><span class="econtext">双技术叠加的性能数据</span></div>
+<div class="eoriginal">Contextual Embeddings reduced the top-20-chunk retrieval failure rate by 35% (5.7% → 3.7%). Combining Contextual Embeddings and Contextual BM25 reduced it by 49% (5.7% → 2.9%).</div>
+<img class="eimage" src="https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2F7f8d739e491fe6b3bae0e6a9c74e4083d760b88c9-3840x2160.png&w=3840&q=75" alt="检索失败率降低 49% — Contextual Embeddings + BM25 混合策略" loading="lazy">
+<div class="ecaption">检索失败率降低 49% — Contextual Embeddings + BM25 混合策略</div>
+<div class="ecommentary"><p>这组数据揭示了 RAG 优化的一个核心原则: 不同技术解决不同类型的检索失败:</p>
+<p><strong>Contextual Embeddings 解决的失败</strong>:</p>
+<ul>
+<li>语义相似但缺少上下文的 chunk</li>
+<li>例: 查询 "Python 异步编程" 无法匹配到只说 "使用 async/await" 的 chunk</li>
+</ul>
+<p><strong>Contextual BM25 解决的失败</strong>:</p>
+<ul>
+<li>包含关键专有名词但不在用户查询词汇表中的 chunk</li>
+<li>例: 查询 "revenue growth" 无法匹配到只说 "3% increase over prior quarter" 的 chunk</li>
+</ul>
+<p><strong>叠加效应</strong>: 两种技术覆盖的失败模式有约 30% 重叠，但各自独占 70%。叠加后，覆盖的失败模式接近全集。</p>
+<p><strong>工程启示</strong>: 不要只依赖一种检索策略。混合检索（语义 + 关键词 + 上下文增强）在所有数据集上都优于单一方法。这是一个"免费午餐"式的优化。</p></div>
+</div>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">4</span><span class="econtext">叠加 Reranking 的最终性能</span></div>
+<div class="eoriginal">Reranked Contextual Embedding and Contextual BM25 reduced the top-20-chunk retrieval failure rate by 67% (5.7% → 1.9%).</div>
+<img class="eimage" src="https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2F93a70cfbb9cca35bbd86ea0a23bdeeb699e8e58-3840x2160.png&w=3840&q=75" alt="三层叠加后检索失败率降低 67% — Reranking 精排效果" loading="lazy">
+<div class="ecaption">三层叠加后检索失败率降低 67% — Reranking 精排效果</div>
+<div class="ecommentary"><p>Reranking 是第三层叠加优化:</p>
+<p><strong>Reranking 的工作原理</strong>:</p>
+<ol>
+<li>初始检索取 top-150 chunks（宽松匹配，高召回率）</li>
+<li>Reranker 模型（如 Cohere）对每个 chunk 与查询的相关性打分</li>
+<li>只保留 top-20 高分 chunks（精确排序，高精确率）</li>
+</ol>
+<p><strong>为什么 Reranking 能进一步提升</strong>: 初始检索（向量 + BM25）是"快速粗排"，Reranking 是"慢速精排"。两者使用不同的相关性模型，互补性很强。</p>
+<p><strong>三层的完整收益链</strong>:</p>
+<ul>
+<li>基线: 5.7% 失败率</li>
+<li>+ Contextual Retrieval: 2.9%（降 49%）</li>
+<li>+ Reranking: 1.9%（降 67%）</li>
+</ul>
+<p><strong>延迟/成本权衡</strong>: Reranking 增加约 100-200ms 延迟和额外 API 成本。文章建议根据场景权衡: 高价值查询（法律、医疗）值得 Reranking，实时聊天可能不需要。</p></div>
+</div>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">5</span><span class="econtext">全文塞入提示词的简单方案</span></div>
+<div class="eoriginal">Sometimes the simplest solution is the best. If your knowledge base is smaller than 200,000 tokens (about 500 pages of material), you can just include the entire knowledge base in the prompt.</div>
+<div class="ecommentary"><p>Anthropic 在技术文章中坦诚推荐"最笨"方案，这种工程务实精神值得注意:</p>
+<p><strong>适用条件</strong>:</p>
+<ul>
+<li>知识库 < 200K tokens（约 500 页）</li>
+<li>使用 Prompt Caching 降低成本和延迟</li>
+<li>检索准确率 = 100%（因为所有信息都在上下文中）</li>
+</ul>
+<p><strong>与 Contextual Retrieval 的关系</strong>: 这不是替代方案，而是不同规模的策略选择:</p>
+<ul>
+<li>< 200K tokens → 全文塞入（最简单、最准确）</li>
+<li>200K-10M tokens → Contextual Retrieval（中等复杂度，高准确率）</li>
+<li>> 10M tokens → Contextual Retrieval + Reranking（最大规模）</li>
+</ul>
+<p>这与 Effective Context Engineering 的核心思想完全一致: 选择匹配任务规模的策略，而非一味追求复杂方案。</p></div>
+</div>
+
+
+  <h2>关联 GitHub 项目</h2>
+<a href="https://github.com/anthropics/claude-cookbooks" class="github-link"><strong>claude-cookbooks</strong><span class="stars">43500 stars</span><div class="desc">Contextual retrieval cookbook implementation</div></a>
+
+
+  <h2>代码实践建议</h2>
+<div class="practice"><h4>实现 Contextual Retrieval RAG 管道</h4><div class="meta">L2 | Python + Claude API + Vector DB</div><p>用 Claude 为 chunk 生成上下文前缀，构建混合检索（embedding + BM25）管道</p></div>
+
+
+  <h2>思维流程导图</h2>
+  <div class="mindmap-box">
+    <pre class="mermaid">
+flowchart TD
+  A["Contextual Retrieval"] --> B["问题: RAG 检索不准"]
+  A --> C["两大技术"]
+  C --> C1["Contextual Embeddings<br/>chunk 添加上下文后嵌入"]
+  C --> C2["Contextual BM25<br/>上下文增强关键词检索"]
+  A --> D["流程"]
+  D --> D1["文档分块"]
+  D --> D2["Claude 为 chunk 添加上下文"]
+  D --> D3["重新嵌入 + 索引"]
+  D --> D4["混合检索"]
+
+    </pre>
+  </div>
+
+  <h2>文章关系</h2><div class="relation-links">
+<a href="effective-context-engineering.html">后续: effective-context-engineering</a>
+</div>
+
+
+  <p style="margin-top:1rem"><a href="https://www.anthropic.com/news/contextual-retrieval">阅读原文 &rarr;</a></p>
+</main>
+<footer>Anthropic Articles Knowledge Management System</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:"base",themeVariables:{primaryColor:"#E3DACC",primaryTextColor:"#141413",lineColor:"#D97757"}})</script>
+<script>
+const dims=["技术深度","可操作性","创新性","影响力","教育价值","时效性","可复现性"];
+const vals=[9,9,9,9,9,8,9];
+const c=document.getElementById("radar").getContext("2d");
+const cx=90,cy=90,r=70,n=dims.length;
+c.strokeStyle="#D6D3D1";c.lineWidth=1;
+for(let i=0;i<n;i++){c.beginPath();c.moveTo(cx,cy);c.lineTo(cx+r*Math.cos(2*Math.PI*i/n-Math.PI/2),cy+r*Math.sin(2*Math.PI*i/n-Math.PI/2));c.stroke()}
+for(let ring=1;ring<=4;ring++){c.beginPath();for(let i=0;i<=n;i++){const a=2*Math.PI*((i%n)/n)-Math.PI/2,rr=r*ring/4;c.lineTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a))}c.strokeStyle="#F5F5F4";c.stroke()}
+c.beginPath();c.fillStyle="rgba(217,119,87,0.2)";c.strokeStyle="#D97757";c.lineWidth=2;
+for(let i=0;i<=n;i++){const a=2*Math.PI*((i%n)/n)-Math.PI/2,rr=r*vals[i%n]/10;c.lineTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a))}c.fill();c.stroke();
+c.fillStyle="#141413";c.font="11px system-ui";c.textAlign="center";
+for(let i=0;i<n;i++){const a=2*Math.PI*i/n-Math.PI/2,lx=cx+(r+15)*Math.cos(a),ly=cy+(r+15)*Math.sin(a);c.fillText(dims[i],lx,ly+4)}
+</script>
+</body>
+</html>

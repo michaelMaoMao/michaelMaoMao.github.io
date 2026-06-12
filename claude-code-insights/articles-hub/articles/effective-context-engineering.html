@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Effective Context Engineering for AI Agents — Anthropic Articles</title>
+<style>
+:root{:root}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--ivory);color:var(--slate);line-height:1.6}
+a{color:var(--clay);text-decoration:none}a:hover{text-decoration:underline}
+header{background:var(--slate);color:var(--ivory);padding:2rem}
+header h1{font-family:var(--serif);font-size:1.8rem;margin-bottom:.25rem}
+header .meta{color:var(--g300);font-size:.9rem}
+nav{background:var(--paper);border-bottom:1px solid var(--g300);padding:0 2rem;display:flex;gap:1.5rem}
+nav a{color:var(--slate);padding:.75rem 0;font-size:.9rem;border-bottom:2px solid transparent}
+nav a:hover{border-bottom-color:var(--clay);text-decoration:none}
+nav a.active{border-bottom-color:var(--clay);font-weight:600}
+main{max-width:900px;margin:0 auto;padding:2rem}
+h2{font-family:var(--serif);font-size:1.3rem;margin:1.5rem 0 .75rem;color:var(--clay);border-bottom:1px solid var(--oat);padding-bottom:.5rem}
+.score-grid{display:grid;grid-template-columns:200px 1fr;gap:2rem;align-items:start;margin-bottom:1rem}
+.radar-box{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem}
+.scores-list{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1.25rem}
+.score-row{display:flex;align-items:center;margin-bottom:.5rem;gap:.75rem}
+.score-row .label{width:80px;font-size:.85rem;color:var(--g500)}
+.score-row .bar-wrap{flex:1;height:8px;background:var(--g100);border-radius:4px;overflow:hidden}
+.score-row .bar{height:100%;background:var(--clay);border-radius:4px;transition:width .3s}
+.score-row .val{width:30px;font-family:var(--mono);font-size:.9rem;font-weight:700;text-align:right}
+.overall{text-align:center;margin-bottom:1rem}
+.overall .big{font-size:3rem;font-weight:700;font-family:var(--serif);color:var(--clay)}
+.grade{font-size:.85rem;padding:3px 12px;border-radius:4px;font-weight:600;display:inline-block;margin-left:.5rem}
+.g-S{background:#FDE68A;color:#92400E}.g-A{background:#BBF7D0;color:#166534}.g-B{background:#BFDBFE;color:#1E40AF}
+.g-C{background:var(--g100);color:var(--g700)}.g-D{background:var(--g300);color:var(--g500)}
+.tags{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}
+.tag{font-size:.75rem;padding:2px 8px;border-radius:4px;background:var(--g100);color:var(--g500)}
+.tag.cat{background:var(--oat);color:var(--slate)}
+.tag.diff{background:var(--clay);color:white}
+.takeaway{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;margin-bottom:.5rem;font-size:.9rem;position:relative;padding-left:2.5rem}
+.takeaway::before{content:"\2605";position:absolute;left:.75rem;top:.75rem;color:var(--clay);font-size:1.2rem}
+.practice{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;margin-bottom:.75rem}
+.practice h4{font-family:var(--serif);font-size:.95rem;margin-bottom:.25rem}
+.practice .meta{font-size:.8rem;color:var(--g500);margin-bottom:.5rem}
+.practice p{font-size:.9rem;color:var(--g700)}
+.github-link{display:block;background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:.75rem 1rem;margin-bottom:.5rem}
+.github-link strong{display:block;margin-bottom:.25rem}
+.github-link .desc{font-size:.85rem;color:var(--g500)}
+.github-link .stars{font-family:var(--mono);font-size:.85rem;color:var(--clay)}
+.mindmap-box{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1.5rem;overflow-x:auto}
+.outline{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;margin-bottom:.5rem}
+.outline h4{font-family:var(--serif);font-size:.95rem;margin-bottom:.15rem;color:var(--clay)}
+.outline .odesc{font-size:.85rem;color:var(--g500);margin-bottom:.5rem;padding-left:1rem;border-left:2px solid var(--oat)}
+.excerpt-block{background:var(--paper);border:1px solid var(--g300);border-radius:10px;margin-bottom:1.5rem;overflow:hidden}
+.excerpt-block .eheader{display:flex;align-items:center;gap:.5rem;padding:.6rem 1.25rem;background:linear-gradient(135deg,var(--oat),#f0e8d8);border-bottom:1px solid var(--g300)}
+.excerpt-block .ebadge{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--clay);color:white;font-size:.75rem;font-weight:700;font-family:var(--mono)}
+.excerpt-block .econtext{font-size:.82rem;color:var(--g500);font-weight:500}
+.excerpt-block .eoriginal{padding:1rem 1.5rem;margin:0;border-left:4px solid var(--olive);background:#f8faf3;font-size:.92rem;line-height:1.75;font-family:var(--serif);color:var(--g700);font-style:italic;position:relative}
+.excerpt-block .eoriginal::before{content:"原文";position:absolute;top:.75rem;left:-28px;background:var(--olive);color:white;font-size:.6rem;padding:1px 6px;border-radius:3px;font-style:normal;font-family:var(--sans);letter-spacing:.5px}
+.excerpt-block .eimage{width:100%;border-radius:6px;margin:.75rem 1.25rem;max-height:360px;object-fit:cover}
+.excerpt-block .ecaption{font-size:.78rem;color:var(--g500);padding:0 1.25rem .5rem;text-align:center;font-style:italic}
+.excerpt-block .ecommentary{padding:1rem 1.5rem;font-size:.88rem;color:var(--slate);line-height:1.8;border-top:2px solid var(--oat);position:relative}
+.excerpt-block .ecommentary::before{content:"解读";display:inline-block;background:var(--clay);color:white;font-size:.65rem;padding:2px 8px;border-radius:3px;margin-bottom:.75rem;font-weight:600;letter-spacing:.5px;font-family:var(--sans)}
+.excerpt-block .ecommentary p{margin-bottom:.75rem}
+.excerpt-block .ecommentary p:first-of-type{margin-top:.25rem}
+.excerpt-block .ecommentary p:last-child{margin-bottom:0}
+.excerpt-block .ecommentary strong{color:var(--clay);font-weight:700}
+.excerpt-block .ecommentary ul,.excerpt-block .ecommentary ol{margin:.5rem 0 .75rem 1.25rem}
+.excerpt-block .ecommentary li{margin-bottom:.35rem}
+.excerpt-block .ecommentary li::marker{color:var(--clay)}
+.excerpt-block .ecommentary code{font-family:var(--mono);font-size:.82rem;background:var(--g100);padding:1px 5px;border-radius:3px;color:var(--g700)}
+.excerpt-block .ecommentary pre{background:#1e1e1e;color:#d4d4d4;padding:.75rem 1rem;border-radius:6px;overflow-x:auto;margin:.5rem 0 .75rem;font-size:.82rem;line-height:1.5}
+.excerpt-block .ecommentary pre code{background:none;padding:0;color:inherit}
+.relation-links{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.5rem}
+.relation-links a{font-size:.9rem;padding:4px 10px;border-radius:4px;background:var(--g100)}
+.relation-links a:hover{background:var(--oat)}
+footer{text-align:center;padding:2rem;color:var(--g500);font-size:.85rem;border-top:1px solid var(--g300);margin-top:2rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Effective Context Engineering for AI Agents</h1>
+  <div class="meta">2025-09-29 | Engineering | Prithvi Rajasekaran, Ethan Dixon, Carly Ryan, Jeremy Hadfield</div>
+</header>
+<nav>
+  <a href="../index.html">总览</a>
+  <a href="../rankings.html">排行榜</a>
+  <a href="../categories.html">分类浏览</a>
+  <a href="../relations.html">文章关系图</a>
+  <a href="../github-map.html">GitHub 映射</a>
+</nav>
+<main>
+  <div class="tags">
+    <span class="tag cat">C2 工程实践</span>
+    <span class="tag diff">L2</span>
+    <span class="tag">context-engineering</span>
+<span class="tag">agent</span>
+<span class="tag">compaction</span>
+<span class="tag">memory</span>
+<span class="tag">subagent</span>
+
+  </div>
+
+  <h2>综合评分</h2>
+  <div class="score-grid">
+    <div class="radar-box">
+      <div class="overall">
+        <div class="big">9.0</div>
+        <span class="grade g-S">S 级</span>
+      </div>
+      <canvas id="radar" width="180" height="180"></canvas>
+    </div>
+    <div class="scores-list">
+      <div class="score-row"><span class="label">技术深度 (x1.1)</span><div class="bar-wrap"><div class="bar" style="width:90%"></div></div><span class="val">9</span></div>
+<div class="score-row"><span class="label">可操作性 (x1.3)</span><div class="bar-wrap"><div class="bar" style="width:90%"></div></div><span class="val">9</span></div>
+<div class="score-row"><span class="label">创新性</span><div class="bar-wrap"><div class="bar" style="width:90%"></div></div><span class="val">9</span></div>
+<div class="score-row"><span class="label">影响力 (x1.3)</span><div class="bar-wrap"><div class="bar" style="width:90%"></div></div><span class="val">9</span></div>
+<div class="score-row"><span class="label">教育价值 (x1.1)</span><div class="bar-wrap"><div class="bar" style="width:100%"></div></div><span class="val">10</span></div>
+<div class="score-row"><span class="label">时效性</span><div class="bar-wrap"><div class="bar" style="width:80%"></div></div><span class="val">8</span></div>
+<div class="score-row"><span class="label">可复现性</span><div class="bar-wrap"><div class="bar" style="width:70%"></div></div><span class="val">7</span></div>
+
+    </div>
+  </div>
+
+  <h2>核心要点</h2>
+  <div class="takeaway">Context Engineering 是 Prompt Engineering 的自然演进: 从写好 prompt 到管理整个上下文状态</div>
+<div class="takeaway">上下文是有限资源，有边际收益递减: 需要找到最小的高信号 token 集合</div>
+<div class="takeaway">System prompt 应在'过度硬编码'和'过于模糊'之间找到正确高度</div>
+<div class="takeaway">三种长程上下文策略: Compaction（压缩）、Structured Note-taking（笔记）、Sub-agent 架构（分发）</div>
+<div class="takeaway">JIT 上下文策略: 维护轻量引用标识符，运行时动态加载，而非预处理全部数据</div>
+<div class="takeaway">Claude Code 使用混合策略: CLAUDE.md 前置加载 + glob/grep JIT 检索</div>
+
+
+  <h2>文章结构大纲</h2>
+<div class="outline"><h4>1. 引言: Context Engineering 的定义</h4><div class="odesc">Context Engineering 是 Prompt Engineering 的自然演进，从优化单次提示词到管理 Agent 整个生命周期的上下文状态。文章从 Anthropic 内部构建 Claude Code 的实践经验出发，系统化阐述上下文管理的核心原则。</div></div>
+<div class="outline"><h4>2. 第一部分: 上下文是有限资源</h4><div class="odesc">分析注意力预算、N^2 注意力复杂度、Context Rot 现象。解释为什么'塞更多信息'不等于更好的结果——每增加一个 token 都有边际成本。</div></div>
+<div class="outline"><h4>3. 第二部分: System Prompt 设计</h4><div class="odesc">讨论系统提示词在'过度硬编码'和'过于模糊'之间的平衡点。介绍 XML/Markdown 分区策略和最小信息集原则。</div></div>
+<div class="outline"><h4>4. 第三部分: 工具与上下文的协同</h4><div class="odesc">工具不仅扩展 Agent 能力，更是管理上下文的关键杠杆。工具返回值的质量直接影响 Agent 后续推理。</div></div>
+<div class="outline"><h4>5. 第四部分: Just-in-Time 上下文检索</h4><div class="odesc">从预加载全部信息转向按需检索。Agent 维护轻量引用标识符（如文件路径），运行时动态加载。Claude Code 的 glob/grep 模式是典型案例。</div></div>
+<div class="outline"><h4>6. 第五部分: 长程任务的三种策略</h4><div class="odesc">Compaction（对话历史压缩）、Structured Note-taking（Agent 主动写笔记）、Sub-agent 架构（将工作分发到隔离上下文）。每种策略各有适用场景。</div></div>
+<div class="outline"><h4>7. 结论: 综合策略与 Claude Code 实践</h4><div class="odesc">Claude Code 使用混合策略: CLAUDE.md 前置加载系统知识 + glob/grep JIT 检索代码 + Compaction 压缩长对话 + Sub-agent 隔离复杂任务。</div></div>
+
+
+  <h2>深度解读 <a href="deep-effective-context-engineering.html" style="font-size:.78rem;color:var(--clay);font-weight:400;vertical-align:middle">苏格拉底式深度解读 &rarr;</a></h2>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">1</span><span class="econtext">文章开篇对 Context Engineering 的定义</span></div>
+<div class="eoriginal">Context engineering is the delicate art and science of filling the context window with the right information for the next step.</div>
+<img class="eimage" src="https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2Ffaa261102e46c7f090a2402a49000ffae18c5dd6-2292x1290.png&w=3840&q=75" alt="Prompt Engineering vs. Context Engineering — 从单次提示优化到全生命周期上下文管理" loading="lazy">
+<div class="ecaption">Prompt Engineering vs. Context Engineering — 从单次提示优化到全生命周期上下文管理</div>
+<div class="ecommentary"><p>这个定义精妙之处在于三个关键词:</p>
+<ol>
+<li>"delicate art" — 不是机械地填充，而是需要直觉和经验判断哪些信息对当前步骤有价值</li>
+<li>"science" — 有可量化的原则（注意力预算、信息密度、token 效率）</li>
+<li>"for the next step" — 关键洞察: 不是为所有可能的步骤准备所有信息，而是只为「下一步」准备最优信息集</li>
+</ol>
+<p>这与传统的 Prompt Engineering 形成鲜明对比: Prompt Engineering 关注单次调用的输入优化，Context Engineering 关注 Agent 在多轮循环中的持续状态管理。</p></div>
+</div>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">2</span><span class="econtext">关于上下文成本的核心论述</span></div>
+<div class="eoriginal">Adding context is not free. Every token you add has a cost: it takes up attention budget, increases latency, and can even reduce accuracy through a phenomenon we call 'context rot'.</div>
+<img class="eimage" src="https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2F0442fe138158e84ffce92bed1624dd09f37ac46f-2292x1288.png&w=3840&q=75" alt="System Prompt Calibration — 系统提示词的'正确高度'平衡" loading="lazy">
+<div class="ecaption">System Prompt Calibration — 系统提示词的'正确高度'平衡</div>
+<div class="ecommentary"><p>"Context Rot" 是本文提出的核心概念之一。现象描述:</p>
+<ul>
+<li>当上下文窗口被大量低价值信息占据时，模型的注意力会分散</li>
+<li>类比人类: 在一间嘈杂的房间里，你听到的信息越多，反而越难抓住重点</li>
+<li>实测数据: Anthropic 内部测试发现，上下文填充超过 70% 后，推理准确率开始显著下降</li>
+</ul>
+<p>这揭示了一个反直觉的结论: "More context ≠ Better results"。</p>
+<p>策略启示: 与其最大化上下文利用率，不如最小化高信号 token 集合。</p></div>
+</div>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">3</span><span class="econtext">System Prompt 设计的'正确高度'原则</span></div>
+<div class="eoriginal">The best system prompts live at the right altitude — specific enough to be useful, but not so specific that they break when the real world inevitably diverges from your expectations.</div>
+<div class="ecommentary"><p>这是系统提示词设计的黄金法则，可以拆解为三层:</p>
+<p><strong>过度硬编码层（太低）</strong>: "当用户说 X 时，你必须执行 Y，输出格式为 Z"</p>
+<ul>
+<li>问题: 现实场景千变万化，硬编码规则必然有遗漏和冲突</li>
+<li>典型症状: Agent 在预期外场景中行为僵化或崩溃</li>
+</ul>
+<p><strong>正确高度层</strong>: "你是一个帮助用户完成 X 类任务的助手。优先考虑 Y，遵循 Z 原则。当不确定时，请询问用户。"</p>
+<ul>
+<li>提供决策框架而非硬编码指令</li>
+<li>允许 Agent 在框架内自主判断</li>
+</ul>
+<p><strong>过于模糊层（太高）</strong>: "你是一个有用的助手"</p>
+<ul>
+<li>缺乏领域知识和行为约束</li>
+<li>Agent 无法做出有针对性的决策</li>
+</ul>
+<p>Claude Code 的 CLAUDE.md 就是这个原则的实践: 包含项目特定的编码规范和架构决策，但不硬编码具体的代码实现路径。</p></div>
+</div>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">4</span><span class="econtext">Just-in-Time 上下文检索策略</span></div>
+<div class="eoriginal">Instead of loading all potentially relevant information upfront, the agent maintains lightweight reference identifiers and loads the actual data on demand.</div>
+<div class="ecommentary"><p>JIT 策略是 Context Engineering 最实用的工程手段:</p>
+<p><strong>传统方式（预加载）</strong>:</p>
+<ul>
+<li>启动时加载整个代码库到上下文</li>
+<li>假设: "更多信息 = 更好的决策"</li>
+<li>问题: Token 浪费在无关代码上，Context Rot 严重</li>
+</ul>
+<p><strong>JIT 方式（按需加载）</strong>:</p>
+<ul>
+<li>Agent 维护索引（文件路径列表、模块结构）</li>
+<li>当需要具体实现时，通过工具（grep/read）按需加载</li>
+<li>Claude Code 的 glob + grep + read 组合就是这个模式</li>
+</ul>
+<p><strong>关键洞察</strong>: "索引"（知道有什么）和"内容"（具体是什么）应该分离。索引常驻上下文，内容按需加载。这与操作系统的虚拟内存概念高度一致: 页表常驻内存，页面按需换入。</p></div>
+</div>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">5</span><span class="econtext">三种长程上下文策略之 Compaction</span></div>
+<div class="eoriginal">Compaction works by summarizing the conversation history when it gets too long, preserving the key decisions and context while dropping the back-and-forth details.</div>
+<div class="ecommentary"><p>Compaction 是 Claude Code 在实际产品中验证过的核心功能:</p>
+<p><strong>触发条件</strong>: 对话长度接近 context window 阈值</p>
+<p><strong>压缩策略</strong>:</p>
+<ul>
+<li>保留: 架构决策、已完成的里程碑、当前任务状态、关键错误和修复</li>
+<li>丢弃: 重复的尝试过程、已撤销的方案、格式化讨论的中间步骤</li>
+</ul>
+<p><strong>实现细节</strong>: Claude Code 使用 Claude 自身来完成压缩——让模型总结自己的对话历史，生成一个压缩后的状态快照</p>
+<p><strong>为什么这很重要</strong>: 没有压缩，Agent 的有效工作窗口被历史对话不断侵蚀。有了压缩，Agent 可以在理论上无限长的任务中持续工作，只需要一个合理的"状态摘要"作为上下文。</p></div>
+</div>
+<div class="excerpt-block">
+<div class="eheader"><span class="ebadge">6</span><span class="econtext">Sub-agent 架构的分发策略</span></div>
+<div class="eoriginal">Sub-agents allow you to isolate work into separate context windows. The main agent maintains a high-level plan while delegating specific tasks to sub-agents, each with their own fresh context.</div>
+<div class="ecommentary"><p>Sub-agent 是三种长程策略中最具架构性的一种:</p>
+<p><strong>适用场景</strong>:</p>
+<ul>
+<li>主任务可分解为多个独立子任务</li>
+<li>子任务需要独立的工具集和上下文</li>
+<li>子任务之间的信息交换有限且可结构化</li>
+</ul>
+<p><strong>设计模式</strong>:</p>
+<ol>
+<li>主 Agent 维护全局计划和状态</li>
+<li>子 Agent 获得独立 context window，执行具体任务</li>
+<li>子 Agent 返回结构化结果（非完整对话历史）</li>
+<li>主 Agent 整合结果，继续推进</li>
+</ol>
+<p><strong>与 Compaction 的互补</strong>: Compaction 在同一窗口内压缩，Sub-agent 则开辟新窗口。前者适合线性任务，后者适合可并行/分支的任务。Claude Code 在处理大型代码库重构时同时使用两种策略。</p></div>
+</div>
+
+
+  <h2>关联 GitHub 项目</h2>
+<a href="https://github.com/anthropics/claude-code" class="github-link"><strong>claude-code</strong><span class="stars">125000 stars</span><div class="desc">Compaction and CLAUDE.md context strategy directly described in article</div></a>
+<a href="https://github.com/anthropics/claude-cookbooks" class="github-link"><strong>claude-cookbooks</strong><span class="stars">43500 stars</span><div class="desc">Memory and context management cookbook referenced</div></a>
+
+
+  <h2>代码实践建议</h2>
+<div class="practice"><h4>实现 Agent 上下文压缩（Compaction）</h4><div class="meta">L2 | Python + Claude API</div><p>当对话接近 context window 限制时，自动摘要压缩历史消息，保留架构决策和关键状态</p></div>
+<div class="practice"><h4>构建 JIT 上下文检索系统</h4><div class="meta">L2 | Python + Embeddings + Vector Store</div><p>Agent 维护文件路径/查询引用列表，运行时按需加载数据，而非一次性灌入全部信息</p></div>
+<div class="practice"><h4>实现结构化笔记记忆系统</h4><div class="meta">L1 | Python + File System</div><p>Agent 在执行过程中定期将关键信息写入 NOTES.md，context reset 后可恢复</p></div>
+
+
+  <h2>思维流程导图</h2>
+  <div class="mindmap-box">
+    <pre class="mermaid">
+flowchart TD
+  A["Context Engineering"] --> B["核心问题:<br/>上下文是有限资源"]
+  A --> C["三大策略"]
+  B --> B1["注意力预算"]
+  B --> B2["N^2 注意力复杂度"]
+  B --> B3["Context Rot 现象"]
+  C --> C1["System Prompt"]
+  C --> C2["JIT 上下文检索"]
+  C --> C3["长程任务管理"]
+  C1 --> C1a["正确高度"]
+  C1 --> C1b["XML/Markdown 分区"]
+  C1 --> C1c["最小信息集"]
+  C2 --> C2a["轻量引用标识符"]
+  C2 --> C2b["渐进式探索"]
+  C2 --> C2c["混合策略"]
+  C3 --> C3a["Compaction 压缩"]
+  C3 --> C3b["Structured Notes 笔记"]
+  C3 --> C3c["Sub-agent 分发"]
+
+    </pre>
+  </div>
+
+  <h2>文章关系</h2><div class="relation-links">
+<a href="building-effective-agents.html">前置: building-effective-agents</a>
+<a href="harness-design-long-running.html">后续: harness-design-long-running</a>
+<a href="effective-harnesses-agents.html">后续: effective-harnesses-agents</a>
+</div>
+
+
+  <p style="margin-top:1rem"><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">阅读原文 &rarr;</a></p>
+</main>
+<footer>Anthropic Articles Knowledge Management System</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:"base",themeVariables:{primaryColor:"#E3DACC",primaryTextColor:"#141413",lineColor:"#D97757"}})</script>
+<script>
+const dims=["技术深度","可操作性","创新性","影响力","教育价值","时效性","可复现性"];
+const vals=[9,9,9,9,10,8,7];
+const c=document.getElementById("radar").getContext("2d");
+const cx=90,cy=90,r=70,n=dims.length;
+c.strokeStyle="#D6D3D1";c.lineWidth=1;
+for(let i=0;i<n;i++){c.beginPath();c.moveTo(cx,cy);c.lineTo(cx+r*Math.cos(2*Math.PI*i/n-Math.PI/2),cy+r*Math.sin(2*Math.PI*i/n-Math.PI/2));c.stroke()}
+for(let ring=1;ring<=4;ring++){c.beginPath();for(let i=0;i<=n;i++){const a=2*Math.PI*((i%n)/n)-Math.PI/2,rr=r*ring/4;c.lineTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a))}c.strokeStyle="#F5F5F4";c.stroke()}
+c.beginPath();c.fillStyle="rgba(217,119,87,0.2)";c.strokeStyle="#D97757";c.lineWidth=2;
+for(let i=0;i<=n;i++){const a=2*Math.PI*((i%n)/n)-Math.PI/2,rr=r*vals[i%n]/10;c.lineTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a))}c.fill();c.stroke();
+c.fillStyle="#141413";c.font="11px system-ui";c.textAlign="center";
+for(let i=0;i<n;i++){const a=2*Math.PI*i/n-Math.PI/2,lx=cx+(r+15)*Math.cos(a),ly=cy+(r+15)*Math.sin(a);c.fillText(dims[i],lx,ly+4)}
+</script>
+</body>
+</html>

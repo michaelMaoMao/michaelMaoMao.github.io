@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Vend: Phase Two — Anthropic Articles</title>
+<style>
+:root{:root}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--ivory);color:var(--slate);line-height:1.6}
+a{color:var(--clay);text-decoration:none}a:hover{text-decoration:underline}
+header{background:var(--slate);color:var(--ivory);padding:2rem}
+header h1{font-family:var(--serif);font-size:1.8rem;margin-bottom:.25rem}
+header .meta{color:var(--g300);font-size:.9rem}
+nav{background:var(--paper);border-bottom:1px solid var(--g300);padding:0 2rem;display:flex;gap:1.5rem}
+nav a{color:var(--slate);padding:.75rem 0;font-size:.9rem;border-bottom:2px solid transparent}
+nav a:hover{border-bottom-color:var(--clay);text-decoration:none}
+nav a.active{border-bottom-color:var(--clay);font-weight:600}
+main{max-width:900px;margin:0 auto;padding:2rem}
+h2{font-family:var(--serif);font-size:1.3rem;margin:1.5rem 0 .75rem;color:var(--clay);border-bottom:1px solid var(--oat);padding-bottom:.5rem}
+.score-grid{display:grid;grid-template-columns:200px 1fr;gap:2rem;align-items:start;margin-bottom:1rem}
+.radar-box{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem}
+.scores-list{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1.25rem}
+.score-row{display:flex;align-items:center;margin-bottom:.5rem;gap:.75rem}
+.score-row .label{width:80px;font-size:.85rem;color:var(--g500)}
+.score-row .bar-wrap{flex:1;height:8px;background:var(--g100);border-radius:4px;overflow:hidden}
+.score-row .bar{height:100%;background:var(--clay);border-radius:4px;transition:width .3s}
+.score-row .val{width:30px;font-family:var(--mono);font-size:.9rem;font-weight:700;text-align:right}
+.overall{text-align:center;margin-bottom:1rem}
+.overall .big{font-size:3rem;font-weight:700;font-family:var(--serif);color:var(--clay)}
+.grade{font-size:.85rem;padding:3px 12px;border-radius:4px;font-weight:600;display:inline-block;margin-left:.5rem}
+.g-S{background:#FDE68A;color:#92400E}.g-A{background:#BBF7D0;color:#166534}.g-B{background:#BFDBFE;color:#1E40AF}
+.g-C{background:var(--g100);color:var(--g700)}.g-D{background:var(--g300);color:var(--g500)}
+.tags{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}
+.tag{font-size:.75rem;padding:2px 8px;border-radius:4px;background:var(--g100);color:var(--g500)}
+.tag.cat{background:var(--oat);color:var(--slate)}
+.tag.diff{background:var(--clay);color:white}
+.takeaway{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;margin-bottom:.5rem;font-size:.9rem;position:relative;padding-left:2.5rem}
+.takeaway::before{content:"\2605";position:absolute;left:.75rem;top:.75rem;color:var(--clay);font-size:1.2rem}
+.practice{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;margin-bottom:.75rem}
+.practice h4{font-family:var(--serif);font-size:.95rem;margin-bottom:.25rem}
+.practice .meta{font-size:.8rem;color:var(--g500);margin-bottom:.5rem}
+.practice p{font-size:.9rem;color:var(--g700)}
+.github-link{display:block;background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:.75rem 1rem;margin-bottom:.5rem}
+.github-link strong{display:block;margin-bottom:.25rem}
+.github-link .desc{font-size:.85rem;color:var(--g500)}
+.github-link .stars{font-family:var(--mono);font-size:.85rem;color:var(--clay)}
+.mindmap-box{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1.5rem;overflow-x:auto}
+.outline{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;margin-bottom:.5rem}
+.outline h4{font-family:var(--serif);font-size:.95rem;margin-bottom:.15rem;color:var(--clay)}
+.outline .odesc{font-size:.85rem;color:var(--g500);margin-bottom:.5rem;padding-left:1rem;border-left:2px solid var(--oat)}
+.excerpt-block{background:var(--paper);border:1px solid var(--g300);border-radius:10px;margin-bottom:1.5rem;overflow:hidden}
+.excerpt-block .eheader{display:flex;align-items:center;gap:.5rem;padding:.6rem 1.25rem;background:linear-gradient(135deg,var(--oat),#f0e8d8);border-bottom:1px solid var(--g300)}
+.excerpt-block .ebadge{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--clay);color:white;font-size:.75rem;font-weight:700;font-family:var(--mono)}
+.excerpt-block .econtext{font-size:.82rem;color:var(--g500);font-weight:500}
+.excerpt-block .eoriginal{padding:1rem 1.5rem;margin:0;border-left:4px solid var(--olive);background:#f8faf3;font-size:.92rem;line-height:1.75;font-family:var(--serif);color:var(--g700);font-style:italic;position:relative}
+.excerpt-block .eoriginal::before{content:"原文";position:absolute;top:.75rem;left:-28px;background:var(--olive);color:white;font-size:.6rem;padding:1px 6px;border-radius:3px;font-style:normal;font-family:var(--sans);letter-spacing:.5px}
+.excerpt-block .eimage{width:100%;border-radius:6px;margin:.75rem 1.25rem;max-height:360px;object-fit:cover}
+.excerpt-block .ecaption{font-size:.78rem;color:var(--g500);padding:0 1.25rem .5rem;text-align:center;font-style:italic}
+.excerpt-block .ecommentary{padding:1rem 1.5rem;font-size:.88rem;color:var(--slate);line-height:1.8;border-top:2px solid var(--oat);position:relative}
+.excerpt-block .ecommentary::before{content:"解读";display:inline-block;background:var(--clay);color:white;font-size:.65rem;padding:2px 8px;border-radius:3px;margin-bottom:.75rem;font-weight:600;letter-spacing:.5px;font-family:var(--sans)}
+.excerpt-block .ecommentary p{margin-bottom:.75rem}
+.excerpt-block .ecommentary p:first-of-type{margin-top:.25rem}
+.excerpt-block .ecommentary p:last-child{margin-bottom:0}
+.excerpt-block .ecommentary strong{color:var(--clay);font-weight:700}
+.excerpt-block .ecommentary ul,.excerpt-block .ecommentary ol{margin:.5rem 0 .75rem 1.25rem}
+.excerpt-block .ecommentary li{margin-bottom:.35rem}
+.excerpt-block .ecommentary li::marker{color:var(--clay)}
+.excerpt-block .ecommentary code{font-family:var(--mono);font-size:.82rem;background:var(--g100);padding:1px 5px;border-radius:3px;color:var(--g700)}
+.excerpt-block .ecommentary pre{background:#1e1e1e;color:#d4d4d4;padding:.75rem 1rem;border-radius:6px;overflow-x:auto;margin:.5rem 0 .75rem;font-size:.82rem;line-height:1.5}
+.excerpt-block .ecommentary pre code{background:none;padding:0;color:inherit}
+.relation-links{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.5rem}
+.relation-links a{font-size:.9rem;padding:4px 10px;border-radius:4px;background:var(--g100)}
+.relation-links a:hover{background:var(--oat)}
+footer{text-align:center;padding:2rem;color:var(--g500);font-size:.85rem;border-top:1px solid var(--g300);margin-top:2rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Project Vend: Phase Two</h1>
+  <div class="meta">2025-12-18 | Research | Anthropic</div>
+</header>
+<nav>
+  <a href="../index.html">总览</a>
+  <a href="../rankings.html">排行榜</a>
+  <a href="../categories.html">分类浏览</a>
+  <a href="../relations.html">文章关系图</a>
+  <a href="../github-map.html">GitHub 映射</a>
+</nav>
+<main>
+  <div class="tags">
+    <span class="tag cat">C3 模型研究</span>
+    <span class="tag diff">L1</span>
+    <span class="tag">agent</span>
+<span class="tag">autonomous</span>
+<span class="tag">vending</span>
+<span class="tag">real-world</span>
+<span class="tag">experiment</span>
+
+  </div>
+
+  <h2>综合评分</h2>
+  <div class="score-grid">
+    <div class="radar-box">
+      <div class="overall">
+        <div class="big">5.1</div>
+        <span class="grade g-D">D 级</span>
+      </div>
+      <canvas id="radar" width="180" height="180"></canvas>
+    </div>
+    <div class="scores-list">
+      <div class="score-row"><span class="label">技术深度 (x1.1)</span><div class="bar-wrap"><div class="bar" style="width:50%"></div></div><span class="val">5</span></div>
+<div class="score-row"><span class="label">可操作性 (x1.3)</span><div class="bar-wrap"><div class="bar" style="width:40%"></div></div><span class="val">4</span></div>
+<div class="score-row"><span class="label">创新性</span><div class="bar-wrap"><div class="bar" style="width:60%"></div></div><span class="val">6</span></div>
+<div class="score-row"><span class="label">影响力 (x1.3)</span><div class="bar-wrap"><div class="bar" style="width:60%"></div></div><span class="val">6</span></div>
+<div class="score-row"><span class="label">教育价值 (x1.1)</span><div class="bar-wrap"><div class="bar" style="width:60%"></div></div><span class="val">6</span></div>
+<div class="score-row"><span class="label">时效性</span><div class="bar-wrap"><div class="bar" style="width:60%"></div></div><span class="val">6</span></div>
+<div class="score-row"><span class="label">可复现性</span><div class="bar-wrap"><div class="bar" style="width:30%"></div></div><span class="val">3</span></div>
+
+    </div>
+  </div>
+
+  <h2>核心要点</h2>
+  <div class="takeaway">AI 店主运营办公室小卖部的第二阶段实验</div>
+<div class="takeaway">探索 AI 在复杂真实世界任务中的表现</div>
+
+
+  
+
+  
+
+  
+
+  
+
+  <h2>思维流程导图</h2>
+  <div class="mindmap-box">
+    <pre class="mermaid">
+flowchart TD
+  A["Project Vend Phase 2"] --> B["实验"]
+  B --> B1["AI 店主"]
+  B --> B2["真实交易"]
+  A --> C["发现"]
+  C --> C1["长期运营能力"]
+  C --> C2["经济决策"]
+
+    </pre>
+  </div>
+
+  <h2>文章关系</h2><div class="relation-links">
+<a href="project-deal.html">后续: project-deal</a>
+</div>
+
+
+  <p style="margin-top:1rem"><a href="https://www.anthropic.com/research/project-vend-phase-two">阅读原文 &rarr;</a></p>
+</main>
+<footer>Anthropic Articles Knowledge Management System</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:"base",themeVariables:{primaryColor:"#E3DACC",primaryTextColor:"#141413",lineColor:"#D97757"}})</script>
+<script>
+const dims=["技术深度","可操作性","创新性","影响力","教育价值","时效性","可复现性"];
+const vals=[5,4,6,6,6,6,3];
+const c=document.getElementById("radar").getContext("2d");
+const cx=90,cy=90,r=70,n=dims.length;
+c.strokeStyle="#D6D3D1";c.lineWidth=1;
+for(let i=0;i<n;i++){c.beginPath();c.moveTo(cx,cy);c.lineTo(cx+r*Math.cos(2*Math.PI*i/n-Math.PI/2),cy+r*Math.sin(2*Math.PI*i/n-Math.PI/2));c.stroke()}
+for(let ring=1;ring<=4;ring++){c.beginPath();for(let i=0;i<=n;i++){const a=2*Math.PI*((i%n)/n)-Math.PI/2,rr=r*ring/4;c.lineTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a))}c.strokeStyle="#F5F5F4";c.stroke()}
+c.beginPath();c.fillStyle="rgba(217,119,87,0.2)";c.strokeStyle="#D97757";c.lineWidth=2;
+for(let i=0;i<=n;i++){const a=2*Math.PI*((i%n)/n)-Math.PI/2,rr=r*vals[i%n]/10;c.lineTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a))}c.fill();c.stroke();
+c.fillStyle="#141413";c.font="11px system-ui";c.textAlign="center";
+for(let i=0;i<n;i++){const a=2*Math.PI*i/n-Math.PI/2,lx=cx+(r+15)*Math.cos(a),ly=cy+(r+15)*Math.sin(a);c.fillText(dims[i],lx,ly+4)}
+</script>
+</body>
+</html>

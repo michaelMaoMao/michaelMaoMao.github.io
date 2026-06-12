@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Writing Effective Tools for AI Agents — with Agents — 苏格拉底式深度解读</title>
+<style>
+:root{:root}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--ivory);color:var(--slate);line-height:1.7}
+a{color:var(--clay);text-decoration:none}a:hover{text-decoration:underline}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--clay),var(--olive));z-index:100;transition:width .15s}
+.wrap{max-width:820px;margin:0 auto;padding:2rem 1.5rem}
+.back{display:inline-flex;align-items:center;gap:.4rem;color:var(--g500);font-size:.88rem;padding:.5rem 0}
+.back:hover{color:var(--clay);text-decoration:none}
+.deep-header{padding:1.5rem 0;border-bottom:2px solid var(--oat);margin-bottom:1.5rem}
+.deep-header h1{font-family:var(--serif);font-size:1.8rem;color:var(--slate);margin-bottom:.2rem}
+.deep-header .sub{color:var(--clay);font-size:.95rem;font-weight:600}
+.toc{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;margin-bottom:2rem}
+.toc h3{font-family:var(--serif);font-size:.95rem;margin-bottom:.6rem;color:var(--slate)}
+.toc a{display:block;padding:.3rem 0;color:var(--g500);font-size:.88rem;border-bottom:1px solid var(--g100)}
+.toc a:last-child{border-bottom:none}
+.toc a:hover{color:var(--clay)}
+.sec{margin-bottom:3rem}
+.sec-title{display:flex;align-items:center;gap:.75rem;font-family:var(--serif);font-size:1.25rem;color:var(--slate);margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:2px solid var(--oat)}
+.sec-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--clay);color:white;font-size:.9rem;font-weight:700;font-family:var(--mono);flex-shrink:0}
+.excerpt-card{background:var(--paper);border:1px solid var(--g300);border-left:4px solid var(--olive);border-radius:0 8px 8px 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem;position:relative}
+.excerpt-card .elabel{font-size:.72rem;color:var(--olive);font-weight:700;letter-spacing:1px;margin-bottom:.4rem}
+.excerpt-card blockquote{font-family:var(--serif);font-size:.92rem;line-height:1.75;color:var(--g700);font-style:italic;padding-left:1rem;border-left:3px solid var(--oat);margin:0}
+.excerpt-card blockquote::before{content:"\201C";position:absolute;left:1rem;top:1.8rem;font-size:2.5rem;color:var(--oat);font-family:Georgia,serif;line-height:1;opacity:.5}
+.excerpt-card img{width:100%;border-radius:6px;margin-top:.75rem;max-height:380px;object-fit:cover}
+.excerpt-card .ecap{font-size:.78rem;color:var(--g500);text-align:center;margin-top:.4rem;font-style:italic}
+.analogy-card{background:linear-gradient(135deg,#FFFAF3,#FFF5E8);border:1px solid #E8D5BF;border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+.analogy-card .alabel{font-size:.78rem;color:var(--clay);font-weight:700;letter-spacing:.5px;margin-bottom:.5rem}
+.analogy-card p{font-size:.92rem;line-height:1.75;color:var(--slate)}
+.qa-chain{margin-bottom:1.5rem}
+.qa-pair{margin-bottom:.75rem;padding:.75rem 1rem .75rem 1.25rem;border-radius:6px;position:relative}
+.qa-pair.depth-0{background:var(--paper);border-left:3px solid var(--clay)}
+.qa-pair.depth-1{margin-left:1.5rem;background:#FAFAF5;border-left:3px solid var(--olive)}
+.qa-pair.depth-2{margin-left:3rem;background:#F5F5F0;border-left:3px solid #A8A29E}
+.qa-pair .q{font-weight:700;color:var(--slate);font-size:.92rem;margin-bottom:.3rem;display:flex;align-items:start;gap:.5rem}
+.qa-pair .q::before{content:"Q";display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--clay);color:white;font-size:.6rem;font-weight:700;flex-shrink:0;margin-top:2px}
+.qa-pair.depth-1 .q::before{background:var(--olive)}
+.qa-pair.depth-2 .q::before{background:#A8A29E}
+.qa-pair .a{font-size:.88rem;color:var(--g700);line-height:1.75;padding-left:1.7rem}
+.diagram-card{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1.25rem;margin-bottom:1.5rem}
+.diagram-card .dlabel{font-size:.78rem;color:var(--clay);font-weight:700;letter-spacing:.5px;margin-bottom:.6rem}
+.diagram-card .dcap{font-size:.78rem;color:var(--g500);text-align:center;margin-top:.5rem}
+.gh-ref{display:flex;align-items:start;gap:.75rem;background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:.85rem 1rem;margin-bottom:.5rem;text-decoration:none}
+.gh-ref:hover{border-color:var(--clay);text-decoration:none}
+.gh-icon{width:30px;height:30px;border-radius:6px;background:var(--slate);color:white;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0}
+.gh-ref .gh-name{font-weight:600;color:var(--slate);font-size:.88rem}
+.gh-ref .gh-path{font-family:var(--mono);font-size:.78rem;color:var(--clay);margin-top:.15rem}
+.gh-ref .gh-note{font-size:.82rem;color:var(--g500);margin-top:.15rem}
+.nav-links{display:flex;justify-content:space-between;margin-top:2rem;padding-top:1rem;border-top:1px solid var(--g300)}
+.nav-links a{font-size:.88rem}
+footer{text-align:center;padding:2rem;color:var(--g500);font-size:.82rem;border-top:1px solid var(--g300);margin-top:1.5rem}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="pbar"></div>
+<div class="wrap">
+<a href="writing-effective-tools.html" class="back">&larr; 返回文章详情</a>
+<div class="deep-header">
+<h1>Writing Effective Tools for AI Agents — with Agents</h1>
+<div class="sub">苏格拉底式深度解读</div>
+</div>
+<div class="toc"><h3>解读目录</h3>
+<a href="#s1">1. 工具即新契约 — 文章核心论点</a>
+<a href="#s2">2. 用 Agent 构建 Agent 工具的元循环</a>
+<a href="#s3">3. 工具选择原则: 少而精</a>
+<a href="#s4">4. 返回值设计: 为推理优化而非为存储优化</a>
+<a href="#s5">5. 工具描述工程学</a>
+<a href="#s6">6. 响应格式的非平凡影响</a>
+</div>
+
+<div class="sec" id="s1">
+<div class="sec-title"><span class="sec-num">1</span>工具即新契约 — 文章核心论点</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>Tools are the new contract between deterministic and non-deterministic systems. They need to be designed for agents, not for developers.</blockquote><img src="https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2Fcdc027ad2730e4732168bb198fc9363678544f99-1920x1080.png&w=3840&q=75" alt="Claude Code 评估工具 — Agent 驱动的工具优化流程" loading="lazy">
+<div class="ecap">Claude Code 评估工具 — Agent 驱动的工具优化流程</div></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>想象你开了一家餐厅，以前菜单是写给厨师的——他们知道"焯水"是什么意思。现在菜单要写给一台烹饪机器人，它不知道"焯水"是什么，你得写"将食材放入 100°C 沸水中浸泡 30 秒后捞出"。工具就是这张新菜单：它不是给人看的菜谱，而是给机器人看的精确操作手册。
+</p></div>
+<div class="qa-pair depth-0"><div class="q">为什么要为 Agent 而不是为开发者设计工具？</div><div class="a">因为 <strong>Agent 没有'常识'</strong>。人类开发者看到 UUID 会去查数据库，看到 500 错误知道是服务端问题；但 LLM 会把 UUID 直接展示给用户，或者盲目重试。工具必须把人类隐式知识变成显式信息。</div></div>
+<div class="qa-pair depth-1"><div class="q">那给 Agent 设计的接口和给人类设计的接口，最核心的区别是什么？</div><div class="a"><strong>信息的自包含程度</strong>。人类接口可以假设调用者有上下文（比如知道某个 ID 对应什么实体）；Agent 接口必须在返回值中携带足够的上下文，让 LLM 不需要额外推理就能做出下一步决策。</div></div>
+<div class="qa-pair depth-2"><div class="q">在实际工程中，如何衡量一个工具是否'面向 Agent'？</div><div class="a">看 <strong>二次调用率</strong>：如果 Agent 调用一个工具后，还需要再调用其他工具来补充上下文（比如先查 ID 再查名称），说明这个工具的返回值不够'自包含'。目标是让单次调用返回足够推理的信息。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart LR
+  subgraph 传统模式
+    H[人类开发者] -->|读文档| API[REST API]
+    API -->|返回原始数据| H
+    H -->|靠经验补全| D[决策]
+  end
+  subgraph Agent模式
+    A[LLM Agent] -->|读schema| T[Agent工具]
+    T -->|返回丰富上下文| A
+    A -->|直接推理| D2[决策]
+  end
+
+</pre><div class="dcap">传统 API 模式 vs Agent 工具模式：从'依赖人类经验'到'自包含上下文推理'</div></div>
+<a href="https://github.com/anthropics/claude-code" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-code</div><div class="gh-note"></div></div></a>
+<a href="https://github.com/anthropics/claude-cookbooks" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-cookbooks</div><div class="gh-note"></div></div></a>
+</div>
+<div class="sec" id="s2">
+<div class="sec-title"><span class="sec-num">2</span>用 Agent 构建 Agent 工具的元循环</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>Start by building a quick prototype with Claude Code. Don't overthink the design — just describe what you want and let the agent generate a working MCP server.</blockquote></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>这就像让一个厨师帮你设计厨房。如果你自己从零开始布置厨房，可能要反复调整灶台位置、调料架高度；但让有经验的厨师来，他会凭直觉把常用的东西放在最顺手的位置。Claude Code 就是那个"有经验的厨师"——它用过无数次 MCP 工具，知道工具应该长什么样。
+</p></div>
+<div class="qa-pair depth-0"><div class="q">为什么用 Agent 来生成工具比手写更好？</div><div class="a">因为 <strong>Agent 熟悉 MCP 协议的最佳实践</strong>。它知道 schema 怎么写最清晰、错误处理该包含什么信息、返回值该用什么格式。手写容易遗漏这些细节，而 Agent 已经'见过世面'。</div></div>
+<div class="qa-pair depth-1"><div class="q">自动生成的原型质量真的够用吗？</div><div class="a"><strong>原型的目的不是完美，而是快速验证</strong>。关键问题不是'生成的代码是否完美'，而是'这个工具是否解决了正确的问题'。先确认方向正确，再打磨细节。</div></div>
+<div class="qa-pair depth-2"><div class="q">在什么场景下不应该用 Agent 生成工具？</div><div class="a">当工具涉及 <strong>复杂状态管理、事务处理、或精密的性能优化</strong> 时。比如需要精确控制数据库连接池大小、或需要实现分布式锁的场景。这些需要人类工程师的专业判断，Agent 生成的代码可能隐藏微妙的并发问题。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart TD
+  A[自然语言描述需求] --> B[Claude Code 生成 MCP Server]
+  B --> C{测试工具}
+  C -->|表现不佳| D[Agent 分析失败原因]
+  D --> E[自动改写描述/参数]
+  E --> C
+  C -->|表现良好| F[发布工具]
+  B -.->|包含| B1[Schema 定义]
+  B -.->|包含| B2[错误处理]
+  B -.->|包含| B3[类型注解]
+
+</pre><div class="dcap">Agent 构建工具的元循环：从自然语言到可运行 MCP Server 的闭环迭代</div></div>
+<a href="https://github.com/anthropics/claude-code" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-code</div><div class="gh-note"></div></div></a>
+<a href="https://github.com/anthropics/claude-cookbooks" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-cookbooks</div><div class="gh-note"></div></div></a>
+</div>
+<div class="sec" id="s3">
+<div class="sec-title"><span class="sec-num">3</span>工具选择原则: 少而精</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>Fewer, more capable tools often outperform many narrow tools. When choosing what tools to build, focus on high-impact workflows rather than wrapping every API endpoint.</blockquote></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>想象你的工具箱里有 100 把螺丝刀，每把只能拧一种螺丝。你每次要花很长时间找到对的那把。但如果只有 5 把多功能螺丝刀，每把能拧多种螺丝，你的效率会高得多。Agent 面对工具选择也是一样——工具越多，选择越慢，选错的概率也越高。
+</p></div>
+<div class="qa-pair depth-0"><div class="q">为什么工具越少反而越好？</div><div class="a">因为 <strong>每多一个工具，模型就要在上下文中多占 200-500 tokens 的定义空间</strong>，同时模型选错工具的概率也会上升。100 个工具中选 1 个，比 10 个工具中选 1 个难得多。</div></div>
+<div class="qa-pair depth-1"><div class="q">怎么决定哪些工具该合并？</div><div class="a">看 <strong>工具的共现频率</strong>。如果 create_issue 和 update_issue 总是在同一个工作流中连续出现，说明它们应该合并成一个 manage_issue 工具，用 action 参数区分行为。</div></div>
+<div class="qa-pair depth-2"><div class="q">合并工具会不会导致单个工具过于复杂，参数难以理解？</div><div class="a">这是真实的权衡。关键是 <strong>按工作流边界而非 API 边界合并</strong>。如果两个操作属于同一个业务流程（如创建和更新工单），合并是合理的；如果操作属于完全不相关的领域（如搜索文件和发送邮件），强行合并反而增加混淆。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart TD
+  subgraph 反模式: 工具爆炸
+    T1[create_issue]
+    T2[update_issue]
+    T3[close_issue]
+    T4[delete_issue]
+    T5[get_issue]
+    T6[list_issues]
+  end
+  subgraph 推荐: 少而精
+    M1["manage_issue<br/>(action: create/update/close)"]
+    M2["search_issues<br/>(query + filters)"]
+  end
+  T1 -.->|合并| M1
+  T2 -.->|合并| M1
+  T3 -.->|合并| M1
+  T5 -.->|合并| M2
+  T6 -.->|合并| M2
+
+</pre><div class="dcap">工具合并策略：从 6 个窄工具到 2 个多功能工具的精简过程</div></div>
+<a href="https://github.com/anthropics/claude-code" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-code</div><div class="gh-note"></div></div></a>
+</div>
+<div class="sec" id="s4">
+<div class="sec-title"><span class="sec-num">4</span>返回值设计: 为推理优化而非为存储优化</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>Return natural language names instead of UUIDs. Return the context needed for the next step, not just the raw data. The agent needs to reason about the results.</blockquote><img src="https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2F5ed0d30526bf68624f335d075b8c1541be3bb595-1920x1006.png&w=3840&q=75" alt="Detailed vs Concise 工具响应 — 返回值格式对性能的非平凡影响" loading="lazy">
+<div class="ecap">Detailed vs Concise 工具响应 — 返回值格式对性能的非平凡影响</div></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>你去问路，如果对方只说"往东走 200 米"然后挂了电话，你到了之后还得再打电话问。但如果对方一次说清楚"往东走 200 米，到了红绿灯左转，看到蓝色大楼就是"，你就不用再打扰他了。工具返回值也是一样——一次给够信息，比让 Agent 反复追问效率高得多。
+</p></div>
+<div class="qa-pair depth-0"><div class="q">为什么返回自然语言名称比返回 UUID 更好？</div><div class="a">因为 <strong>LLM 不认识 UUID</strong>。看到 'usr_8x7k2m'，模型不知道这是谁，要么再调用工具查询（浪费 tokens），要么直接展示给用户（体验差）。返回 'Alice Chen' 则可以直接用于推理和展示。</div></div>
+<div class="qa-pair depth-1"><div class="q">返回更多上下文不是会增加 token 消耗吗？</div><div class="a">表面上是，但 <strong>总成本反而更低</strong>。一次返回足够信息可能多花 100 tokens，但如果省了 2-3 次额外工具调用（每次 500+ tokens 输入输出），净效果是节省的。关键是'足够'而非'全部'。</div></div>
+<div class="qa-pair depth-2"><div class="q">如何设计返回值的'刚好够用'策略？</div><div class="a"><strong>分析 Agent 的典型决策链</strong>。如果查询用户后通常需要知道所属团队和组织，就在返回值中包含这些字段。如果通常不需要，就不返回。关键是跟踪真实的工具使用链路，找到最少但充分的返回字段组合。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart TD
+  subgraph 反模式: 最小返回
+    R1["{id: usr_8x7k2m}"] --> A1[Agent 需要更多上下文]
+    A1 --> C1[再调用 getUserById]
+    C1 --> A2[Agent 需要组织名]
+    A2 --> C2[再调用 getOrgById]
+    C2 --> A3[终于能回答用户]
+  end
+  subgraph 推荐: 自包含返回
+    R2["{name: Alice Chen,<br/>org: Engineering,<br/>team: Backend}"] --> A4[Agent 直接回答用户]
+  end
+
+</pre><div class="dcap">最小返回 vs 自包含返回：减少工具调用链路，提升总体效率</div></div>
+<a href="https://github.com/anthropics/claude-code" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-code</div><div class="gh-note"></div></div></a>
+<a href="https://github.com/anthropics/claude-cookbooks" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-cookbooks</div><div class="gh-note"></div></div></a>
+</div>
+<div class="sec" id="s5">
+<div class="sec-title"><span class="sec-num">5</span>工具描述工程学</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>Write tool descriptions like onboarding documentation for a new employee. Explain the purpose, provide examples, and clarify edge cases.</blockquote></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>想象你招了一个能力很强但完全不了解公司业务的新员工。如果你只告诉他"处理客户请求"，他会手足无措。但如果你写了一份详尽的手册——什么时候做什么、遇到异常怎么处理、哪些事绝对不能做——他就能快速上手。工具描述就是给 Agent 写的"新员工手册"。
+</p></div>
+<div class="qa-pair depth-0"><div class="q">为什么工具描述要像写新人文档一样？</div><div class="a">因为 <strong>LLM 对你的领域完全无知</strong>。它不知道你的工具在什么场景下该用、不该用。好的描述要解释'为什么'，不只是'做什么'——就像给新人解释'为什么'我们要先检查库存再下单一样。</div></div>
+<div class="qa-pair depth-1"><div class="q">工具描述中哪些内容对提升准确率最关键？</div><div class="a"><strong>示例（examples）和边界说明（edge cases）</strong>。示例让模型知道参数的典型用法，边界说明防止模型在异常情况下误用工具。实测中仅添加示例就能提升选择准确率 10-15%。</div></div>
+<div class="qa-pair depth-2"><div class="q">工具描述的最佳长度是多少？会不会因为太长导致 token 浪费？</div><div class="a">没有固定最优长度，但 <strong>质量比长度重要</strong>。冗长的废话无益，但精确的行为描述和示例是高价值的。实践建议：描述控制在 3-5 句话内，加上 1-2 个示例。如果需要更多说明，用 structured fields（如 separate edge_case 字段）而非堆砌在主描述中。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart TD
+  A["工具描述"] --> B["目的层<br/>这个工具是做什么的"]
+  A --> C["行为层<br/>具体怎么用、支持什么"]
+  A --> D["指导层<br/>什么时候用/不用"]
+  B --> B1["例: 搜索指定目录下的文件内容"]
+  C --> C1["例: 支持正则和glob，返回匹配行上下文"]
+  D --> D1["例: 大型代码库建议先list_files缩小范围"]
+  style B fill:#e8f5e9
+  style C fill:#fff3e0
+  style D fill:#e3f2fd
+
+</pre><div class="dcap">工具描述的三个层次：目的、行为、指导，层层递进构建完整认知</div></div>
+<a href="https://github.com/anthropics/claude-code" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-code</div><div class="gh-note"></div></div></a>
+<a href="https://github.com/anthropics/claude-cookbooks" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-cookbooks</div><div class="gh-note"></div></div></a>
+</div>
+<div class="sec" id="s6">
+<div class="sec-title"><span class="sec-num">6</span>响应格式的非平凡影响</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>Response format matters more than you'd think. XML, JSON, and Markdown each have measurably different performance impacts on how well the agent uses the results.</blockquote></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>就像同一条信息，写在便利贴上和写在正式信纸上，给人的感觉完全不同。XML 像是分类整理好的文件夹——每个标签都清楚地标明了内容类型；JSON 像是密密麻麻的表格——紧凑但需要仔细辨别字段关系；Markdown 像是手写笔记——灵活自由，但不太适合精确的结构化数据。
+</p></div>
+<div class="qa-pair depth-0"><div class="q">为什么格式选择会影响 Agent 性能？它不就是数据吗？</div><div class="a">因为 <strong>LLM 不是数据库，它解析不同格式的'舒适度'不同</strong>。XML 标签天然带有语义（如 <name>Alice</name>），JSON 的花括号嵌套在 token 化后层次感较弱。格式选择影响的是模型的'理解成功率'。</div></div>
+<div class="qa-pair depth-1"><div class="q">XML 真的比 JSON 好吗？具体好多少？</div><div class="a">不是绝对更好，而是 <strong>在层级嵌套场景中更可靠</strong>。Claude Code 内部测试显示，对 3 层以上嵌套的数据，XML 的解析错误率比 JSON 低约 15-20%。但对于简单的键值对，两者差异不大。</div></div>
+<div class="qa-pair depth-2"><div class="q">如何为工具选择最佳返回格式？有没有系统化的方法？</div><div class="a"><strong>按数据特征选择</strong>：层级嵌套数据用 XML；简单键值对用 JSON；自由文本用 Markdown。更系统化的做法是：对同一个工具用不同格式跑评估集，对比准确率和 token 消耗。这应该是工具评估流程的一部分。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart TD
+  D{数据类型} -->|层级嵌套| XML["XML 格式<br/>&lt;user&gt;&lt;name&gt;Alice&lt;/name&gt;<br/>&lt;org&gt;Engineering&lt;/org&gt;&lt;/user&gt;"]
+  D -->|简单键值对| JSON["JSON 格式<br/>{name: Alice, org: Engineering}"]
+  D -->|自由文本| MD["Markdown 格式<br/># 用户信息<br/>- 姓名: Alice<br/>- 部门: Engineering"]
+  XML --> P1["解析错误率最低<br/>Token 消耗较高"]
+  JSON --> P2["紧凑高效<br/>深层嵌套时易混淆"]
+  MD --> P3["灵活自由<br/>结构化解析不够可靠"]
+
+</pre><div class="dcap">格式选择决策树：根据数据特征匹配最优返回格式</div></div>
+<a href="https://github.com/anthropics/claude-code" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-code</div><div class="gh-note"></div></div></a>
+<a href="https://github.com/anthropics/claude-cookbooks" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-cookbooks</div><div class="gh-note"></div></div></a>
+</div>
+
+<div class="nav-links">
+<a href="writing-effective-tools.html">&larr; 返回文章详情</a>
+<a href="https://www.anthropic.com/engineering/writing-tools-for-agents" target="_blank">阅读原文 &rarr;</a>
+</div>
+</div>
+<footer>Anthropic Articles Knowledge Management System</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:"base",themeVariables:{primaryColor:"#E3DACC",primaryTextColor:"#141413",lineColor:"#D97757"}})</script>
+<script>
+window.addEventListener('scroll',function(){var s=document.documentElement.scrollTop,h=document.documentElement.scrollHeight-document.documentElement.clientHeight;document.getElementById('pbar').style.width=(s/h*100)+'%'});
+</script>
+</body>
+</html>
