@@ -1,0 +1,293 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="FlowKit - Prompt 量化评分"><meta name="keywords" content="AI,Claude Code,开源,Prompt"><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>FlowKit - Prompt 量化评分 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95"><span class="toc-number">1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E9%97%AE%E9%A2%98"><span class="toc-number">2.</span> <span class="toc-text">核心问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%94%E5%93%88%E9%87%8C%E8%A7%86%E7%AA%97%E5%9B%9B%E8%B1%A1%E9%99%90"><span class="toc-number">3.</span> <span class="toc-text">乔哈里视窗四象限</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Q1-%E5%85%AC%E5%85%B1%E7%9F%A5%E8%AF%86-%E2%80%94-%E7%9B%B4%E6%8E%A5%E6%8F%8F%E8%BF%B0"><span class="toc-number">3.1.</span> <span class="toc-text">Q1 公共知识 — 直接描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q2-AI-%E4%B8%93%E4%B8%9A-%E2%80%94-%E4%BF%A1%E4%BB%BB-AI"><span class="toc-number">3.2.</span> <span class="toc-text">Q2 AI 专业 — 信任 AI</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q3-%E6%8E%A2%E7%B4%A2%E5%88%9B%E6%96%B0-%E2%80%94-%E5%8D%8F%E5%90%8C%E6%8E%A2%E7%B4%A2"><span class="toc-number">3.3.</span> <span class="toc-text">Q3 探索创新 — 协同探索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q4-%E7%8B%AC%E6%9C%89%E7%9F%A5%E8%AF%86-%E2%80%94-%E6%9C%80%E5%8D%B1%E9%99%A9%E7%9A%84%E8%B1%A1%E9%99%90"><span class="toc-number">3.4.</span> <span class="toc-text">Q4 独有知识 — 最危险的象限</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E8%B1%A1%E9%99%90%E8%AF%86%E5%88%AB%E6%A0%87%E5%BF%97"><span class="toc-number">3.4.1.</span> <span class="toc-text">第四象限识别标志</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3S-%E5%8E%9F%E5%88%99"><span class="toc-number">4.</span> <span class="toc-text">3S 原则</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#S1-Single-%E2%80%94-%E5%8D%95%E4%BB%BB%E5%8A%A1%E8%81%9A%E7%84%A6"><span class="toc-number">4.1.</span> <span class="toc-text">S1: Single — 单任务聚焦</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#S2-Specific-%E2%80%94-%E6%98%8E%E7%A1%AE%E8%AF%A6%E7%BB%86"><span class="toc-number">4.2.</span> <span class="toc-text">S2: Specific — 明确详细</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#S3-Short-%E2%80%94-%E7%AE%80%E6%B4%81%E6%89%BC%E8%A6%81"><span class="toc-number">4.3.</span> <span class="toc-text">S3: Short — 简洁扼要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E7%BB%B4%E8%AF%84%E5%88%86%E4%BD%93%E7%B3%BB"><span class="toc-number">5.</span> <span class="toc-text">7 维评分体系</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E6%A3%80%E6%B5%8B"><span class="toc-number">5.1.</span> <span class="toc-text">场景检测</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E8%AF%8A%E6%96%AD"><span class="toc-number">6.</span> <span class="toc-text">问题诊断</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Critical%EF%BC%88%E5%BF%85%E9%A1%BB%E4%BF%AE%E5%A4%8D%EF%BC%89"><span class="toc-number">6.1.</span> <span class="toc-text">Critical（必须修复）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#High%EF%BC%88%E5%BC%BA%E7%83%88%E5%BB%BA%E8%AE%AE%E4%BF%AE%E5%A4%8D%EF%BC%89"><span class="toc-number">6.2.</span> <span class="toc-text">High（强烈建议修复）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Medium%EF%BC%88%E5%BB%BA%E8%AE%AE%E4%BC%98%E5%8C%96%EF%BC%89"><span class="toc-number">6.3.</span> <span class="toc-text">Medium（建议优化）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Low%EF%BC%88%E5%8F%AF%E9%80%89%E4%BC%98%E5%8C%96%EF%BC%89"><span class="toc-number">6.4.</span> <span class="toc-text">Low（可选优化）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5"><span class="toc-number">7.</span> <span class="toc-text">优化策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B"><span class="toc-number">8.</span> <span class="toc-text">实战案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-1-%E7%AC%AC%E5%9B%9B%E8%B1%A1%E9%99%90%E9%99%B7%E9%98%B1%EF%BC%882-10-%E2%86%92-8-5-10%EF%BC%89"><span class="toc-number">8.1.</span> <span class="toc-text">案例 1: 第四象限陷阱（2&#x2F;10 → 8.5&#x2F;10）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-2-%E7%AE%80%E5%8D%95%E4%BB%BB%E5%8A%A1%E4%BC%98%E5%8C%96%EF%BC%887-9-10%EF%BC%89"><span class="toc-number">8.2.</span> <span class="toc-text">案例 2: 简单任务优化（7.9&#x2F;10）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-3-%E5%A4%8D%E6%9D%82%E4%B8%93%E4%B8%9A%E4%BB%BB%E5%8A%A1%E4%BC%98%E5%8C%96%EF%BC%884-2-10-%E2%86%92-8-0-10%EF%BC%89"><span class="toc-number">8.3.</span> <span class="toc-text">案例 3: 复杂专业任务优化（4.2&#x2F;10 → 8.0&#x2F;10）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E5%88%97%E5%AF%BC%E8%88%AA"><span class="toc-number">9.</span> <span class="toc-text">系列导航</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">53</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">30</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a><a class="site-page" href="/gallery">相册</a><a class="site-page" href="/gtd">GTD</a></span></div><div id="post-info"><div id="post-title">FlowKit - Prompt 量化评分</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2026-05-12</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><blockquote>
+<p><strong>Prompt Skill</strong> 是 FlowKit 的基础模块，基于乔哈里视窗理论和 3S 原则，提供 Prompt 自动评分、问题诊断和优化。<br>本文是 FlowKit 系列教程第二篇。</p>
+</blockquote>
+<p>GitHub: <a href="https://github.com/FrizzleFur/flowkit">FrizzleFur&#x2F;flowkit</a> | <a href="#%E7%B3%BB%E5%88%97%E5%AF%BC%E8%88%AA">系列导航</a></p>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="#%E6%A0%B8%E5%BF%83%E9%97%AE%E9%A2%98">核心问题</a></li>
+<li><a href="#%E4%B9%94%E5%93%88%E9%87%8C%E8%A7%86%E7%AA%97%E5%9B%9B%E8%B1%A1%E9%99%90">乔哈里视窗四象限</a></li>
+<li><a href="#3s-%E5%8E%9F%E5%88%99">3S 原则</a></li>
+<li><a href="#7-%E7%BB%B4%E8%AF%84%E5%88%86%E4%BD%93%E7%B3%BB">7 维评分体系</a></li>
+<li><a href="#%E9%97%AE%E9%A2%98%E8%AF%8A%E6%96%AD">问题诊断</a></li>
+<li><a href="#%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5">优化策略</a></li>
+<li><a href="#%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B">实战案例</a></li>
+</ul>
+<hr>
+<h2 id="核心问题"><a href="#核心问题" class="headerlink" title="核心问题"></a>核心问题</h2><p>大多数人写 Prompt 只关注”怎么措辞”，但 Prompt 的质量问题远比措辞复杂。核心难点在于：<strong>你知道的东西，AI 不一定知道。</strong></p>
+<p>这就是为什么需要一个系统化的评分框架 —— 不只看文字质量，而是从<strong>认知科学角度</strong>评估 Prompt 的信息完整度。</p>
+<h2 id="乔哈里视窗四象限"><a href="#乔哈里视窗四象限" class="headerlink" title="乔哈里视窗四象限"></a>乔哈里视窗四象限</h2><p>乔哈里视窗（Johari Window）是心理学中的认知模型，我们用它来分析 Prompt 的信息分布：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">              AI 知道           AI 不知道</span><br><span class="line">          ┌──────────────┬──────────────┐</span><br><span class="line">人知道    │ Q1 公共知识   │ Q4 独有知识 ⚠│</span><br><span class="line">          │ 直接描述即可  │ 必须喂模式    │</span><br><span class="line">          ├──────────────┼──────────────┤</span><br><span class="line">人不知道  │ Q2 AI 专业   │ Q3 探索创新   │</span><br><span class="line">          │ 信任 AI 即可  │ 协同探索      │</span><br><span class="line">          └──────────────┴──────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="Q1-公共知识-—-直接描述"><a href="#Q1-公共知识-—-直接描述" class="headerlink" title="Q1 公共知识 — 直接描述"></a>Q1 公共知识 — 直接描述</h3><p>“用 Python 实现快速排序” — 这类任务 AI 完全具备知识，直接描述即可。</p>
+<h3 id="Q2-AI-专业-—-信任-AI"><a href="#Q2-AI-专业-—-信任-AI" class="headerlink" title="Q2 AI 专业 — 信任 AI"></a>Q2 AI 专业 — 信任 AI</h3><p>“分析这段代码的时间复杂度” — 你可能不懂 Big-O，但 AI 懂。信任 AI 的专业能力。</p>
+<h3 id="Q3-探索创新-—-协同探索"><a href="#Q3-探索创新-—-协同探索" class="headerlink" title="Q3 探索创新 — 协同探索"></a>Q3 探索创新 — 协同探索</h3><p>“设计一个新型缓存策略” — 你和 AI 都没有确定的答案，需要协同探索。</p>
+<h3 id="Q4-独有知识-—-最危险的象限"><a href="#Q4-独有知识-—-最危险的象限" class="headerlink" title="Q4 独有知识 — 最危险的象限"></a>Q4 独有知识 — 最危险的象限</h3><p>“审查我们公司的 XYZ 系统代码，确保遵循 YYY 规范” — 你知道 XYZ 和 YYY 是什么，但 AI 不知道。这是<strong>最常见也最容易被忽视</strong>的质量问题。</p>
+<p><strong>关键规则</strong>: 当 Prompt 包含第四象限知识但未使用”喂模式”（举例法、定义字典、RAG）时，评分直接降到 <strong>2&#x2F;10 (Critical)</strong>。</p>
+<h4 id="第四象限识别标志"><a href="#第四象限识别标志" class="headerlink" title="第四象限识别标志"></a>第四象限识别标志</h4><ul>
+<li>包含”我们团队”、”我们公司”、”本项目”等限定词</li>
+<li>包含内部系统名称、团队黑话&#x2F;缩写</li>
+<li>包含新定义概念，且无示例、无定义</li>
+</ul>
+<h2 id="3S-原则"><a href="#3S-原则" class="headerlink" title="3S 原则"></a>3S 原则</h2><p>除了象限分析，每个 Prompt 还从三个维度评估：</p>
+<h3 id="S1-Single-—-单任务聚焦"><a href="#S1-Single-—-单任务聚焦" class="headerlink" title="S1: Single — 单任务聚焦"></a>S1: Single — 单任务聚焦</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">❌ &quot;帮我写一个排序算法，并解释原理，再用 Python 实现一遍&quot;</span><br><span class="line">   → 三个目标混杂，AI 无法确定主要目标</span><br><span class="line"></span><br><span class="line">✓ &quot;用 Python 实现快速排序算法&quot;</span><br><span class="line">   → 单一目标，清晰明确</span><br></pre></td></tr></table></figure>
+
+<p>检测方式：搜索”和”、”并”、”以及”等连接词，多个动词短语。</p>
+<h3 id="S2-Specific-—-明确详细"><a href="#S2-Specific-—-明确详细" class="headerlink" title="S2: Specific — 明确详细"></a>S2: Specific — 明确详细</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">❌ &quot;写一个排序算法&quot; → Specific: 4/10</span><br><span class="line">   → 无格式要求、无范围限制</span><br><span class="line"></span><br><span class="line">✓ &quot;用 Python 实现快速排序，输入整数列表，输出升序排列，O(n log n) 时间复杂度&quot;</span><br><span class="line">   → Specific: 9/10</span><br></pre></td></tr></table></figure>
+
+<p>评分标准：</p>
+<ul>
+<li>有格式 + 范围 + 示例 → 9-10 分</li>
+<li>有格式有范围 → 7-8 分</li>
+<li>无格式无范围 → 2-6 分</li>
+</ul>
+<h3 id="S3-Short-—-简洁扼要"><a href="#S3-Short-—-简洁扼要" class="headerlink" title="S3: Short — 简洁扼要"></a>S3: Short — 简洁扼要</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">❌ &quot;请你作为一个非常专业的资深高级算法工程师，用你丰富的经验和深厚的功底，</span><br><span class="line">    帮我写一个排序算法，注意要写得尽可能好，代码要优雅，注释要详细...&quot;</span><br><span class="line">   → 冗余修饰，低信息密度</span><br><span class="line"></span><br><span class="line">✓ &quot;用 Python 实现快速排序，要求 O(n log n)&quot; → 高信息密度</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-维评分体系"><a href="#7-维评分体系" class="headerlink" title="7 维评分体系"></a>7 维评分体系</h2><p>每篇 Prompt 从 7 个维度评分（1-10 分），通过加权计算得出综合评分：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>权重</th>
+<th>衡量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>目标明确性</td>
+<td>40%</td>
+<td>目标清晰？有成功标准？范围明确？</td>
+</tr>
+<tr>
+<td>3S 原则</td>
+<td>30%</td>
+<td>Single + Specific + Short</td>
+</tr>
+<tr>
+<td>基础清晰度</td>
+<td>30%</td>
+<td>语言表达清晰？逻辑结构合理？</td>
+</tr>
+</tbody></table>
+<p>当满足以下条件时，额外触发<strong>深度评分</strong>（4 个维度，各 25%）：</p>
+<ul>
+<li>复杂专业任务</li>
+<li>第四象限内容</li>
+<li>Role-Based 结构</li>
+<li>字数 &gt; 200</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>衡量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>约束完整性</td>
+<td>约束必要、可验证、无冲突</td>
+</tr>
+<tr>
+<td>技能匹配度</td>
+<td>Role&#x2F;Skills 匹配任务</td>
+</tr>
+<tr>
+<td>工作流清晰度</td>
+<td>步骤逻辑清晰、可重复执行</td>
+</tr>
+<tr>
+<td>示例&#x2F;术语完整性</td>
+<td>示例完整、术语有定义</td>
+</tr>
+</tbody></table>
+<h3 id="场景检测"><a href="#场景检测" class="headerlink" title="场景检测"></a>场景检测</h3><p>不同场景使用不同的权重分布：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>条件</th>
+<th>权重分布</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>简单任务</td>
+<td>字数&lt;100, 单目标</td>
+<td>目标明确性 40% + 3S 30% + 基础清晰度 30%</td>
+</tr>
+<tr>
+<td>复杂专业</td>
+<td>Role-Based, 工作流</td>
+<td>基础评分 50% + 深度评分 50%</td>
+</tr>
+<tr>
+<td>第四象限</td>
+<td>独有知识, 术语</td>
+<td>目标明确性 20% + 示例&#x2F;术语完整性 80%</td>
+</tr>
+</tbody></table>
+<h2 id="问题诊断"><a href="#问题诊断" class="headerlink" title="问题诊断"></a>问题诊断</h2><p>评分后自动诊断问题，按严重性四级分类：</p>
+<h3 id="Critical（必须修复）"><a href="#Critical（必须修复）" class="headerlink" title="Critical（必须修复）"></a>Critical（必须修复）</h3><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>检测方式</th>
+<th>影响</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>第四象限未使用喂模式</td>
+<td>包含内部术语但无定义&#x2F;示例</td>
+<td>AI 无法理解独有知识</td>
+</tr>
+<tr>
+<td>多目标混杂</td>
+<td>Single 原则违背</td>
+<td>AI 无法确定主要目标</td>
+</tr>
+<tr>
+<td>完全缺少成功标准</td>
+<td>无输出要求、无验证标准</td>
+<td>无法判断是否完成</td>
+</tr>
+</tbody></table>
+<h3 id="High（强烈建议修复）"><a href="#High（强烈建议修复）" class="headerlink" title="High（强烈建议修复）"></a>High（强烈建议修复）</h3><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>检测方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>约束互相冲突</td>
+<td>约束之间矛盾</td>
+</tr>
+<tr>
+<td>技能与任务不匹配</td>
+<td>Role&#x2F;Skills 与任务无关</td>
+</tr>
+<tr>
+<td>示例不完整</td>
+<td>第四象限示例缺少输入&#x2F;输出&#x2F;模式</td>
+</tr>
+</tbody></table>
+<h3 id="Medium（建议优化）"><a href="#Medium（建议优化）" class="headerlink" title="Medium（建议优化）"></a>Medium（建议优化）</h3><ul>
+<li>过度设计（第一象限使用复杂 Role-Based 结构）</li>
+<li>缺少部分成功标准</li>
+<li>约束不够具体</li>
+</ul>
+<h3 id="Low（可选优化）"><a href="#Low（可选优化）" class="headerlink" title="Low（可选优化）"></a>Low（可选优化）</h3><ul>
+<li>格式不规范</li>
+<li>表达不够简洁</li>
+</ul>
+<h2 id="优化策略"><a href="#优化策略" class="headerlink" title="优化策略"></a>优化策略</h2><p>根据问题数量和严重性，选择不同优化策略：</p>
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>策略</th>
+<th>方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>问题少 (&lt;&#x3D;3), 无 Critical</td>
+<td>保留式优化</td>
+<td>保留原有结构风格，只修改问题部分</td>
+</tr>
+<tr>
+<td>问题多 (&gt;3), 有 Critical</td>
+<td>重构式优化</td>
+<td>重新设计结构，应用合适模板</td>
+</tr>
+<tr>
+<td>完全不匹配最佳实践</td>
+<td>模板化优化</td>
+<td>推荐最合适模板，基于模板重新构建</td>
+</tr>
+</tbody></table>
+<h2 id="实战案例"><a href="#实战案例" class="headerlink" title="实战案例"></a>实战案例</h2><h3 id="案例-1-第四象限陷阱（2-10-→-8-5-10）"><a href="#案例-1-第四象限陷阱（2-10-→-8-5-10）" class="headerlink" title="案例 1: 第四象限陷阱（2&#x2F;10 → 8.5&#x2F;10）"></a>案例 1: 第四象限陷阱（2&#x2F;10 → 8.5&#x2F;10）</h3><p><strong>原始 Prompt (2.0&#x2F;10 - Critical)</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">审查我们公司的 XYZ 系统代码，确保遵循 YYY 规范</span><br></pre></td></tr></table></figure>
+
+<p>问题诊断：</p>
+<ul>
+<li>象限: Q4（人知道 AI 不知道）</li>
+<li>问题: XYZ、YYY 未定义，AI 无法理解</li>
+<li>等级: Critical</li>
+</ul>
+<p><strong>优化后 (8.5&#x2F;10)</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">审查 XYZ 系统代码，确保遵循 YYY 规范。</span><br><span class="line"></span><br><span class="line">定义:</span><br><span class="line">- XYZ 系统：内部微服务框架，基于 Spring Boot</span><br><span class="line">- YYY 规范：内部代码规范，PascalCase 类名，camelCase 方法名</span><br><span class="line"></span><br><span class="line">示例:</span><br><span class="line">❌ public class user_service &#123; &#125;</span><br><span class="line">✓ public class UserService &#123; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>核心改动：用”喂模式”（定义字典 + 正反例）把第四象限知识转化为 AI 可理解的格式。</p>
+<h3 id="案例-2-简单任务优化（7-9-10）"><a href="#案例-2-简单任务优化（7-9-10）" class="headerlink" title="案例 2: 简单任务优化（7.9&#x2F;10）"></a>案例 2: 简单任务优化（7.9&#x2F;10）</h3><p><strong>原始 Prompt</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">写一个冒泡排序</span><br></pre></td></tr></table></figure>
+
+<p>评分：Q1 象限，场景简单任务，3S 表现好（Single 10, Specific 7, Short 9）</p>
+<p>问题：Medium - 缺少性能要求</p>
+<p><strong>优化后</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">用 Python 实现冒泡排序：</span><br><span class="line">- 输入：整数列表</span><br><span class="line">- 输出：升序排列的列表</span><br><span class="line">- 要求：时间复杂度 O(n²)，空间复杂度 O(1)</span><br></pre></td></tr></table></figure>
+
+<h3 id="案例-3-复杂专业任务优化（4-2-10-→-8-0-10）"><a href="#案例-3-复杂专业任务优化（4-2-10-→-8-0-10）" class="headerlink" title="案例 3: 复杂专业任务优化（4.2&#x2F;10 → 8.0&#x2F;10）"></a>案例 3: 复杂专业任务优化（4.2&#x2F;10 → 8.0&#x2F;10）</h3><p><strong>原始 Prompt (4.2&#x2F;10)</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">你是一个资深的后端开发工程师，请帮我设计一个用户认证系统，</span><br><span class="line">要支持多种登录方式，要安全，性能要好，还要方便扩展</span><br></pre></td></tr></table></figure>
+
+<p>问题诊断：</p>
+<ul>
+<li>多目标（”多种登录方式 + 安全 + 性能 + 扩展”）</li>
+<li>约束模糊（”安全”、”性能好” 不可验证）</li>
+<li>缺少成功标准</li>
+</ul>
+<p><strong>优化后 (8.0&#x2F;10)</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">设计用户认证系统 API：</span><br><span class="line"></span><br><span class="line">范围：</span><br><span class="line">- 登录方式：邮箱+密码、OAuth2（Google/GitHub）</span><br><span class="line">- 安全：JWT + Refresh Token，密码 bcrypt 加密</span><br><span class="line">- 性能：登录接口 P99 &lt; 200ms</span><br><span class="line"></span><br><span class="line">输出格式：</span><br><span class="line">- API 路由定义（RESTful）</span><br><span class="line">- 数据库表结构（用户表、Token 表）</span><br><span class="line">- 认证流程图</span><br><span class="line"></span><br><span class="line">约束：</span><br><span class="line">- 不依赖第三方 Session 存储</span><br><span class="line">- Token 有效期 15 分钟，Refresh Token 7 天</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="系列导航"><a href="#系列导航" class="headerlink" title="系列导航"></a>系列导航</h2><p><strong>FlowKit 系列教程</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>文章</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><a href="/2026/05/05/FlowKit-AI%E5%8E%9F%E7%94%9F%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%BC%96%E6%8E%92%E5%B7%A5%E5%85%B7%E9%9B%86/">总览：AI 原生工作流编排的设计哲学</a></td>
+<td>动机、架构、Iron Laws、社区对比</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Prompt 量化评分：乔哈里视窗 x 3S 原则</strong></td>
+<td>四象限、3S、7维评分、第四象限陷阱</td>
+</tr>
+<tr>
+<td>3</td>
+<td><a href="/2026/05/19/FlowKit-Multi-Agent%E5%8D%8F%E4%BD%9C/">Multi-Agent 协作：tmux 分屏并行引擎</a></td>
+<td>角色匹配、文件隔离、Phase复用</td>
+</tr>
+<tr>
+<td>4</td>
+<td><a href="/2026/05/26/FlowKit-Flow%E8%BD%BB%E9%87%8F%E7%BC%96%E6%8E%92/">Flow 轻量编排：5 阶段管道按需启用</a></td>
+<td>Stage流程、Plan Mode、Fallback协议</td>
+</tr>
+<tr>
+<td>5</td>
+<td><a href="/2026/06/02/FlowKit-Flow-Deep%E6%B7%B1%E5%BA%A6%E7%AE%A1%E9%81%93/">Flow-Deep 深度管道：全量质量保障引擎</a></td>
+<td>Plan Review、Auto-Decide、STATE.md、Ralph Loop</td>
+</tr>
+</tbody></table>
+<hr>
+<p><em>FlowKit 使用 MIT 协议开源。如果对 AI Agent 工作流编排感兴趣，欢迎 <a href="https://github.com/FrizzleFur/flowkit">Star</a> 和交流。</em></p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">MichaelMao</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://michaelmaomao.github.io/2026/05/12/FlowKit-Prompt%E9%87%8F%E5%8C%96%E8%AF%84%E5%88%86/">http://michaelmaomao.github.io/2026/05/12/FlowKit-Prompt%E9%87%8F%E5%8C%96%E8%AF%84%E5%88%86/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://michaelMaoMao.github.io">MMao</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/AI/">AI</a><a class="post-meta__tags" href="/tags/Claude-Code/">Claude Code</a><a class="post-meta__tags" href="/tags/%E5%BC%80%E6%BA%90/">开源</a><a class="post-meta__tags" href="/tags/Prompt/">Prompt</a></div><div class="post-qr-code"><div class="post-qr-code-item"><img class="post-qr-code__img" src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"><div class="post-qr-code__desc">我要吐槽下</div></div></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2026/05/12/Claude-Code-Insights-%E7%89%88%E6%9C%AC%E6%BC%94%E8%BF%9B%E8%BF%BD%E8%B8%AA%E4%B8%8E%E7%9F%A5%E8%AF%86%E5%BA%93/"><i class="fa fa-chevron-left">  </i><span>Claude Code Insights - 版本演进追踪与知识库</span></a></div><div class="next-post pull-right"><a href="/2026/05/05/FlowKit-AI%E5%8E%9F%E7%94%9F%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%BC%96%E6%8E%92%E5%B7%A5%E5%85%B7%E9%9B%86/"><span>FlowKit - AI 原生工作流编排的设计哲学</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

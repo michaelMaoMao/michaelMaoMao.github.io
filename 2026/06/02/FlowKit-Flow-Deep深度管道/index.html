@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="FlowKit - Flow-Deep 深度管道"><meta name="keywords" content="AI,Agent,Claude Code,开源"><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>FlowKit - Flow-Deep 深度管道 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95"><span class="toc-number">1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8E-Flow-%E7%9A%84%E6%A0%B8%E5%BF%83%E5%B7%AE%E5%BC%82"><span class="toc-number">2.</span> <span class="toc-text">与 Flow 的核心差异</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stage-0-Superpowers-%E5%89%8D%E7%BD%AE%E6%A3%80%E6%9F%A5"><span class="toc-number">3.</span> <span class="toc-text">Stage 0: Superpowers 前置检查</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%BD%E5%8A%9B%E5%8F%91%E7%8E%B0"><span class="toc-number">3.1.</span> <span class="toc-text">能力发现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stage-2-%E5%BC%BA%E5%88%B6%E6%B7%B1%E5%BA%A6%E6%80%9D%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">Stage 2: 强制深度思考</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Sequential-Thinking%EF%BC%88%E7%BB%93%E6%9E%84%E5%8C%96%E6%80%9D%E8%80%83%EF%BC%89"><span class="toc-number">4.1.</span> <span class="toc-text">Sequential Thinking（结构化思考）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mermaid-%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="toc-number">4.2.</span> <span class="toc-text">Mermaid 可视化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E8%A7%92%E8%89%B2%E8%AE%A8%E8%AE%BA"><span class="toc-number">4.3.</span> <span class="toc-text">三角色讨论</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stage-3-5-%E5%BC%BA%E5%88%B6-Plan-Review"><span class="toc-number">5.</span> <span class="toc-text">Stage 3.5: 强制 Plan Review</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stage-3-6-%E5%A4%9A%E8%A7%92%E8%89%B2%E9%9D%A2%E6%9D%BF%E8%AF%84%E5%AE%A1"><span class="toc-number">6.</span> <span class="toc-text">Stage 3.6: 多角色面板评审</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">6.1.</span> <span class="toc-text">工作流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Auto-Decide-Layer-%E2%80%94-6-%E5%8E%9F%E5%88%99"><span class="toc-number">6.2.</span> <span class="toc-text">Auto-Decide Layer — 6 原则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#STATE-md-%E8%B7%A8%E4%BC%9A%E8%AF%9D%E6%81%A2%E5%A4%8D"><span class="toc-number">7.</span> <span class="toc-text">STATE.md 跨会话恢复</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98"><span class="toc-number">7.1.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">7.2.</span> <span class="toc-text">解决方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%81%A2%E5%A4%8D%E6%B5%81%E7%A8%8B"><span class="toc-number">7.3.</span> <span class="toc-text">恢复流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stage-5-5-%E8%87%AA%E4%B8%BB%E8%BF%AD%E4%BB%A3%E5%BC%95%E6%93%8E"><span class="toc-number">8.</span> <span class="toc-text">Stage 5.5: 自主迭代引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E5%8D%8F%E8%AE%AE-keep-revert"><span class="toc-number">8.1.</span> <span class="toc-text">核心协议: keep&#x2F;revert</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8F-Guard-%E7%AD%96%E7%95%A5"><span class="toc-number">8.2.</span> <span class="toc-text">渐进式 Guard 策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stage-5-7-Ralph-Loop-%E5%BC%BA%E5%88%B6%E6%8C%81%E7%BB%AD"><span class="toc-number">9.</span> <span class="toc-text">Stage 5.7: Ralph Loop 强制持续</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E-auto-iterate-%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">9.1.</span> <span class="toc-text">与 auto-iterate 的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B-1"><span class="toc-number">9.2.</span> <span class="toc-text">工作流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="toc-number">10.</span> <span class="toc-text">完整使用示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E5%88%97%E5%AF%BC%E8%88%AA"><span class="toc-number">11.</span> <span class="toc-text">系列导航</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">53</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">30</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a><a class="site-page" href="/gallery">相册</a><a class="site-page" href="/gtd">GTD</a></span></div><div id="post-info"><div id="post-title">FlowKit - Flow-Deep 深度管道</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2026-06-02</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><blockquote>
+<p><strong>Flow-Deep</strong> 是 FlowKit 的全量深度引擎，所有质量关卡不可跳过，适用于复杂&#x2F;重要&#x2F;高风险任务。<br>本文是 FlowKit 系列教程第五篇（最终篇）。</p>
+</blockquote>
+<p>GitHub: <a href="https://github.com/FrizzleFur/flowkit">FrizzleFur&#x2F;flowkit</a> | <a href="#%E7%B3%BB%E5%88%97%E5%AF%BC%E8%88%AA">系列导航</a></p>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="#%E4%B8%8E-flow-%E7%9A%84%E6%A0%B8%E5%BF%83%E5%B7%AE%E5%BC%82">与 Flow 的核心差异</a></li>
+<li><a href="#stage-0-superpowers-%E5%89%8D%E7%BD%AE%E6%A3%80%E6%9F%A5">Stage 0: Superpowers 前置检查</a></li>
+<li><a href="#stage-2-%E5%BC%BA%E5%88%B6%E6%B7%B1%E5%BA%A6%E6%80%9D%E8%80%83">Stage 2: 强制深度思考</a></li>
+<li><a href="#stage-35-%E5%BC%BA%E5%88%B6-plan-review">Stage 3.5: 强制 Plan Review</a></li>
+<li><a href="#stage-36-%E5%A4%9A%E8%A7%92%E8%89%B2%E9%9D%A2%E6%9D%BF%E8%AF%84%E5%AE%A1">Stage 3.6: 多角色面板评审</a></li>
+<li><a href="#statemd-%E8%B7%A8%E4%BC%9A%E8%AF%9D%E6%81%A2%E5%A4%8D">STATE.md 跨会话恢复</a></li>
+<li><a href="#stage-55-%E8%87%AA%E4%B8%BB%E8%BF%AD%E4%BB%A3%E5%BC%95%E6%93%8E">Stage 5.5: 自主迭代引擎</a></li>
+<li><a href="#stage-57-ralph-loop-%E5%BC%BA%E5%88%B6%E6%8C%81%E7%BB%AD">Stage 5.7: Ralph Loop 强制持续</a></li>
+<li><a href="#%E5%AE%8C%E6%95%B4%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B">完整使用示例</a></li>
+</ul>
+<hr>
+<h2 id="与-Flow-的核心差异"><a href="#与-Flow-的核心差异" class="headerlink" title="与 Flow 的核心差异"></a>与 Flow 的核心差异</h2><p>Flow-Deep 定位为高风险任务的”保险模式”。与 <code>/flow</code> 相比，核心区别在于<strong>不可跳过</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th><code>/flow</code></th>
+<th><code>/flow-deep</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>前置检查</td>
+<td>无</td>
+<td><strong>强制</strong> — 能力发现 + 环境检查</td>
+</tr>
+<tr>
+<td>深度思考</td>
+<td>可选 (<code>--think</code>)</td>
+<td><strong>强制</strong> — ST + Mermaid + 三角色讨论</td>
+</tr>
+<tr>
+<td>Plan Mode</td>
+<td>默认开，可关闭</td>
+<td><strong>不可关闭</strong></td>
+</tr>
+<tr>
+<td>Plan Review</td>
+<td>可选</td>
+<td><strong>强制</strong> — 独立 Agent 审查</td>
+</tr>
+<tr>
+<td>多角色面板</td>
+<td>无</td>
+<td><strong>强制</strong> — 3-5 角色并行评审</td>
+</tr>
+<tr>
+<td>TDD 注入</td>
+<td>可选</td>
+<td><strong>自动注入</strong></td>
+</tr>
+<tr>
+<td>完成验证</td>
+<td>可跳过</td>
+<td><strong>不可跳过</strong></td>
+</tr>
+<tr>
+<td>Ralph Loop</td>
+<td>手动触发</td>
+<td>迭代用完<strong>自动触发</strong></td>
+</tr>
+</tbody></table>
+<p><strong>没有 –quick 预设</strong>。Flow-Deep 不允许快速跳过任何阶段。</p>
+<h2 id="Stage-0-Superpowers-前置检查"><a href="#Stage-0-Superpowers-前置检查" class="headerlink" title="Stage 0: Superpowers 前置检查"></a>Stage 0: Superpowers 前置检查</h2><p><strong>为什么需要前置检查？</strong> 复杂任务需要完整的工具链。在开始之前确认所有能力可用，比执行到一半发现缺少依赖要好得多。</p>
+<h3 id="能力发现"><a href="#能力发现" class="headerlink" title="能力发现"></a>能力发现</h3><p>扫描 <code>~/.claude/skills/</code> 目录，与已知能力索引交叉比对，生成”可用能力矩阵”：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">能力矩阵:</span><br><span class="line">  必需依赖:</span><br><span class="line">    /prompt           ✓</span><br><span class="line">    planning-with-files ✓</span><br><span class="line">    /multi-agent       ✓</span><br><span class="line">    using-superpowers  ✓</span><br><span class="line"></span><br><span class="line">  Superpowers 技能:</span><br><span class="line">    TDD               ✓ (自动注入)</span><br><span class="line">    writing-plans     ✓</span><br><span class="line">    code-review       ✓</span><br><span class="line">    parallel-dispatch ✓</span><br><span class="line">    verification      ✓ (强制)</span><br><span class="line"></span><br><span class="line">  迭代增强:</span><br><span class="line">    auto-iterate      ✓ (Stage 5.5)</span><br><span class="line">    ralph-loop        ✗ (未安装，Stage 5.7 降级)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Stage-2-强制深度思考"><a href="#Stage-2-强制深度思考" class="headerlink" title="Stage 2: 强制深度思考"></a>Stage 2: 强制深度思考</h2><p>Flow-Deep 中 Stage 2 默认全开，包含三个组件：</p>
+<h3 id="Sequential-Thinking（结构化思考）"><a href="#Sequential-Thinking（结构化思考）" class="headerlink" title="Sequential Thinking（结构化思考）"></a>Sequential Thinking（结构化思考）</h3><p>覆盖 6 个维度：</p>
+<ol>
+<li><strong>任务分解</strong> — 拆分为可管理的子任务</li>
+<li><strong>依赖分析</strong> — 识别子任务间的依赖和阻塞</li>
+<li><strong>风险评估</strong> — 技术风险、时间风险、集成风险</li>
+<li><strong>资源需求</strong> — 需要哪些工具、文件、API</li>
+<li><strong>执行策略</strong> — 并行&#x2F;串行、分阶段、回退计划</li>
+<li><strong>能力规划</strong> — 匹配可用能力到每个 Phase</li>
+</ol>
+<h3 id="Mermaid-可视化"><a href="#Mermaid-可视化" class="headerlink" title="Mermaid 可视化"></a>Mermaid 可视化</h3><p>生成任务结构的可视化图表。</p>
+<h3 id="三角色讨论"><a href="#三角色讨论" class="headerlink" title="三角色讨论"></a>三角色讨论</h3><p>根据任务类型自动选择三个最相关角色，两轮讨论后综合最佳方案。</p>
+<h2 id="Stage-3-5-强制-Plan-Review"><a href="#Stage-3-5-强制-Plan-Review" class="headerlink" title="Stage 3.5: 强制 Plan Review"></a>Stage 3.5: 强制 Plan Review</h2><p><strong>独立 Agent 审查</strong>，消除沉没成本偏差。</p>
+<p>审查以 Staff Engineer 角色进行 6 个维度：</p>
+<ol>
+<li>架构合理性</li>
+<li>遗漏边界情况</li>
+<li>安全风险</li>
+<li>性能影响</li>
+<li>Plan 假设验证</li>
+<li>可执行性</li>
+</ol>
+<p>返回 APPROVED &#x2F; APPROVED_WITH_NOTES &#x2F; NEEDS_REVISION，用户最终决策。</p>
+<h2 id="Stage-3-6-多角色面板评审"><a href="#Stage-3-6-多角色面板评审" class="headerlink" title="Stage 3.6: 多角色面板评审"></a>Stage 3.6: 多角色面板评审</h2><p><strong>“Design Review Board”</strong> — 多视角交叉验证，消除单角色盲区。</p>
+<h3 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">1. 角色选择（根据任务类型自动匹配 3 个角色）</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line">2. 并行评审（3 个角色同时审查 Plan）</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line">3. 综合分析</span><br><span class="line">   - 识别重叠问题（2+ Agent 提到 → 高优先级）</span><br><span class="line">   - 识别角色间分歧（标记为 Taste Decision）</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line">4. Auto-Decide Layer（6 原则自动分类）</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line">5. Final Approval Gate（只展示需要用户决策的内容）</span><br></pre></td></tr></table></figure>
+
+<h3 id="Auto-Decide-Layer-—-6-原则"><a href="#Auto-Decide-Layer-—-6-原则" class="headerlink" title="Auto-Decide Layer — 6 原则"></a>Auto-Decide Layer — 6 原则</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">P1 · 行业标准     → 违反 → 自动修复 (AUTO_FIX)</span><br><span class="line">P2 · 风险阈值     → 高风险修复 / 低风险通过</span><br><span class="line">P3 · 一致性       → 与已有一致 → 自动通过 (AUTO_APPROVE)</span><br><span class="line">P4 · YAGNI        → 过度设计 → 上浮给用户 ⚖️</span><br><span class="line">P5 · 安全优先     → 安全相关 → 自动修复</span><br><span class="line">P6 · 不可逆性     → 不可逆 → 上浮给用户 ⚖️</span><br><span class="line"></span><br><span class="line">结果: 80% 自动处理（静默），只有 &lt; 5 条 Taste Decision 需要人工</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么这很重要？</strong> 传统代码审查面板产生 20+ 条发现，全部人工判断会淹没用户。Auto-Decide 把 80% 的常规发现自动处理，只上浮真正需要品味决策的内容。</p>
+<h2 id="STATE-md-跨会话恢复"><a href="#STATE-md-跨会话恢复" class="headerlink" title="STATE.md 跨会话恢复"></a>STATE.md 跨会话恢复</h2><p><strong>这是社区框架中均未出现的原创能力。</strong></p>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>长任务（5+ 阶段）中，Claude Code 会话可能因上下文溢出等原因中断。传统做法是从头开始。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>管道内置崩溃恢复机制。每个阶段完成后，写入 <code>.plan/STATE.md</code>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># STATE.md 活记忆</span></span><br><span class="line"><span class="attr">current_stage:</span> <span class="number">4</span></span><br><span class="line"><span class="attr">current_phase:</span> <span class="number">2</span></span><br><span class="line"><span class="attr">completed_phases:</span> [<span class="number">1</span>, <span class="number">2</span>]</span><br><span class="line"><span class="attr">progress:</span> <span class="number">65</span><span class="string">%</span></span><br><span class="line"><span class="attr">next_action:</span> <span class="string">&quot;Stage 5 完成验证&quot;</span></span><br><span class="line"><span class="attr">key_decisions:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;选择 JWT 而非 Session（无状态，易扩展）&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;分两阶段执行（core+gateway 并行 → test 串行）&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="恢复流程"><a href="#恢复流程" class="headerlink" title="恢复流程"></a>恢复流程</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">会话在 Stage 4 Phase 2 中断</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line">新会话读取 .plan/STATE.md</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line">展示: &quot;上次停在 Stage 4 Phase 2 (65%)&quot;</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line">用户选择: 恢复 / 重新开始</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line">从断点精确恢复，继续执行</span><br></pre></td></tr></table></figure>
+
+<h2 id="Stage-5-5-自主迭代引擎"><a href="#Stage-5-5-自主迭代引擎" class="headerlink" title="Stage 5.5: 自主迭代引擎"></a>Stage 5.5: 自主迭代引擎</h2><p><strong>触发条件</strong>: <code>--iterate N</code> 参数 或 Stage 5 验证未达标</p>
+<h3 id="核心协议-keep-revert"><a href="#核心协议-keep-revert" class="headerlink" title="核心协议: keep&#x2F;revert"></a>核心协议: keep&#x2F;revert</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">每轮迭代:</span><br><span class="line">  1. 分析失败原因</span><br><span class="line">  2. 做一个最小变更</span><br><span class="line">  3. commit 变更</span><br><span class="line">  4. 运行验证</span><br><span class="line">  5. 通过 → keep（保留变更）</span><br><span class="line">     失败 → revert（撤销变更，回到上一轮）</span><br><span class="line">  6. 记录 TSV 历史（追踪每次迭代的结果）</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键纪律</strong>: 每次只改一个东西。不是”大改”，而是”最小变更”。</p>
+<h3 id="渐进式-Guard-策略"><a href="#渐进式-Guard-策略" class="headerlink" title="渐进式 Guard 策略"></a>渐进式 Guard 策略</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">早期（1-3 轮）: 冒烟测试（快速验证基本功能）</span><br><span class="line">中期（4-6 轮）: 集成测试（验证模块间交互）</span><br><span class="line">后期（7+ 轮）: 全量测试（完整回归测试）</span><br><span class="line"></span><br><span class="line">为什么？全量 guard 太早会扼杀创新方向探索。</span><br></pre></td></tr></table></figure>
+
+<h2 id="Stage-5-7-Ralph-Loop-强制持续"><a href="#Stage-5-7-Ralph-Loop-强制持续" class="headerlink" title="Stage 5.7: Ralph Loop 强制持续"></a>Stage 5.7: Ralph Loop 强制持续</h2><p><strong>触发条件</strong>: Stage 5.5 迭代用完仍未达标 + Ralph Loop 插件已安装</p>
+<h3 id="与-auto-iterate-的关系"><a href="#与-auto-iterate-的关系" class="headerlink" title="与 auto-iterate 的关系"></a>与 auto-iterate 的关系</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">auto-iterate: &quot;怎么迭代&quot; — 应用逻辑层</span><br><span class="line">  - 结构化 keep/revert 循环</span><br><span class="line">  - TSV 历史追踪</span><br><span class="line">  - stuck strategy</span><br><span class="line"></span><br><span class="line">Ralph Loop: &quot;不让你停&quot; — 会话控制层</span><br><span class="line">  - Stop Hook 拦截会话退出</span><br><span class="line">  - 注入固定 prompt</span><br><span class="line">  - 强制持续直到达标</span><br></pre></td></tr></table></figure>
+
+<p>两者是<strong>互补</strong>而非替代。Ralph Loop 在 auto-iterate 外层包裹”不达目的不罢休”的强制机制。每轮 Ralph 迭代内部调用的还是 auto-iterate 的 keep&#x2F;revert 协议。</p>
+<h3 id="工作流程-1"><a href="#工作流程-1" class="headerlink" title="工作流程"></a>工作流程</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Stage 5.5 迭代 N 轮仍未达标</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line">Ralph Loop 通过 Stop Hook 拦截退出</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line">注入固定 prompt（含历史摘要）</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line">每轮 Ralph 迭代:</span><br><span class="line">  1. 从 progress.md 读取最新状态</span><br><span class="line">  2. 执行 auto-iterate 的 keep/revert</span><br><span class="line">  3. 运行 Stage 5 验证</span><br><span class="line">  4. 达标 → 输出 &lt;FLOW_DEEP_COMPLETE&gt; 退出</span><br><span class="line">     未达标 → 继续下一轮</span><br></pre></td></tr></table></figure>
+
+<p><strong>降级方案</strong>: Ralph Loop 插件未安装时，提示用户手动重启 auto-iterate。</p>
+<h2 id="完整使用示例"><a href="#完整使用示例" class="headerlink" title="完整使用示例"></a>完整使用示例</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">/flow-deep 重新设计支付系统，支持多币种</span><br><span class="line"></span><br><span class="line">→ Stage 0: Superpowers 前置检查</span><br><span class="line">   /prompt ✓ | planning-with-files ✓ | /multi-agent ✓</span><br><span class="line">   TDD ✓ | code-review ✓ | auto-iterate ✓ | ralph-loop ✗</span><br><span class="line"></span><br><span class="line">→ Stage 1: Prompt 优化</span><br><span class="line">   原始评分: 6.5/10 → 优化后: 8.2/10</span><br><span class="line"></span><br><span class="line">→ Stage 2: 深度思考（强制）</span><br><span class="line">   ST 6维度分析 + Mermaid 架构图 + 三角色讨论（架构师/支付专家/SRE）</span><br><span class="line"></span><br><span class="line">→ Stage 3: Plan Mode（不可跳过）</span><br><span class="line">   Phase 1: 核心模块重构（支付核心 + 多币种转换）</span><br><span class="line">   Phase 2: 网关集成（Stripe/PayPal/支付宝）</span><br><span class="line">   Phase 3: 测试 + 安全审计</span><br><span class="line"></span><br><span class="line">→ Stage 3.5: Plan Review（强制）</span><br><span class="line">   独立 Agent 审查 → APPROVED_WITH_NOTES</span><br><span class="line">   建议: 增加 Phase 2.5（灰度发布方案）→ 用户采纳</span><br><span class="line"></span><br><span class="line">→ Stage 3.6: 多角色面板评审</span><br><span class="line">   3 角色（支付专家、安全工程师、架构师）并行评审</span><br><span class="line">   Auto-Decide: 15 项发现 → 12 项自动处理 + 3 项 Taste Decision</span><br><span class="line">   用户确认 → 采纳 2 项，驳回 1 项</span><br><span class="line"></span><br><span class="line">→ Stage 4: 并发执行（TDD 注入）</span><br><span class="line">   Phase 1: core Agent + gateway Agent 并行（TDD 模式）</span><br><span class="line">   Phase 2: security Agent 审查</span><br><span class="line">   Phase 3: test Agent + docs Agent 并行</span><br><span class="line"></span><br><span class="line">→ Stage 5: 完成验证（不可跳过）</span><br><span class="line">   128 个测试全部通过 ✓</span><br><span class="line">   覆盖率 87% ✓</span><br><span class="line">   性能基准: P99 &lt; 150ms ✓</span><br><span class="line"></span><br><span class="line">→ Stage 5.5: 迭代优化</span><br><span class="line">   Stage 5 全部达标 → 跳过</span><br><span class="line"></span><br><span class="line">→ 完成</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="系列导航"><a href="#系列导航" class="headerlink" title="系列导航"></a>系列导航</h2><p><strong>FlowKit 系列教程</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>文章</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><a href="/2026/05/05/FlowKit-AI%E5%8E%9F%E7%94%9F%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%BC%96%E6%8E%92%E5%B7%A5%E5%85%B7%E9%9B%86/">总览：AI 原生工作流编排的设计哲学</a></td>
+<td>动机、架构、Iron Laws、社区对比</td>
+</tr>
+<tr>
+<td>2</td>
+<td><a href="/2026/05/12/FlowKit-Prompt%E9%87%8F%E5%8C%96%E8%AF%84%E5%88%86/">Prompt 量化评分：乔哈里视窗 x 3S 原则</a></td>
+<td>四象限、3S、7维评分、第四象限陷阱</td>
+</tr>
+<tr>
+<td>3</td>
+<td><a href="/2026/05/19/FlowKit-Multi-Agent%E5%8D%8F%E4%BD%9C/">Multi-Agent 协作：tmux 分屏并行引擎</a></td>
+<td>角色匹配、文件隔离、Phase复用</td>
+</tr>
+<tr>
+<td>4</td>
+<td><a href="/2026/05/26/FlowKit-Flow%E8%BD%BB%E9%87%8F%E7%BC%96%E6%8E%92/">Flow 轻量编排：5 阶段管道按需启用</a></td>
+<td>Stage流程、Plan Mode、Fallback协议</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Flow-Deep 深度管道：全量质量保障引擎</strong></td>
+<td>Plan Review、Auto-Decide、STATE.md、Ralph Loop</td>
+</tr>
+</tbody></table>
+<hr>
+<p><em>FlowKit 使用 MIT 协议开源。如果对 AI Agent 工作流编排感兴趣，欢迎 <a href="https://github.com/FrizzleFur/flowkit">Star</a> 和交流。</em></p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">MichaelMao</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://michaelmaomao.github.io/2026/06/02/FlowKit-Flow-Deep%E6%B7%B1%E5%BA%A6%E7%AE%A1%E9%81%93/">http://michaelmaomao.github.io/2026/06/02/FlowKit-Flow-Deep%E6%B7%B1%E5%BA%A6%E7%AE%A1%E9%81%93/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://michaelMaoMao.github.io">MMao</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/AI/">AI</a><a class="post-meta__tags" href="/tags/Agent/">Agent</a><a class="post-meta__tags" href="/tags/Claude-Code/">Claude Code</a><a class="post-meta__tags" href="/tags/%E5%BC%80%E6%BA%90/">开源</a></div><div class="post-qr-code"><div class="post-qr-code-item"><img class="post-qr-code__img" src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"><div class="post-qr-code__desc">我要吐槽下</div></div></div><nav id="pagination"><div class="next-post pull-right"><a href="/2026/05/26/FlowKit-Flow%E8%BD%BB%E9%87%8F%E7%BC%96%E6%8E%92/"><span>FlowKit - Flow 轻量编排</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
