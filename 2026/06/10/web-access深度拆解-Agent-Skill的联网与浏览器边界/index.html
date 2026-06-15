@@ -1,0 +1,322 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="web-access 深度拆解：一个 Agent Skill 如何定义 Claude Code 的联网与浏览器边界"><meta name="keywords" content="Claude Code,Agent Skill,CDP,浏览器自动化"><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>web-access 深度拆解：一个 Agent Skill 如何定义 Claude Code 的联网与浏览器边界 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E5%AD%90%EF%BC%9A%E5%8E%9F%E7%94%9F%E5%B7%A5%E5%85%B7%E6%98%AF%E5%90%A6%E8%B6%B3%E5%A4%9F"><span class="toc-number">1.</span> <span class="toc-text">引子：原生工具是否足够</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%AE%BE%E8%AE%A1%E5%93%B2%E5%AD%A6%EF%BC%9AAgent-Skill-%E5%BA%94%E8%AF%A5%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99"><span class="toc-number">2.</span> <span class="toc-text">一、设计哲学：Agent Skill 应该如何编写</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Skill-%E5%93%B2%E5%AD%A6-%E6%8A%80%E6%9C%AF%E4%BA%8B%E5%AE%9E%EF%BC%8C%E4%B8%8D%E6%98%AF%E6%93%8D%E4%BD%9C%E6%89%8B%E5%86%8C"><span class="toc-number">2.1.</span> <span class="toc-text">1. Skill &#x3D; 哲学 + 技术事实，不是操作手册</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E3%80%8C%E5%83%8F%E4%BA%BA%E4%B8%80%E6%A0%B7%E6%80%9D%E8%80%83%E3%80%8D%E5%9B%9B%E6%AD%A5%E6%B3%95"><span class="toc-number">2.2.</span> <span class="toc-text">2. 「像人一样思考」四步法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%9B%AE%E6%A0%87%E9%A9%B1%E5%8A%A8%EF%BC%8C%E8%80%8C%E9%9D%9E%E6%AD%A5%E9%AA%A4%E9%A9%B1%E5%8A%A8"><span class="toc-number">2.3.</span> <span class="toc-text">3. 目标驱动，而非步骤驱动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E9%9D%A2%E8%AF%95%E8%A7%86%E8%A7%92"><span class="toc-number">2.4.</span> <span class="toc-text">4. 面试视角</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%8A%80%E6%9C%AF%E4%B9%8B%E9%AA%A8%EF%BC%9ACDP-Proxy-%E5%B7%A5%E7%A8%8B%E6%8B%86%E8%A7%A3"><span class="toc-number">3.</span> <span class="toc-text">二、技术之骨：CDP Proxy 工程拆解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9E%B6%E6%9E%84%E6%80%BB%E8%A7%88"><span class="toc-number">3.1.</span> <span class="toc-text">1. 架构总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Chrome-%E7%AB%AF%E5%8F%A3%E5%8F%91%E7%8E%B0%EF%BC%9A%E4%B8%80%E4%B8%AA%E8%A2%AB%E5%BF%BD%E8%A7%86%E7%9A%84%E7%B2%BE%E5%A6%99%E8%AE%BE%E8%AE%A1"><span class="toc-number">3.2.</span> <span class="toc-text">2. Chrome 端口发现：一个被忽视的精妙设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%B8%89%E7%A7%8D%E7%82%B9%E5%87%BB%E6%9C%BA%E5%88%B6%EF%BC%9A%E5%90%8C%E4%B8%80%E5%8A%A8%E4%BD%9C%E7%9A%84%E4%B8%89%E7%A7%8D%E4%BB%A3%E4%BB%B7"><span class="toc-number">3.3.</span> <span class="toc-text">3. 三种点击机制：同一动作的三种代价</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%99%BB%E5%BD%95%E6%80%81%E5%A4%A9%E7%84%B6%E5%A4%8D%E7%94%A8"><span class="toc-number">3.4.</span> <span class="toc-text">4. 登录态天然复用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8"><span class="toc-number">3.5.</span> <span class="toc-text">5. 并发安全</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%B9%B6%E5%8F%91%E5%B7%A5%E7%A8%8B%E9%93%BE%E8%B7%AF%EF%BC%9A%E5%AD%90-Agent-%E5%88%86%E6%B2%BB"><span class="toc-number">4.</span> <span class="toc-text">三、并发工程链路：子 Agent 分治</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%88%86%E6%B2%BB"><span class="toc-number">4.1.</span> <span class="toc-text">1. 为什么分治</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-tab-%E7%BA%A7%E9%9A%94%E7%A6%BB%EF%BC%9A%E5%85%B1%E4%BA%AB%E4%B8%80%E4%B8%AA-Proxy%EF%BC%8C%E6%97%A0%E7%AB%9E%E6%80%81"><span class="toc-number">4.2.</span> <span class="toc-text">2. tab 级隔离：共享一个 Proxy，无竞态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%B8%8A%E4%B8%8B%E6%96%87%E7%BB%8F%E6%B5%8E%E5%AD%A6"><span class="toc-number">4.3.</span> <span class="toc-text">3. 上下文经济学</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AF%B9%E7%85%A7%EF%BC%9A%E5%88%86%E6%89%B9%E5%B9%B6%E5%8F%91%E4%B8%8E%E5%AE%B9%E9%94%99"><span class="toc-number">4.4.</span> <span class="toc-text">4. 服务端对照：分批并发与容错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%AD%90-Agent-prompt-%E7%9A%84%E5%86%99%E6%B3%95"><span class="toc-number">4.5.</span> <span class="toc-text">5. 子 Agent prompt 的写法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%9E%E6%88%98%E4%B9%8B%E8%82%89%EF%BC%9A%E4%BB%8E%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B%E5%88%B0%E8%BE%B9%E7%95%8C%E8%A1%A5%E5%85%A8"><span class="toc-number">5.</span> <span class="toc-text">四、实战之肉：从技术选型到边界补全</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF-A%EF%BC%9AAIGC-%E5%86%85%E5%AE%B9%E7%94%9F%E4%BA%A7%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E4%B8%80%E6%AC%A1%E5%AE%8C%E6%95%B4%E7%9A%84%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B%E4%B8%8E%E8%BE%B9%E7%95%8C%E8%AF%86%E5%88%AB"><span class="toc-number">5.1.</span> <span class="toc-text">场景 A：AIGC 内容生产系统——一次完整的技术选型与边界识别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF-B%EF%BC%9AClaude-Code-%E5%B7%A5%E5%85%B7%E9%93%BE%E4%B8%AD%E7%9A%84-web-access"><span class="toc-number">5.2.</span> <span class="toc-text">场景 B：Claude Code 工具链中的 web-access</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%8D%87%E5%8D%8E%EF%BC%9A%E4%BB%8E%E7%AB%99%E7%82%B9%E7%BB%8F%E9%AA%8C%E5%88%B0-OPRO%EF%BC%8CAI-%E8%87%AA%E6%88%91%E8%BF%9B%E5%8C%96%E7%9A%84%E4%B8%A4%E4%B8%AA%E9%9D%A2%E5%AD%94"><span class="toc-number">6.</span> <span class="toc-text">五、升华：从站点经验到 OPRO，AI 自我进化的两个面孔</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-web-access-%E7%AB%99%E7%82%B9%E7%BB%8F%E9%AA%8C%EF%BC%9A%E6%93%8D%E4%BD%9C%E7%AD%96%E7%95%A5%E7%A9%BA%E9%97%B4%E7%9A%84%E8%87%AA%E6%88%91%E8%BF%9B%E5%8C%96"><span class="toc-number">6.1.</span> <span class="toc-text">1. web-access 站点经验：操作策略空间的自我进化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%9C%AC%E9%A1%B9%E7%9B%AE-OPRO%EF%BC%9APrompt-%E7%A9%BA%E9%97%B4%E7%9A%84%E8%87%AA%E6%88%91%E8%BF%9B%E5%8C%96"><span class="toc-number">6.2.</span> <span class="toc-text">2. 本项目 OPRO：Prompt 空间的自我进化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%BF%99%E6%98%AF-Spec-Driven-Development-%E5%9C%A8-AI-%E6%97%B6%E4%BB%A3%E7%9A%84%E5%8D%87%E7%BA%A7"><span class="toc-number">6.3.</span> <span class="toc-text">3. 这是 Spec Driven Development 在 AI 时代的升级</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%AF%B9%E8%87%AA%E7%A0%94-skill-%E7%9A%84%E5%90%AF%E5%8F%91"><span class="toc-number">6.4.</span> <span class="toc-text">4. 对自研 skill 的启发</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD%EF%BC%9A%E4%BB%8E%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E8%80%85%E5%88%B0%E5%B7%A5%E5%85%B7%E8%AE%BE%E8%AE%A1%E8%80%85"><span class="toc-number">7.</span> <span class="toc-text">结语：从工具使用者到工具设计者</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">54</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">33</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a><a class="site-page" href="/gallery">相册</a><a class="site-page" href="/gtd">GTD</a></span></div><div id="post-info"><div id="post-title">web-access 深度拆解：一个 Agent Skill 如何定义 Claude Code 的联网与浏览器边界</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2026-06-10</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/AI-%E5%B7%A5%E7%A8%8B/">AI 工程</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="引子：原生工具是否足够"><a href="#引子：原生工具是否足够" class="headerlink" title="引子：原生工具是否足够"></a>引子：原生工具是否足够</h2><p>Claude Code 开箱即带两个联网工具：<code>WebSearch</code> 负责发现，<code>WebFetch</code> 负责提取。能力清单看似完整，但在真实的 Agent 联网任务中，会接连遇到三类典型障碍：</p>
+<ul>
+<li>读取微信公众号文章，<code>WebFetch</code> 返回的是「环境异常」的空壳；</li>
+<li>访问小红书账号页，正文在 JS 执行后才渲染，<code>curl</code> 仅能取回骨架；</li>
+<li>同时调研多个竞品官网，串行 <code>WebFetch</code> 耗时长，且回传的大段 HTML 会将上下文撑爆。</li>
+</ul>
+<p>这三类障碍暴露的不是 Claude Code 的能力不足，而是<strong>缺少两样东西</strong>：一套联网的调度策略，以及一层浏览器能力。原生工具是零件，却没有引擎将其组织起来。</p>
+<p><a href="https://github.com/eze-is/web-access">web-access</a>（当前 v2.4.1，作者一泽 Eze）补全的正是这一层：<strong>联网策略 + CDP 浏览器代理 + 站点经验积累</strong>。它的特别之处在于，这并非一个「代为联网的脚本」，而是一份指导 Agent 如何<strong>思考</strong>联网任务的哲学文档，外加一个最小化的 CDP 代理实现（572 行零依赖 Node 脚本）。</p>
+<p>本文不做功能罗列，而是从源码层面将其拆透：先阐述设计哲学，再解析 CDP Proxy 的工程实现，最后落到笔者主导的一个 AIGC 内容生产项目——以一个真实生产系统的技术选型与边界识别，印证 web-access 的价值。全文只回答一个问题：<strong>一个优秀的 Agent Skill，究竟该具备怎样的形态。</strong></p>
+<span id="more"></span>
+
+<hr>
+<h2 id="一、设计哲学：Agent-Skill-应该如何编写"><a href="#一、设计哲学：Agent-Skill-应该如何编写" class="headerlink" title="一、设计哲学：Agent Skill 应该如何编写"></a>一、设计哲学：Agent Skill 应该如何编写</h2><p>这是 web-access 最值得剖析的部分，也是读者最易跳过的部分。通读源码后可以确认，恰恰是这部分决定了 skill 的上限——技术实现可以替换（CDP 换成 Playwright、WebSocket 换成长轮询），而哲学不会过时。</p>
+<h3 id="1-Skill-哲学-技术事实，不是操作手册"><a href="#1-Skill-哲学-技术事实，不是操作手册" class="headerlink" title="1. Skill &#x3D; 哲学 + 技术事实，不是操作手册"></a>1. Skill &#x3D; 哲学 + 技术事实，不是操作手册</h3><p>SKILL.md 中的定义直接点题：</p>
+<blockquote>
+<p>Skill &#x3D; 哲学 + 技术事实，不是操作手册。讲清 tradeoff 让 AI 自己选，不替它推理。</p>
+</blockquote>
+<p>这要求区分两类知识。<strong>操作手册</strong>将每一步钉死：「第一步打开浏览器，第二步输入网址，第三步点击按钮」。<strong>哲学 + 技术事实</strong>则相反：告知 Agent 世界的样貌（技术事实），以及面对选择时的权衡准则（哲学），具体动作交由 Agent 自行判断。</p>
+<p>web-access 通篇贯彻此路。它不写「遇到小红书就用 CDP」，而是给出一张完整的工具选择表，明确每个工具的适用边界：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>搜索摘要或关键词结果，发现信息来源</td>
+<td>WebSearch</td>
+</tr>
+<tr>
+<td>URL 已知，需要从页面定向提取特定信息</td>
+<td>WebFetch（小模型按 prompt 提取）</td>
+</tr>
+<tr>
+<td>URL 已知，需要原始 HTML 源码（meta、JSON-LD 等结构化字段）</td>
+<td>curl</td>
+</tr>
+<tr>
+<td>非公开内容，或已知静态层无效的平台（小红书、微信公众号等）</td>
+<td>浏览器 CDP</td>
+</tr>
+<tr>
+<td>需要登录态、交互操作，或需要像人一样在浏览器内自由导航探索</td>
+<td>浏览器 CDP</td>
+</tr>
+</tbody></table>
+<p>进而将「何时升级到更根本的获取方式」提炼为一条原则：<em>多次搜索无质的改进时，定位一手来源（官网、原始页面）</em>。Agent 据此面对新任务时，能自主组合工具，而非机械套用步骤。这正是它能处理「未知站点」「意外弹窗」「反爬升级」等手册无法穷举的情况的根本原因。</p>
+<h3 id="2-「像人一样思考」四步法"><a href="#2-「像人一样思考」四步法" class="headerlink" title="2. 「像人一样思考」四步法"></a>2. 「像人一样思考」四步法</h3><p>web-access 的执行框架为四步：<strong>拿请求 → 选起点 → 过程校验 → 完成判断</strong>。看似朴素，但每一步的设计都针对 Agent 的典型失败模式。</p>
+<p><strong>拿请求</strong>——先定义成功标准：「什么算完成？」这是后续判断的锚点。Agent 最常见的失败是跑偏而不自知，根源正在于缺少明确的完成定义。</p>
+<p><strong>选起点</strong>——依据任务性质，选择最可能直达的方式作为第一步加以验证，「一次成功最佳，不成功则在过程校验中调整」。它不追求规划最优路径，而追求快速验证、快速纠偏。</p>
+<p><strong>过程校验</strong>——这是最关键、也最反直觉的一步。原则是：<strong>每一步的结果都是证据，而非简单的成功&#x2F;失败二元信号</strong>。SKILL.md 用若干反例强化此点：</p>
+<ul>
+<li>搜索未命中，不等于「尚未找对方法」，也可能是「目标不存在」；</li>
+<li>API 报错、页面缺少预期元素、重试无改善，均在提示「应重新评估方向」，而非「在相同方式上反复重试」；</li>
+<li>遇到弹窗或登录墙，先判断其是否真正阻挡目标——「挡住了就处理，没挡住就绕过，内容可能已在 DOM 中，交互只是展示手段」。</li>
+</ul>
+<p>这个原则在生产中有大量具象。笔者的一个内容生产项目里，推送文案的主副标题改写 Prompt 就内建了自检流程：「生成标题后立即数字符（含 emoji），如超出 13 字符必须删减至符合要求」「确认无编号、无解释文字」「最终只输出一个标题内容」。每一次生成都被当作证据——超长则回退修正，而非直接采纳。这正是「结果作为证据，发现偏差立即调整」在 Prompt 工程层的落地（后文第五篇会展开这一原则在 OPRO 算法中的极致应用）。</p>
+<p><strong>完成判断</strong>——对照成功标准确认完成，但「不要过度操作，不为了完整而浪费代价」。</p>
+<p>这套框架的价值在于：它交付的是<strong>思维纪律</strong>，而非步骤。网站会改版、反爬会升级，但「以结果为证据、发现方向错误立即调整」这套纪律始终有效。</p>
+<h3 id="3-目标驱动，而非步骤驱动"><a href="#3-目标驱动，而非步骤驱动" class="headerlink" title="3. 目标驱动，而非步骤驱动"></a>3. 目标驱动，而非步骤驱动</h3><p>四步法背后是一个更根本的立场：<strong>目标驱动，而非步骤驱动</strong>。</p>
+<p>这一点在「并行分治」部分体现得最为直接。主 Agent 派子 Agent 调研多个目标时，web-access 明确要求：</p>
+<blockquote>
+<p>子 Agent 的职责是说清楚<strong>要什么</strong>，仅在必要与确信时限定<strong>怎么做</strong>。过度指定步骤会剥夺子 Agent 的判断空间，反而引入主 Agent 的假设错误。</p>
+</blockquote>
+<p>它甚至精细到用词层面：写 prompt 时应使用「获取」「调研」「了解」这类描述目标的动词，<strong>避免</strong>使用「搜索」「抓取」「爬取」这类暗示手段的动词——因为「搜索」会把子 Agent 锚定到 <code>WebSearch</code>，而某些反爬站点需要直接 CDP 访问主站方才有效。</p>
+<p>这是一个相当锐利的认知：<strong>描述任务的方式，正在潜移默化地限制 Agent 的解空间。</strong> 若 skill 作者未意识到这一点，prompt 写得越详细，反而越将 Agent 困于单一手段。</p>
+<h3 id="4-面试视角"><a href="#4-面试视角" class="headerlink" title="4. 面试视角"></a>4. 面试视角</h3><p>这一篇若转化为面试话术，大致如下：</p>
+<blockquote>
+<p>我完整读过 eze-is&#x2F;web-access 的源码。它最大的启发在于：写 Agent Skill 不是写操作手册，而是写「哲学加技术事实」——把世界的约束与选择的 tradeoff 讲清，让 Agent 自行组合。它有一套目标驱动的四步框架，核心是以每一步结果为证据校验方向，而非机械执行步骤；甚至细化到 prompt 用词层面——用「获取」而非「搜索」，避免将子 Agent 锚定到单一手段。这套思路与我做工程系统的理念一致：为组件提供清晰的边界与接口，使其自主组合，而非写死流程。</p>
+</blockquote>
+<p>相较「我用过 web-access 爬网页」，这种回答处于更高的认知层级——它证明持有者理解 Agent 协作的边界所在、Skill 设计的杠杆所在。而这恰恰是 AI 工程一类岗位在「AI Agent」考点上真正期待的内容。</p>
+<hr>
+<h2 id="二、技术之骨：CDP-Proxy-工程拆解"><a href="#二、技术之骨：CDP-Proxy-工程拆解" class="headerlink" title="二、技术之骨：CDP Proxy 工程拆解"></a>二、技术之骨：CDP Proxy 工程拆解</h2><p>哲学立住之后，本篇进入实现层。web-access 的浏览器能力由 <code>scripts/cdp-proxy.mjs</code> 承担——一个 572 行、零依赖的 Node 脚本（依赖 Node 22 的原生 <code>WebSocket</code>，低版本回退到 <code>ws</code> 模块）。它做的事情可以用一句话概括：<strong>在本地起一个 HTTP 服务，把简单的 curl 请求翻译成 Chrome DevTools Protocol 的 WebSocket 命令。</strong></p>
+<h3 id="1-架构总览"><a href="#1-架构总览" class="headerlink" title="1. 架构总览"></a>1. 架构总览</h3><pre class="mermaid">flowchart LR
+    A["Agent&lt;br/&gt;curl HTTP"] --&gt; B["cdp-proxy.mjs&lt;br/&gt;localhost:3456"]
+    B --&gt; C{"HTTP → CDP 翻译"}
+    C --&gt;|Runtime.evaluate| D["执行 JS"]
+    C --&gt;|Input.dispatchMouseEvent| E["真实鼠标事件"]
+    C --&gt;|DOM.setFileInputFiles| F["文件上传"]
+    C --&gt;|Page.captureScreenshot| G["截图"]
+    C --&gt;|Target.createTarget| H["新建/关闭 tab"]
+    D &amp; E &amp; F &amp; G &amp; H --&gt; I["用户日常 Chrome&lt;br/&gt;天然携带登录态"]
+
+    style B fill:#198038,color:#fff
+    style I fill:#0f62be,color:#fff</pre>
+
+<p>Agent 侧只需要 curl；复杂的 CDP WebSocket 协议、session 管理、命令-响应配对，全部由 Proxy 吸收。这一层抽象的价值在于：<strong>让 Agent 用最朴素的方式（HTTP）获得完整的浏览器控制力。</strong></p>
+<h3 id="2-Chrome-端口发现：一个被忽视的精妙设计"><a href="#2-Chrome-端口发现：一个被忽视的精妙设计" class="headerlink" title="2. Chrome 端口发现：一个被忽视的精妙设计"></a>2. Chrome 端口发现：一个被忽视的精妙设计</h3><p>Proxy 要控制 Chrome，先得找到 Chrome 的调试端口。最直觉的做法是扫描 9222 等常见端口。但 web-access 没有这么做，而是优先读取 Chrome 写入的 <code>DevToolsActivePort</code> 文件：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">discoverChromePort</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// ... 按平台拼接 DevToolsActivePort 路径</span></span><br><span class="line">  <span class="keyword">const</span> content = fs.<span class="title function_">readFileSync</span>(p, <span class="string">&#x27;utf-8&#x27;</span>).<span class="title function_">trim</span>();</span><br><span class="line">  <span class="keyword">const</span> lines = content.<span class="title function_">split</span>(<span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> port = <span class="built_in">parseInt</span>(lines[<span class="number">0</span>]);</span><br><span class="line">  <span class="keyword">if</span> (port &gt; <span class="number">0</span> &amp;&amp; port &lt; <span class="number">65536</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> ok = <span class="keyword">await</span> <span class="title function_">checkPort</span>(port);</span><br><span class="line">    <span class="keyword">if</span> (ok) &#123;</span><br><span class="line">      <span class="comment">// 第二行是带 UUID 的 WebSocket 路径</span></span><br><span class="line">      <span class="keyword">const</span> wsPath = lines[<span class="number">1</span>] || <span class="literal">null</span>;</span><br><span class="line">      <span class="keyword">return</span> &#123; port, wsPath &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ... 回退到扫描 9222/9229/9333</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的关键是 <code>wsPath</code>。<code>DevToolsActivePort</code> 的第二行是一个带 UUID 的路径，形如 <code>/devtools/browser/xxx-xxx</code>。当 Chrome <strong>没有</strong>通过 <code>--remote-debugging-port</code> 显式启动，而是通过 <code>chrome://inspect</code> 勾选远程调试时，它只接受这个带 UUID 的路径连接——这正是 web-access 不要求用户用命令行参数重启 Chrome 的原因。</p>
+<p>更细的一层是端口探测方式。源码注释写得很明白：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用 TCP 探测端口是否监听——避免 WebSocket 连接触发 Chrome 安全弹窗</span></span><br><span class="line"><span class="comment">// （WebSocket 探测会被 Chrome 视为调试连接，弹出授权对话框）</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">checkPort</span>(<span class="params">port</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> socket = net.<span class="title function_">createConnection</span>(port, <span class="string">&#x27;127.0.0.1&#x27;</span>);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用 <code>net.createConnection</code> 做 TCP 层探测，而非直接发起 WebSocket 握手。原因是：WebSocket 探测会被 Chrome 判定为调试连接，从而弹出授权对话框，破坏用户体验。这种对「副作用」的敏感，是工程品味的体现。</p>
+<h3 id="3-三种点击机制：同一动作的三种代价"><a href="#3-三种点击机制：同一动作的三种代价" class="headerlink" title="3. 三种点击机制：同一动作的三种代价"></a>3. 三种点击机制：同一动作的三种代价</h3><p><code>/click</code>、<code>/clickAt</code>、<code>/setFiles</code> 是 web-access 最具代表性的设计——同一个「点击&#x2F;交互」动作，提供三种实现，对应不同的可信度与适用场景。</p>
+<p><strong><code>/click</code>——JS 层面点击（<code>el.click()</code>）</strong>：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> js = <span class="string">`(() =&gt; &#123;</span></span><br><span class="line"><span class="string">  const el = document.querySelector(<span class="subst">$&#123;selectorJson&#125;</span>);</span></span><br><span class="line"><span class="string">  if (!el) return &#123; error: &#x27;未找到元素: &#x27; + <span class="subst">$&#123;selectorJson&#125;</span> &#125;;</span></span><br><span class="line"><span class="string">  el.scrollIntoView(&#123; block: &#x27;center&#x27; &#125;);</span></span><br><span class="line"><span class="string">  el.click();</span></span><br><span class="line"><span class="string">  return &#123; clicked: true, tag: el.tagName, text: ... &#125;;</span></span><br><span class="line"><span class="string">&#125;)()`</span>;</span><br><span class="line"><span class="keyword">await</span> <span class="title function_">sendCDP</span>(<span class="string">&#x27;Runtime.evaluate&#x27;</span>, &#123; <span class="attr">expression</span>: js, ... &#125;, sid);</span><br></pre></td></tr></table></figure>
+
+<p>简单快速，覆盖大多数场景。但它是合成事件，不携带真实的用户手势信号，对具备反自动化检测的站点可能无效。</p>
+<p><strong><code>/clickAt</code>——CDP 真实鼠标事件（<code>Input.dispatchMouseEvent</code>）</strong>：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 先用 eval 拿到元素坐标</span></span><br><span class="line"><span class="keyword">const</span> coord = coordResp.<span class="property">result</span>?.<span class="property">result</span>?.<span class="property">value</span>; <span class="comment">// &#123;x, y&#125;</span></span><br><span class="line"><span class="comment">// 再派发浏览器级鼠标按下/释放</span></span><br><span class="line"><span class="keyword">await</span> <span class="title function_">sendCDP</span>(<span class="string">&#x27;Input.dispatchMouseEvent&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">type</span>: <span class="string">&#x27;mousePressed&#x27;</span>, <span class="attr">x</span>: coord.<span class="property">x</span>, <span class="attr">y</span>: coord.<span class="property">y</span>, <span class="attr">button</span>: <span class="string">&#x27;left&#x27;</span>, <span class="attr">clickCount</span>: <span class="number">1</span></span><br><span class="line">&#125;, sid);</span><br><span class="line"><span class="keyword">await</span> <span class="title function_">sendCDP</span>(<span class="string">&#x27;Input.dispatchMouseEvent&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">type</span>: <span class="string">&#x27;mouseReleased&#x27;</span>, <span class="attr">x</span>: coord.<span class="property">x</span>, <span class="attr">y</span>: coord.<span class="property">y</span>, <span class="attr">button</span>: <span class="string">&#x27;left&#x27;</span>, <span class="attr">clickCount</span>: <span class="number">1</span></span><br><span class="line">&#125;, sid);</span><br></pre></td></tr></table></figure>
+
+<p>这是浏览器内核级别的真实手势，能够触发文件选择对话框、绕过部分反自动化检测。代价是步骤更多、速度略慢。</p>
+<p><strong><code>/setFiles</code>——直接设置文件输入（<code>DOM.setFileInputFiles</code>）</strong>：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">sendCDP</span>(<span class="string">&#x27;DOM.setFileInputFiles&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">nodeId</span>: node.<span class="property">result</span>.<span class="property">nodeId</span>,</span><br><span class="line">  <span class="attr">files</span>: body.<span class="property">files</span></span><br><span class="line">&#125;, sid);</span><br></pre></td></tr></table></figure>
+
+<p>完全绕过文件对话框，直接把本地文件路径塞进 <code>&lt;input type=&quot;file&quot;&gt;</code>。</p>
+<p>三者并列的设计哲学很清楚：<strong>同一目标存在多条路径，每条路径的可靠性、副作用、适用边界各不相同。</strong> skill 不替 Agent 决定用哪条，而是把三条路径及其特性如实陈述，让 Agent 依据目标平台的特点自行选择。这与上一篇「哲学 + 技术事实」一脉相承。</p>
+<h3 id="4-登录态天然复用"><a href="#4-登录态天然复用" class="headerlink" title="4. 登录态天然复用"></a>4. 登录态天然复用</h3><p>web-access 不启动独立的浏览器实例，而是<strong>直连用户日常使用的 Chrome</strong>。这意味着用户已登录的所有站点，对 Agent 而言天然可用——无需配置任何 cookie 或 token。这是它相对 Playwright&#x2F;Puppeteer（启动全新浏览器实例）的根本优势。</p>
+<p>SKILL.md 对登录判断的处理同样克制：打开页面后先尝试获取目标内容，<strong>只有当确认内容无法获取且判断登录能解决问题时</strong>，才提示用户登录。这避免了对用户的不必要打扰。</p>
+<h3 id="5-并发安全"><a href="#5-并发安全" class="headerlink" title="5. 并发安全"></a>5. 并发安全</h3><p>CDP 是异步的、基于 id 配对的请求-响应协议。Proxy 的实现用一张 <code>pending</code> Map 管理未完成的命令：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> pending = <span class="keyword">new</span> <span class="title class_">Map</span>(); <span class="comment">// id -&gt; &#123;resolve, timer&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">sendCDP</span>(<span class="params">method, params = &#123;&#125;, sessionId = <span class="literal">null</span></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> id = ++cmdId;</span><br><span class="line">    <span class="keyword">const</span> msg = &#123; id, method, params &#125;;</span><br><span class="line">    <span class="keyword">if</span> (sessionId) msg.<span class="property">sessionId</span> = sessionId;</span><br><span class="line">    <span class="keyword">const</span> timer = <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      pending.<span class="title function_">delete</span>(id);</span><br><span class="line">      <span class="title function_">reject</span>(<span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;CDP 命令超时: &#x27;</span> + method));</span><br><span class="line">    &#125;, <span class="number">30000</span>);</span><br><span class="line">    pending.<span class="title function_">set</span>(id, &#123; resolve, timer &#125;);</span><br><span class="line">    ws.<span class="title function_">send</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(msg));</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每条命令分配自增 <code>id</code>，配 30 秒超时；响应到达时按 <code>id</code> 取回 Promise。这个设计是并发的基石——多个 tab、多个子 Agent 的命令可以交错到达，不会串扰。下一篇会展开它在多 Agent 场景下的应用。</p>
+<hr>
+<h2 id="三、并发工程链路：子-Agent-分治"><a href="#三、并发工程链路：子-Agent-分治" class="headerlink" title="三、并发工程链路：子 Agent 分治"></a>三、并发工程链路：子 Agent 分治</h2><p>当任务包含多个相互独立的调研目标（同时调研 N 个产品、N 个来源），web-access 鼓励将其分治给子 Agent 并行执行，而非由主 Agent 串行处理。这一篇解析其背后的工程逻辑，并对照笔者某服务端项目的并发实践。</p>
+<h3 id="1-为什么分治"><a href="#1-为什么分治" class="headerlink" title="1. 为什么分治"></a>1. 为什么分治</h3><p>收益有二：<strong>速度</strong>与<strong>上下文保护</strong>。</p>
+<p>速度上，多子 Agent 并行，总耗时近似等于单个子任务时长。上下文保护上，抓取回来的原始内容留在子 Agent 内部，<strong>主 Agent 只接收摘要</strong>——这在 token 成本上意义巨大。</p>
+<h3 id="2-tab-级隔离：共享一个-Proxy，无竞态"><a href="#2-tab-级隔离：共享一个-Proxy，无竞态" class="headerlink" title="2. tab 级隔离：共享一个 Proxy，无竞态"></a>2. tab 级隔离：共享一个 Proxy，无竞态</h3><p>多个子 Agent 并发操作浏览器，最容易担心的是竞态。web-access 的解法是 <strong>tab 级隔离</strong>：每个子 Agent 自行创建后台 tab（<code>Target.createTarget</code> 带 <code>background: true</code>），通过各自的 <code>targetId</code> 操作各自的 tab，任务结束自行关闭（<code>/close</code>）。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// /new 端点：创建后台 tab</span></span><br><span class="line"><span class="keyword">const</span> resp = <span class="keyword">await</span> <span class="title function_">sendCDP</span>(<span class="string">&#x27;Target.createTarget&#x27;</span>, &#123; <span class="attr">url</span>: targetUrl, <span class="attr">background</span>: <span class="literal">true</span> &#125;);</span><br><span class="line"><span class="keyword">const</span> targetId = resp.<span class="property">result</span>.<span class="property">targetId</span>;</span><br><span class="line"><span class="keyword">const</span> sid = <span class="keyword">await</span> <span class="title function_">ensureSession</span>(targetId); <span class="comment">// 每个 tab 独立 session</span></span><br><span class="line"><span class="keyword">await</span> <span class="title function_">waitForLoad</span>(sid);</span><br></pre></td></tr></table></figure>
+
+<p>所有子 Agent 共享同一个 Chrome 实例、同一个 Proxy 进程，但通过不同 <code>targetId</code> + <code>sessionId</code> 操作不同 tab，<strong>天然隔离，无竞态风险</strong>。这比每个 Agent 各起一个浏览器实例要轻量得多。</p>
+<h3 id="3-上下文经济学"><a href="#3-上下文经济学" class="headerlink" title="3. 上下文经济学"></a>3. 上下文经济学</h3><p>分治最容易被忽视的价值，是上下文隔离带来的 token 经济性。</p>
+<p>抓取一个网页可能回传数千 token 的 HTML；同时调研五个目标，若由主 Agent 串行处理，这些原始内容全部涌入主 Agent 上下文，迅速逼近上限。分治后，原始内容沉淀在子 Agent 内部，主 Agent 只得到每个子 Agent 提炼的摘要——上下文占用从「原始内容之和」降为「摘要之和」。</p>
+<p>这与笔者的另一个项目 RTK（Rust Token Killer，对开发类命令做 token 压缩，节省 60-90%）理念同源：<strong>在 Agent 时代，上下文是稀缺资源，凡能削减上下文占用的设计，都是高杠杆设计。</strong> web-access 的分治策略，正是这一理念在「联网调研」场景的具体落地。</p>
+<h3 id="4-服务端对照：分批并发与容错"><a href="#4-服务端对照：分批并发与容错" class="headerlink" title="4. 服务端对照：分批并发与容错"></a>4. 服务端对照：分批并发与容错</h3><p>web-access 的并发是「客户端并行调研」（子 Agent 各开 tab）。笔者该服务端项目面对的是「批量 AI 处理」——同一套「并发 + 限流 + 容错」理念，落地形态截然不同，恰好构成对照：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 分批并发 + 容错（Promise.allSettled 而非 Promise.all）</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; materials.<span class="property">length</span>; i += batchSize) &#123;</span><br><span class="line">  <span class="keyword">const</span> batch = materials.<span class="title function_">slice</span>(i, i + batchSize);</span><br><span class="line">  <span class="keyword">const</span> results = <span class="keyword">await</span> <span class="title class_">Promise</span>.<span class="title function_">allSettled</span>(</span><br><span class="line">    batch.<span class="title function_">map</span>(<span class="function"><span class="params">material</span> =&gt;</span> <span class="title function_">processMaterial</span>(material))</span><br><span class="line">  );</span><br><span class="line">  <span class="keyword">if</span> (i + batchSize &lt; materials.<span class="property">length</span>) <span class="keyword">await</span> <span class="title function_">delay</span>(<span class="number">1000</span>); <span class="comment">// 批次间限流</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>三个工程要点值得展开：</p>
+<ol>
+<li><strong>Promise.allSettled 而非 Promise.all</strong>——单条失败不拖垮整批，失败项单独记录后再处理。这是「结果作为证据」在容错层的体现：失败不是终止信号，而是需要单独处理的证据。</li>
+<li><strong>指数退避重试</strong>——内部 RPC 框架调用失败时 <code>baseRetryDelay * 2^retryCount</code>，最多 3 次，避免瞬时故障引发雪崩。</li>
+<li><strong>upsert + 幂等追踪</strong>——多进程并发写进度时用数据库级 upsert 解决冲突，配合 <code>isExecuted</code> 幂等检查避免重复处理。</li>
+</ol>
+<p>这套设计与 web-access 的 tab 级隔离形成完整对照：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>web-access（客户端）</th>
+<th>本项目（服务端）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>并发单元</td>
+<td>tab（targetId 隔离）</td>
+<td>批次（batchSize 切分）</td>
+</tr>
+<tr>
+<td>安全机制</td>
+<td>隔离（不同 tab 无竞态）</td>
+<td>容错 + 幂等（allSettled + upsert）</td>
+</tr>
+<tr>
+<td>失败处理</td>
+<td>子 Agent 自行重试</td>
+<td>指数退避 + 单独记录</td>
+</tr>
+<tr>
+<td>限流</td>
+<td>tab 数即并发上限</td>
+<td>批次间 delay + QPM 控制</td>
+</tr>
+</tbody></table>
+<p><strong>同一工程思维的两面</strong>：客户端用「隔离」实现并发安全，服务端用「容错 + 幂等」实现并发安全。理解这两种形态的适用场景，比掌握任何一种并发工具更重要。</p>
+<h3 id="5-子-Agent-prompt-的写法"><a href="#5-子-Agent-prompt-的写法" class="headerlink" title="5. 子 Agent prompt 的写法"></a>5. 子 Agent prompt 的写法</h3><p>如第一篇所述，web-access 要求主 Agent 向子 Agent 描述<strong>目标</strong>而非<strong>步骤</strong>。其推荐写法是：</p>
+<blockquote>
+<p>必须在子 Agent prompt 中写 <code>必须加载 web-access skill 并遵循指引</code>，子 Agent 会自动加载 skill，无需在 prompt 中复制 skill 内容或指定路径。</p>
+</blockquote>
+<p>并避免使用暗示手段的动词。这种「目标导向 + 让子 Agent 自主加载能力」的模式，是 Agent 协作从「主从指令」走向「目标委派」的关键转变。</p>
+<hr>
+<h2 id="四、实战之肉：从技术选型到边界补全"><a href="#四、实战之肉：从技术选型到边界补全" class="headerlink" title="四、实战之肉：从技术选型到边界补全"></a>四、实战之肉：从技术选型到边界补全</h2><p>脱离场景的源码解读容易沦为翻译。这一篇以笔者主导的一个 AIGC 内容生产系统（下称「本项目」）为样本，展示「一个真实生产系统的技术选型，如何与 web-access 形成互补」。</p>
+<h3 id="场景-A：AIGC-内容生产系统——一次完整的技术选型与边界识别"><a href="#场景-A：AIGC-内容生产系统——一次完整的技术选型与边界识别" class="headerlink" title="场景 A：AIGC 内容生产系统——一次完整的技术选型与边界识别"></a>场景 A：AIGC 内容生产系统——一次完整的技术选型与边界识别</h3><p>本系统的核心链路是：多源爬取（小红书、微信公众号、垂直资讯站、行业站点）→ AI 加工（标签 &#x2F; 改写 &#x2F; 生图 &#x2F; 多轮对话）→ 内容分发。</p>
+<p><strong>技术选型：为什么是 axios + cheerio，而非浏览器自动化</strong></p>
+<p>项目文档明确记载了不用 Puppeteer&#x2F;Playwright 的原因：</p>
+<ul>
+<li>运行在 Serverless 函数计算（FaaS）环境，启动浏览器实例冷启动慢、成本高；</li>
+<li>目标网站（资讯站、新闻、行业站）多为服务端渲染，静态抓取即可满足；</li>
+<li>对少数动态加载场景，通过分析接口直接取数，绕过前端渲染。</li>
+</ul>
+<p>这不是技术局限，而是<strong>约束下的正确决策</strong>。配套的是一套基于设计模式的爬虫框架：</p>
+<pre class="mermaid">flowchart TD
+    Factory["CrawlerFactory&lt;br/&gt;工厂模式"] --&gt; Base["BaseCrawler 基类&lt;br/&gt;模板方法模式"]
+    Base --&gt; News["NewsBaseCrawler&lt;br/&gt;新闻站"]
+    Base --&gt; Ind["IndustryBaseCrawler&lt;br/&gt;行业站"]
+    Base --&gt; Region["RegionBaseCrawler&lt;br/&gt;多区域适配"]
+    Strategy["ExtractionStrategy&lt;br/&gt;策略模式&lt;br/&gt;DIRECT_TAB / MAIN_PAGE_SIMULATION"] -.适配.-&gt; Region</pre>
+
+<p><code>BaseCrawler</code> 用模板方法定义 <code>crawl → extractArticleLinks → filterRelevant → scrapeArticles</code> 流程，子类实现具体步骤；<code>CrawlerFactory</code> 按类型创建实例；<code>ExtractionStrategy</code>（<code>DIRECT_TAB</code> &#x2F; <code>MAIN_PAGE_SIMULATION</code>）适配不同站点页面结构。<strong>四种设计模式（模板方法 &#x2F; 工厂 &#x2F; 策略 &#x2F; 配置驱动）保证新站点接入只需配置，不改核心代码。</strong> TypeScript 的类型系统与接口契约为这套框架提供了编译期保障。</p>
+<p><strong>边界识别：axios 触及不到的地方</strong></p>
+<p>axios + cheerio 是服务端静态抓取，它有三个硬边界：</p>
+<ol>
+<li><strong>反爬站点</strong>——小红书、微信公众号的公开内容同样被反爬限制，静态层只拿到空壳；</li>
+<li><strong>登录态内容</strong>——需要登录才能获取的资源，服务端无登录态；</li>
+<li><strong>动态渲染</strong>——JS 执行后才出现的内容，静态层无法触及。</li>
+</ol>
+<p><strong>web-access 的补全：客户端 CDP 正好覆盖这三道边界</strong></p>
+<p>web-access 的 CDP Proxy 直连用户日常 Chrome：天然登录态（解决边界 2）、真实浏览器渲染（解决边界 3）、跳过静态层直达 DOM（解决边界 1）。</p>
+<pre class="mermaid">flowchart LR
+    subgraph S["服务端 本项目（约束：FaaS / SSR / 高并发）"]
+        A1["axios + cheerio&lt;br/&gt;静态抓取"]
+        A2["设计模式框架&lt;br/&gt;4 种模式"]
+        A3["AI 加工&lt;br/&gt;AI 工作流 / 云 API / Prompt 平台"]
+    end
+    subgraph C["客户端 web-access（边界补全）"]
+        B1["CDP 反爬"]
+        B2["登录态复用"]
+        B3["动态渲染"]
+    end
+    A1 -.|"边界1"| B1
+    A1 -.|"边界2"| B2
+    A1 -.|"边界3"| B3
+
+    style S fill:#198038,color:#fff
+    style C fill:#0f62be,color:#fff</pre>
+
+<p><strong>这给博客的真正启示</strong>：web-access 不是「我研究的别人的 skill」，而是「<strong>我基于生产实践识别出 axios 的技术边界后，主动研究的补全方案</strong>」。一个工程师的技术视野，体现在他既知道自己选型的理由，也清楚选型的边界，并能找到边界的解法。这正是「技术扩展」考点的本质——不是会用更多工具，而是理解工具的适用边界。</p>
+<blockquote>
+<p>注：项目代码属企业资产无法公开，但技术选型逻辑、设计模式应用、边界识别均有完整内部文档支撑，面试中可逐层展开。</p>
+</blockquote>
+<h3 id="场景-B：Claude-Code-工具链中的-web-access"><a href="#场景-B：Claude-Code-工具链中的-web-access" class="headerlink" title="场景 B：Claude Code 工具链中的 web-access"></a>场景 B：Claude Code 工具链中的 web-access</h3><p>脱离工作项目，web-access 在笔者个人的 Claude Code 工具链中承担「联网与浏览器」这一角色，与其它组件协同：</p>
+<pre class="mermaid">flowchart TB
+    U["复杂任务"] --&gt; F["flow / flow-deep&lt;br/&gt;任务编排"]
+    F --&gt; W["web-access&lt;br/&gt;联网与浏览器"]
+    F --&gt; S["Serena MCP&lt;br/&gt;语义代码操作"]
+    F --&gt; R["RTK&lt;br/&gt;token 压缩"]
+    W --&gt; T["联网调研·登录态操作·反爬内容"]
+
+    style F fill:#0f62be,color:#fff
+    style W fill:#198038,color:#fff</pre>
+
+<p>实际使用场景包括：联网调研时通过 <code>flow</code> 编排多子 Agent 并行调研（用上篇所述的分治策略），核实信息时优先定位一手来源，处理需要登录态的站点时复用 Chrome 登录态。web-access 在这条链路中是一个<strong>可被编排的联网能力单元</strong>，而非孤立的工具。</p>
+<hr>
+<h2 id="五、升华：从站点经验到-OPRO，AI-自我进化的两个面孔"><a href="#五、升华：从站点经验到-OPRO，AI-自我进化的两个面孔" class="headerlink" title="五、升华：从站点经验到 OPRO，AI 自我进化的两个面孔"></a>五、升华：从站点经验到 OPRO，AI 自我进化的两个面孔</h2><p>如果前四篇讲的是 web-access「现在能做什么」，这一篇讲的是它「如何越用越强」，并将其与笔者该项目里的 OPRO 算法并置——两者恰好完整刻画了「AI 自我进化」的两种形态。</p>
+<h3 id="1-web-access-站点经验：操作策略空间的自我进化"><a href="#1-web-access-站点经验：操作策略空间的自我进化" class="headerlink" title="1. web-access 站点经验：操作策略空间的自我进化"></a>1. web-access 站点经验：操作策略空间的自我进化</h3><p>SKILL.md 规定：CDP 操作成功完成后，若发现了值得记录的新站点或新模式（URL 结构、平台特征、操作策略），<strong>主动写入</strong>对应的站点经验文件。文件格式如下：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">domain: example.com</span><br><span class="line">aliases: [示例, Example]</span><br><span class="line"><span class="section">updated: 2026-03-19</span></span><br><span class="line"><span class="section">---</span></span><br><span class="line"><span class="section">## 平台特征</span></span><br><span class="line">架构、反爬行为、登录需求、内容加载方式等事实</span><br><span class="line"></span><br><span class="line"><span class="section">## 有效模式</span></span><br><span class="line">已验证的 URL 模式、操作策略、选择器</span><br><span class="line"></span><br><span class="line"><span class="section">## 已知陷阱</span></span><br><span class="line">什么会失败以及为什么</span><br></pre></td></tr></table></figure>
+
+<p>这是一个完整的<strong>经验闭环</strong>：操作 → 沉淀 → 复用。下一次遇到同一站点时，<code>match-site.sh</code> 会根据用户输入自动匹配并注入先验知识：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 根据用户输入匹配站点经验文件</span></span><br><span class="line"><span class="keyword">for</span> f <span class="keyword">in</span> <span class="string">&quot;<span class="variable">$DIR</span>&quot;</span>/*.md; <span class="keyword">do</span></span><br><span class="line">  domain=$(<span class="built_in">basename</span> <span class="string">&quot;<span class="variable">$f</span>&quot;</span> .md)</span><br><span class="line">  aliases=$(grep <span class="string">&#x27;^aliases:&#x27;</span> <span class="string">&quot;<span class="variable">$f</span>&quot;</span> | sed <span class="string">&#x27;s/...,/|/g&#x27;</span>)</span><br><span class="line">  patterns=<span class="string">&quot;<span class="variable">$domain</span>|<span class="variable">$aliases</span>&quot;</span></span><br><span class="line">  <span class="keyword">if</span> <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$1</span>&quot;</span> | grep -qiE <span class="string">&quot;<span class="variable">$patterns</span>&quot;</span>; <span class="keyword">then</span></span><br><span class="line">    <span class="comment"># 输出该站点的经验正文</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<p>匹配逻辑是 <code>domain + aliases</code> 的正则匹配，命中即把该站点的经验正文注入当前会话。进化的载体是 markdown 文件，驱动是 Agent 的成功操作。</p>
+<h3 id="2-本项目-OPRO：Prompt-空间的自我进化"><a href="#2-本项目-OPRO：Prompt-空间的自我进化" class="headerlink" title="2. 本项目 OPRO：Prompt 空间的自我进化"></a>2. 本项目 OPRO：Prompt 空间的自我进化</h3><p>如果站点经验是 web-access 在「操作策略空间」的自我进化，那么本项目里的 OPRO 算法（Optimization by PROmpting），是同一理念在「Prompt 空间」的自我进化。核心实现位于 <code>promptEngine/APE/service.ts</code>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="title function_">runInternal</span>(<span class="params">id, prompt, data, initIteration</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> initAccuracy = <span class="keyword">await</span> <span class="variable language_">this</span>.<span class="title function_">stepRun</span>(prompt, data);   <span class="comment">// 初始准确率</span></span><br><span class="line">  <span class="keyword">const</span> iteration = <span class="number">1000</span>;</span><br><span class="line">  <span class="keyword">let</span> bestScores = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">let</span> noOptimizeIteration = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; iteration; i++) &#123;                    <span class="comment">// 最多 1000 轮</span></span><br><span class="line">    <span class="keyword">if</span> (promptModel?.<span class="property">state</span> &gt;= <span class="number">2</span>) <span class="keyword">break</span>;                    <span class="comment">// 任务可中断</span></span><br><span class="line">    <span class="keyword">const</span> score = <span class="keyword">await</span> <span class="variable language_">this</span>.<span class="title function_">iterationRun</span>(<span class="comment">/* 内部 20 步搜索 */</span>);</span><br><span class="line">    <span class="keyword">if</span> (score &gt; bestScores) &#123;</span><br><span class="line">      bestScores = score;</span><br><span class="line">      noOptimizeIteration = <span class="number">0</span>;                             <span class="comment">// 有优化，重置计数</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      noOptimizeIteration++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (noOptimizeIteration &gt; <span class="number">50</span>) <span class="keyword">break</span>;                   <span class="comment">// 早停：连续 50 轮无优化</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每轮迭代内部走 20 步：用当前 Prompt 跑训练数据评分，把历史「Prompt + 准确率」结构化喂给 AI 工作流（<code>&lt;PROMPT&gt;&lt;PROMPT_TEXT&gt;...&lt;ACCURACY&gt;...&lt;/ACCURACY&gt;&lt;/PROMPT&gt;</code>），让 AI 基于历史生成更优 Prompt；评分用分批并发（<code>batch=20</code> + <code>Promise.all</code>），每步结果持久化到 <code>apeStep</code> 表，迭代全程可追溯。进化的载体是数据库，驱动是 AI 的自我优化。</p>
+<p><strong>两者的共同本质</strong>——回到第一篇的「过程校验」哲学：<strong>结果作为证据，驱动系统向更优解进化。</strong> web-access 用「操作是否成功」作为证据进化操作策略，OPRO 用「准确率是否提升」作为证据进化 Prompt。一个是经验驱动的 spec 演进，一个是 metric 驱动的 Prompt 演进，底层都是同一个工程范式：<strong>让系统从自己的执行结果中学习。</strong></p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>web-access 站点经验</th>
+<th>本项目 OPRO</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>进化空间</td>
+<td>操作策略（URL&#x2F;选择器&#x2F;陷阱）</td>
+<td>Prompt 本身</td>
+</tr>
+<tr>
+<td>驱动证据</td>
+<td>操作是否成功</td>
+<td>准确率是否提升</td>
+</tr>
+<tr>
+<td>进化载体</td>
+<td>markdown 文件</td>
+<td>数据库 + 迭代记录</td>
+</tr>
+<tr>
+<td>进化主体</td>
+<td>Agent 成功操作</td>
+<td>AI 自我优化</td>
+</tr>
+<tr>
+<td>终止条件</td>
+<td>无（持续积累）</td>
+<td>1000 轮上限 &#x2F; 连续 50 轮无优化早停</td>
+</tr>
+</tbody></table>
+<h3 id="3-这是-Spec-Driven-Development-在-AI-时代的升级"><a href="#3-这是-Spec-Driven-Development-在-AI-时代的升级" class="headerlink" title="3. 这是 Spec Driven Development 在 AI 时代的升级"></a>3. 这是 Spec Driven Development 在 AI 时代的升级</h3><p>把这两者抽象出来，它们正是 Spec Driven Development 的两种进化形态：</p>
+<ul>
+<li><strong>Spec 的生成</strong>：web-access 从成功操作沉淀 spec，OPRO 从迭代历史沉淀最佳 Prompt；</li>
+<li><strong>Spec 的复用</strong>：下次遇到同类问题，先加载对应 spec，而非从零探索；</li>
+<li><strong>Spec 的演进</strong>：spec 标注日期当作「可能有效的提示」，失效时回退并更新。</li>
+</ul>
+<p>与传统 Spec Driven Development（先写规格再实现）相比，这两种形态是<strong>经验&#x2F;数据驱动的 spec 演进</strong>——spec 不是预先设计的，而是从实践中生长出来的，天然适配「世界在变化」这一现实（反爬升级、网站改版、模型迭代）。而且比传统更进一步：spec 的生成者从「人」扩展到了「人 + AI」。</p>
+<h3 id="4-对自研-skill-的启发"><a href="#4-对自研-skill-的启发" class="headerlink" title="4. 对自研 skill 的启发"></a>4. 对自研 skill 的启发</h3><p>这套「结果驱动自我进化」的范式，给笔者自研 skill（如 <code>flow</code> 任务编排、<code>RTK</code> token 压缩）提供了一个可借鉴的方向：<strong>一个 skill 若只提供能力而不沉淀经验，每次使用都从零开始；若引入经验闭环，则能越用越强。</strong> 经验闭环，是 skill 从「能用」迈向「越用越强」的关键机制——这正是 web-access 与 OPRO 共同指向的结论。</p>
+<hr>
+<h2 id="结语：从工具使用者到工具设计者"><a href="#结语：从工具使用者到工具设计者" class="headerlink" title="结语：从工具使用者到工具设计者"></a>结语：从工具使用者到工具设计者</h2><p>web-access 的三层结构——<strong>设计哲学、CDP 工程、经验闭环</strong>——恰好构成一个完整的 Agent Skill 样本。哲学定义了「如何思考」，工程定义了「能做什么」，经验闭环定义了「如何进化」。而将其与该项目并置，又能看到「客户端隔离并发 &#x2F; 服务端容错并发」「站点经验进化 &#x2F; OPRO Prompt 进化」的同构映射——<strong>同一套工程思维，在不同约束下的多种落地</strong>。</p>
+<p>从面试视角收束，这个样本同时覆盖了 AI 工程一类岗位考察的四个维度：</p>
+<ul>
+<li><strong>AI Agent</strong>：目标驱动的四步框架，以及 prompt 用词对解空间的隐性约束；</li>
+<li><strong>Playwright &#x2F; web-access 使用</strong>：CDP Proxy 的端口发现、三种点击机制、登录态复用；</li>
+<li><strong>并发工程链路</strong>：子 Agent 分治（客户端 tab 隔离）对照服务端分批容错（allSettled + upsert + 幂等）；</li>
+<li><strong>Spec Driven Development</strong>：站点经验的经验驱动 spec 演进，与 OPRO 的 Prompt 自我进化同构。</li>
+</ul>
+<p>但比覆盖考点更重要的是它传递的一个判断：<strong>在 Agent 时代，工程师的竞争力正在从「使用工具」转向「设计工具」——设计 Agent 如何思考、如何协作、如何进化，并理解每一种技术选型的边界与解法。</strong> web-access 与本项目共同提供了一份从源码可验证的范本，而这，正是研究它们的全部价值所在。</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">MichaelMao</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://michaelmaomao.github.io/2026/06/10/web-access%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-Agent-Skill%E7%9A%84%E8%81%94%E7%BD%91%E4%B8%8E%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BE%B9%E7%95%8C/">http://michaelmaomao.github.io/2026/06/10/web-access%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-Agent-Skill%E7%9A%84%E8%81%94%E7%BD%91%E4%B8%8E%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BE%B9%E7%95%8C/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://michaelMaoMao.github.io">MMao</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Claude-Code/">Claude Code</a><a class="post-meta__tags" href="/tags/Agent-Skill/">Agent Skill</a><a class="post-meta__tags" href="/tags/CDP/">CDP</a><a class="post-meta__tags" href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%87%AA%E5%8A%A8%E5%8C%96/">浏览器自动化</a></div><div class="post-qr-code"><div class="post-qr-code-item"><img class="post-qr-code__img" src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"><div class="post-qr-code__desc">我要吐槽下</div></div></div><nav id="pagination"><div class="next-post pull-right"><a href="/2026/06/09/Claude-Code-Insights-%E7%89%88%E6%9C%AC%E6%BC%94%E8%BF%9B%E8%BF%BD%E8%B8%AA%E4%B8%8E%E7%9F%A5%E8%AF%86%E5%BA%93/"><span>Claude Code Insights - 版本演进追踪与知识库</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
