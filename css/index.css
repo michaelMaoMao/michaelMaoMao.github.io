@@ -1885,3 +1885,15 @@ img:hover {
   overflow-y: auto;
   max-height: 10.5rem;
 }
+.mermaid {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 4px;
+  text-align: center;
+  overflow-x: auto;
+}
+.mermaid svg {
+  background-color: #fff !important;
+  max-width: 100%;
+  height: auto;
+}
