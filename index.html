@@ -10,7 +10,187 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">54</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">33</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2026/06/10/web-access%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-Agent-Skill%E7%9A%84%E8%81%94%E7%BD%91%E4%B8%8E%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BE%B9%E7%95%8C/">web-access 深度拆解：一个 Agent Skill 如何定义 Claude Code 的联网与浏览器边界</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2026-06-10</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/AI-%E5%B7%A5%E7%A8%8B/">AI 工程</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Claude-Code/">Claude Code</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Agent-Skill/">Agent Skill</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/CDP/">CDP</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%87%AA%E5%8A%A8%E5%8C%96/">浏览器自动化</a></span><div class="content"><h2 id="引子：原生工具是否足够"><a href="#引子：原生工具是否足够" class="headerlink" title="引子：原生工具是否足够"></a>引子：原生工具是否足够</h2><p>Claude Code 开箱即带两个联网工具：<code>WebSearch</code> 负责发现，<code>WebFetch</code> 负责提取。能力清单看似完整，但在真实的 Agent 联网任务中，会接连遇到三类典型障碍：</p>
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">55</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">36</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2026/06/13/ClaudeCode%20%E6%80%9D%E8%80%83%20-%20Loop%20Agent%20%E4%B8%8E%E9%95%BF%E4%BC%9A%E8%AF%9D/">ClaudeCode 思考 - Loop 价值拆解：从解放人到自进化</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2026-06-13</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/AI/">AI</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Agent/">Agent</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Loop/">Loop</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Claude/">Claude</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/%E8%87%AA%E8%BF%9B%E5%8C%96/">自进化</a></span><div class="content"><h1 id="Loop-真正值钱的，不是”让-AI-跑更久”"><a href="#Loop-真正值钱的，不是”让-AI-跑更久”" class="headerlink" title="Loop 真正值钱的，不是”让 AI 跑更久”"></a>Loop 真正值钱的，不是”让 AI 跑更久”</h1><h2 id="一个被误读的爆火概念"><a href="#一个被误读的爆火概念" class="headerlink" title="一个被误读的爆火概念"></a>一个被误读的爆火概念</h2><p>“Loop Agent”（循环型智能体）最近火得一塌糊涂。Addy Osmani（Google Chrome 工程负责人）连写三篇文章把它系统化，社区里 Ralph Loop、loop engineering、self-improving agent 这些词到处飞。</p>
+<p>但绝大多数讨论都跑偏了——焦点全放在”让 AI 一直跑、跑很多轮”上。这是对 Loop 最大的误读。Loop 真正值钱的，从来不是”跑得久”。如果你只是开一个很长的对话让 AI 反复改，那不叫 Loop，那只是”更累的人工盯着”。</p>
+<p>它的价值，在另一件事上。</p>
+<p>顺带说一句：很多人拿 Loop 和”长会话”比来比去，争论它俩是不是一回事。那只是副产品，不重要。重要的是 Loop 凭什么值得被单独拎出来——这才是本文要讲清的。</p>
+<h2 id="价值一：把你从循环里替换出来"><a href="#价值一：把你从循环里替换出来" class="headerlink" title="价值一：把你从循环里替换出来"></a>价值一：把你从循环里替换出来</h2><p>Addy 给 Loop Engineering 下的定义，是我见过最准的一句：</p>
+<blockquote>
+<p>Loop engineering is replacing yourself as the person who prompts the agent. You design the system that does it instead.<br>（Loop 工程，就是把你这个”负责一轮轮提示 agent 的人”替换掉。你来设计那个替代你的系统。）</p>
+</blockquote>
+<p>这句话点透了 Loop 的第一层价值：<strong>解放人</strong>。</p>
+<p>传统做法里，每一轮要不要继续、做得对不对、什么时候算完——全是你在推动，AI 只是在你驱动下接力执行。Addy 把这比作”把 AI 当成只有短期记忆的实习生”：你给清单、你检查、你存盘。driver 是你，judge 也是你。</p>
+<p>Loop 把这个”你”工程化地抽走了。不是让你更省力地推，而是根本不需要你推。</p>
+<h2 id="价值二：人可以离场"><a href="#价值二：人可以离场" class="headerlink" title="价值二：人可以离场"></a>价值二：人可以离场</h2><p>这是 Loop 最性感的一点：<strong>你可以关掉电脑去睡觉，醒来发现它自己把活干完、验证过、提交了 PR。</strong> Addy 的原话是 “ship code while you sleep”。</p>
+<p>传统方式做不到——你必须全程在场，每一轮都得你点头。而 Loop 靠 hook、条件触发、定时器自己跑下去。人类能不能离场，是 Loop 区别于一切”人盯着的循环”的命门。</p>
+<p>有一个铁律般的检验标准：<strong>你能不能放心地去睡觉？</strong> 能，才是 Loop；不能，就还是你自己在 loop。</p>
+<h2 id="价值三（这才是核心）：真正的杠杆是”把-done-编码清晰”"><a href="#价值三（这才是核心）：真正的杠杆是”把-done-编码清晰”" class="headerlink" title="价值三（这才是核心）：真正的杠杆是”把 done 编码清晰”"></a>价值三（这才是核心）：真正的杠杆是”把 done 编码清晰”</h2><p>这是全篇最反直觉、也最关键的一点。</p>
+<p>直觉会告诉你：Loop 的威力来自”跑很多轮””跑很久”。Addy 戳破了它——</p>
+<blockquote>
+<p>杠杆不是”让 agent 跑更久”，而是”把 done 的定义编码得足够清晰，让 loop 有明确优化目标”。</p>
+</blockquote>
+<p>想想看：如果一个 loop 没有”完成”的精确定义，它要么瞎跑（没有收敛目标），要么永远跑下去（没有终止条件）。<strong>真正给 Loop 赋能的，是你能把”什么叫做完”写成机器能判断的条件</strong>——测试通过、lint 干净、覆盖率达标、或一个 completion promise。</p>
+<p>done 编码得越清晰，loop 收敛得越快越稳。很多人搭了 loop 却不灵，十有八九是 done 定义模糊，loop 不知道往哪使劲。</p>
+<p>这条之所以是文眼，是因为它把 Loop 从”一个让 AI 多跑几轮的小技巧”提升为”一种把目标工程化的方法论”：<strong>Loop 的本质不是循环，而是给循环装上一个可机械验证的目标。</strong></p>
+<h2 id="价值四：分离，让它既保质又可控"><a href="#价值四：分离，让它既保质又可控" class="headerlink" title="价值四：分离，让它既保质又可控"></a>价值四：分离，让它既保质又可控</h2><p>光有目标还不够，Loop 还有两个工程化保障：</p>
+<p><strong>Worker &#x2F; Judge 分离。</strong> 干活的 agent 和打分的 judge 是两个独立角色。judge 是另一套 eval 脚本或另一个 agent，它不靠人主观判断，只认数字。这让每一轮迭代都有客观标准——好就是好，不行就回退，没有”我觉得差不多了”的含糊地带。</p>
+<p><strong>可审计、可回滚。</strong> 每一步都留痕，失败自动 revert，不留垃圾。Loop 不是黑箱对话，而是有范围、可追溯、可回退的工程过程。</p>
+<p>这两点具体怎么落地成协议，后面讲 flow skill 时会展开（auto-iterate 的 keep&#x2F;revert 就是它的实现）。</p>
+<h2 id="价值五：它会越来越强"><a href="#价值五：它会越来越强" class="headerlink" title="价值五：它会越来越强"></a>价值五：它会越来越强</h2><p>传统做法里，AI 这一轮学到的经验，往往随会话结束就丢了（顶多靠上下文压缩苟延残喘一会儿）。</p>
+<p>Loop 不一样——它能把每一轮的教训<strong>回写</strong>到 skills 和 memory，跨 session 持续改进 agent 自身。换句话说，loop 跑得越多，agent 越强。这是从”用完即弃”到”自进化”的质变。</p>
+<h2 id="业界实践：Loop-不是我一个人的玩法"><a href="#业界实践：Loop-不是我一个人的玩法" class="headerlink" title="业界实践：Loop 不是我一个人的玩法"></a>业界实践：Loop 不是我一个人的玩法</h2><p>如果你觉得”Loop”只是个人折腾的概念，那就错了——2026 年它已经是 Anthropic 官方在推、一线大厂在用、开源社区在标准化的东西。</p>
+<h3 id="官方就在推这套"><a href="#官方就在推这套" class="headerlink" title="官方就在推这套"></a>官方就在推这套</h3><p>Anthropic 在 Code with Claude 2026 大会上专设「Long-Running Agents」站点，并开源 <a href="https://github.com/anthropics/cwc-long-running-agents"><code>anthropics/cwc-long-running-agents</code></a> 作为模式参考。它把 quality loop 拆成原语，并直接对比两条兑现路径：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>产品内（开箱即用）</th>
+<th>自建 harness</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>谁驱动 loop</td>
+<td><code>/goal</code> 命令</td>
+<td>你写的原语 + loop</td>
+</tr>
+<tr>
+<td>谁判断 done</td>
+<td>一个独立快速模型检查条件</td>
+<td>你的 evaluator</td>
+</tr>
+</tbody></table>
+<p>换句话说，Anthropic 官方已经把”Worker&#x2F;Judge 分离”和”done 编码”做进了产品——正是上文价值三、价值四的工业化版本。</p>
+<h3 id="两个让人坐直的案例"><a href="#两个让人坐直的案例" class="headerlink" title="两个让人坐直的案例"></a>两个让人坐直的案例</h3><p><strong>科学计算——Boltzmann 求解器。</strong> Anthropic 的 long-running 实践里，Claude Opus 4.6 用<strong>几天</strong>就构建出一个 Boltzmann 求解器，与参考的 CLASS 实现达到<strong>亚百分点级精度</strong>一致。Addy Osmani 评价：这是”数月到数年的研究者时间，被压缩”。</p>
+<p><strong>大型工程——Rakuten 改造 vLLM。</strong> 据 Anthropic《2026 Agentic Coding Trends Report》，Rakuten 让 Claude Code 在 <strong>1250 万行</strong>代码的 vLLM 库里<strong>自主连续工作 7 小时</strong>，完成一种激活向量提取方法，<strong>数值精度 99.9%</strong>。这种规模、精度和自主时长，靠人在旁边一轮轮 prompt 是不可想象的——只有 loop 撑得住。</p>
+<h3 id="业界共识：别再手动-prompt-了"><a href="#业界共识：别再手动-prompt-了" class="headerlink" title="业界共识：别再手动 prompt 了"></a>业界共识：别再手动 prompt 了</h3><blockquote>
+<p>You shouldn’t be prompting coding agents anymore. You should be designing loops that prompt your agents.<br>—— <strong>Peter Steinberger</strong>（OpenClaw 作者）</p>
+</blockquote>
+<p>Anthropic 内部同样如此——Claude Code 负责人 <strong>Boris Cherny</strong> 的工作就是写 loop，不是写单个 prompt。</p>
+<h3 id="想深入可以读"><a href="#想深入可以读" class="headerlink" title="想深入可以读"></a>想深入可以读</h3><ul>
+<li><a href="https://github.com/cobusgreyling/loop-engineering"><code>cobusgreyling/loop-engineering</code></a>：loop engineering 的实践模式参考仓库</li>
+<li>arXiv《Dive into Claude Code》：把 agent loop 归纳为”收集上下文 → 采取行动 → 验证结果”三阶段，并给出 auto-approve 率随使用从 20% 涨到 40% 的纵向数据</li>
+</ul>
+<h2 id="落地：flow-skill-如何兑现这些价值"><a href="#落地：flow-skill-如何兑现这些价值" class="headerlink" title="落地：flow skill 如何兑现这些价值"></a>落地：flow skill 如何兑现这些价值</h2><p>光说价值太虚。我自己搭了一套 ClaudeCode skill 体系来兑现它——核心是 <code>flow-deep</code>（深度编排管道）、<code>auto-iterate</code>（keep&#x2F;revert 迭代协议）和 Ralph Loop（Stop Hook 强制持续）。它们不是三个孤立工具，而是<strong>同一套 Loop 思想在不同强度下的三层实现</strong>。</p>
+<h3 id="整体管道：从”人来-steer”到”机器自治”"><a href="#整体管道：从”人来-steer”到”机器自治”" class="headerlink" title="整体管道：从”人来 steer”到”机器自治”"></a>整体管道：从”人来 steer”到”机器自治”</h3><p>flow-deep 把一次任务编排成 Stage 0 到 5.7 的管道。前半段是人参与的长会话（规划、执行），后半段是机器自治的 loop（验证、收敛）。关键在两者的切换点：</p>
+<pre class="mermaid">stateDiagram-v2
+    [*] --&gt; 长会话: /flow-deep 启动 Stage 0-4
+    长会话 --&gt; 验证: Stage 5 强制验证
+    验证 --&gt; 完成: 全部 PASS
+    验证 --&gt; 迭代: 有失败 开启 iterate
+    验证 --&gt; 交还: 有失败 未开 iterate
+    迭代 --&gt; 完成: N轮内达标
+    迭代 --&gt; Ralph: N轮用完 ralph可用
+    迭代 --&gt; 降级: ralph不可用
+    Ralph --&gt; 完成: promise达成
+    Ralph --&gt; 完成: 策略穷尽
+    Ralph --&gt; 中断: cancel-ralph
+    完成 --&gt; [*]
+    交还 --&gt; [*]
+    降级 --&gt; [*]
+    中断 --&gt; [*]</pre>
+
+<p>这张状态机揭示了一个关键设计——<strong>Loop 不是一开始就启动，而是在”验证失败”这个明确节点上被触发</strong>。长会话负责开放式探索（方向没定，人来 steer）；一旦方向定了、done 可量化，验证失败就自动切入 loop 收敛。这正好印证价值三：没有 Stage 5 那些可机械验证的验证项，整个 loop 机制都没有启动条件。</p>
+<h3 id="auto-iterate：价值四（分离-工程化）的落地"><a href="#auto-iterate：价值四（分离-工程化）的落地" class="headerlink" title="auto-iterate：价值四（分离 + 工程化）的落地"></a>auto-iterate：价值四（分离 + 工程化）的落地</h3><p>auto-iterate（Stage 5.5）是第一级 loop，在单个会话内做有界迭代。它把”Worker&#x2F;Judge 分离”和”可审计可回滚”落成了一套 keep&#x2F;revert 协议：</p>
+<pre class="mermaid">flowchart LR
+    A["Review 审查现状"] --&gt; B["Pick 选一个方向"]
+    B --&gt; C["Change 只改一处"]
+    C --&gt; D["Verify 机械验证"]
+    D --&gt;|"通过"| E["Guard 回归检查"]
+    D --&gt;|"失败"| RV["Revert 自动回滚"]
+    E --&gt;|"通过"| K["Keep 保留"]
+    E --&gt;|"失败"| RV
+    K --&gt; Q{"达标?"}
+    RV --&gt; Q
+    Q --&gt;|"否 且轮数剩余"| A
+    Q --&gt;|"是 或 轮数用完"| END["退出 auto-iterate"]
+    style RV fill:#da1e28,color:#fff
+    style K fill:#198038,color:#fff
+    style END fill:#0f62be,color:#fff</pre>
+
+<p>它的 6 条核心规则，每条都是价值四的注脚：</p>
+<ol>
+<li><strong>每次只改一个</strong>——精确定位原因，失败时知道问题出在哪一处</li>
+<li><strong>机械验证</strong>——只信任验证命令输出的数字，杜绝主观判断（loop 只认数字，不认感觉）</li>
+<li><strong>自动回滚</strong>——失败不留痕迹，实验性改动用 <code>experiment:</code> 前缀提交，不行就退</li>
+<li><strong>简洁优先</strong>——同等效果选更少代码，防止 loop 越改越臃肿</li>
+<li><strong>Git 即记忆</strong>——每步存盘，可追溯可回退</li>
+<li><strong>卡住时变换策略</strong>——连续 3 次 revert 就换方向，避免死磕</li>
+</ol>
+<p>这套协议让 Judge 完全独立于 Worker——judge 只看验证数字，不看”我觉得改得不错”。这就是价值四说的”没有含糊地带”。</p>
+<h3 id="Ralph-Loop：价值二（可离场）的落地"><a href="#Ralph-Loop：价值二（可离场）的落地" class="headerlink" title="Ralph Loop：价值二（可离场）的落地"></a>Ralph Loop：价值二（可离场）的落地</h3><p>auto-iterate 还不够——它跑在单个会话里，N 轮用完就停，人还得盯着。Ralph Loop（Stage 5.7）是第二级 loop，杀手锏是 <strong>Stop Hook</strong>：拦截会话退出，强行让 loop 继续。这才是真正兑现”可离场”的机制——人可以真的走开。</p>
+<p>Ralph Loop 有四个关键约束，每一个都是”可离场”的必要条件：</p>
+<ul>
+<li><strong>Stop Hook 拦截会话退出</strong>——这不是 Agent 级机制，是会话级机制。Agent 想停？不让停。</li>
+<li><strong>固定 prompt</strong>——每轮注入的是启动时写好的同一份 prompt，不支持动态更新。因为 Stop Hook 只能注入预设内容，没有动态生成能力。解法是让 LLM 每轮自己去读 <code>progress.md</code> 的最新状态：<strong>固定的是”怎么取状态”的指令，变化的是”取到什么”。</strong> 状态是真实文件，不会像模型记忆那样失真，反而比动态生成 prompt 更健壮。</li>
+<li><strong>Completion Promise 诚实性</strong>——只有 Stage 5 全部通过、或策略真穷尽时才能输出”完成”，不许为了退出而撒谎。</li>
+<li><strong>session_id 隔离</strong>——Stop Hook 只拦截启动 loop 的那个会话，启动前必须清理 Stage 4 的 tmux 分屏，避免误伤其他会话。</li>
+</ul>
+<h3 id="嵌套：Ralph-包裹-auto-iterate"><a href="#嵌套：Ralph-包裹-auto-iterate" class="headerlink" title="嵌套：Ralph 包裹 auto-iterate"></a>嵌套：Ralph 包裹 auto-iterate</h3><p>这两级 loop 不是替代，是<strong>嵌套</strong>：Ralph Loop 在外层，每轮 Ralph 内部仍跑 auto-iterate 的 keep&#x2F;revert 协议。可以理解成——auto-iterate 负责”一轮内怎么逼近”，Ralph 负责”轮与轮之间怎么持续”。内层收敛，外层持续，合起来才是”你可以睡觉，它自己交活”。</p>
+<h3 id="五价值-↔-flow-skill-映射"><a href="#五价值-↔-flow-skill-映射" class="headerlink" title="五价值 ↔ flow skill 映射"></a>五价值 ↔ flow skill 映射</h3><table>
+<thead>
+<tr>
+<th>Loop 价值</th>
+<th>flow skill 兑现的机制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>解放人</td>
+<td>Stop Hook 替代人手动驱动每轮</td>
+</tr>
+<tr>
+<td>可离场</td>
+<td>Ralph Loop 的会话级强制持续</td>
+</tr>
+<tr>
+<td>done 编码是真杠杆</td>
+<td>Stage 5 的可机械验证验证项（loop 启动条件）</td>
+</tr>
+<tr>
+<td>分离 + 工程化</td>
+<td>auto-iterate 的 Worker&#x2F;Judge 解耦 + keep&#x2F;revert + Git 回滚</td>
+</tr>
+<tr>
+<td>自进化</td>
+<td>教训回写 skills&#x2F;memory，跨 session 改进</td>
+</tr>
+</tbody></table>
+<h2 id="别被空转骗了：怎么确认-Loop-真在收敛"><a href="#别被空转骗了：怎么确认-Loop-真在收敛" class="headerlink" title="别被空转骗了：怎么确认 Loop 真在收敛"></a>别被空转骗了：怎么确认 Loop 真在收敛</h2><p>Loop 有个隐藏陷阱——它可能假装在跑，其实原地空转。判断它真在收敛，盯这几样：</p>
+<ul>
+<li><strong>STATE.md 在更新</strong>：<code>current_stage</code>、<code>ralph_iteration</code> 在变，说明它真在推进</li>
+<li><strong>TSV 历迹有记录</strong>：keep&#x2F;revert 决策和 metric 变化都留痕</li>
+<li><strong>Git 有 experiment: 提交</strong>：迭代过程可追溯</li>
+<li><strong>验证命令输出真数字</strong>：禁止 “should pass” &#x2F; “probably”，loop 只认实打实的输出</li>
+<li><strong>Completion Promise 有证据支撑</strong>：不许为了退出而撒谎说”完成了”</li>
+</ul>
+<p>没有这些证据，所谓”loop 跑完了”就不可信。这也是 Loop 的诚实性约束：策略真穷尽了才能宣告完成，否则必须附”部分完成”说明。</p>
+<h2 id="所以，Loop-到底值在哪"><a href="#所以，Loop-到底值在哪" class="headerlink" title="所以，Loop 到底值在哪"></a>所以，Loop 到底值在哪</h2><pre class="mermaid">flowchart TD
+    M["动机 解放人 replacing yourself"] --&gt; E["效果 可离场 while you sleep"]
+    M --&gt; C["核心机制 done编码是真杠杆"]
+    C --&gt; Q["质量保障 分离+工程化"]
+    C --&gt; S["长期价值 自进化 跨session"]
+    style C fill:#0f62be,color:#fff,stroke:#0f62be</pre>
+
+<p>一句话：<strong>Loop 把”人盯着的循环”变成了”机制自治的收敛”。</strong></p>
+<ul>
+<li>解放人——替换掉那个每轮推你的角色</li>
+<li>可离场——你能睡觉，它自己交活</li>
+<li>done 编码才是真杠杆——给循环装上可验证的目标</li>
+<li>分离与工程化——质量靠机制，过程可追溯</li>
+<li>自进化——跨 session 越用越强</li>
+</ul>
+<p>它和长会话到底是不是一回事？不重要。重要的是——<strong>只要你能把”完成”写成机器认的条件，你就拥有了一个可以替你睡觉干活的系统。</strong> 这才是 Loop 的价值。</p>
+<hr>
+<h2 id="来源"><a href="#来源" class="headerlink" title="来源"></a>来源</h2><ul>
+<li><a href="https://addyosmani.com/blog/loop-engineering/">Addy Osmani — Loop Engineering</a></li>
+<li><a href="https://addyosmani.com/blog/self-improving-agents/">Addy Osmani — Self-Improving Coding Agents</a></li>
+<li><a href="https://addyosmani.com/blog/long-running-agents">Addy Osmani — Long-running Agents</a></li>
+<li><a href="https://www.linkedin.com/posts/addyosmani_ai-programming-softwareengineering-activity-7424561714223800320-hq72">Addy Osmani — Ralph loop (Long-running Agents)</a></li>
+<li><a href="https://www.anthropic.com/institute/recursive-self-improvement">Anthropic — When AI builds itself (Recursive Self-Improvement)</a></li>
+<li><a href="https://resources.anthropic.com/hubfs/2026%20Agentic%20Coding%20Trends%20Report.pdf">Anthropic — 2026 Agentic Coding Trends Report</a></li>
+<li><a href="https://github.com/anthropics/cwc-long-running-agents">GitHub — anthropics&#x2F;cwc-long-running-agents</a></li>
+<li><a href="https://arxiv.org/pdf/2604.14228">arXiv — Dive into Claude Code</a></li>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2026/06/10/web-access%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-Agent-Skill%E7%9A%84%E8%81%94%E7%BD%91%E4%B8%8E%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BE%B9%E7%95%8C/">web-access 深度拆解：一个 Agent Skill 如何定义 Claude Code 的联网与浏览器边界</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2026-06-10</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/AI-%E5%B7%A5%E7%A8%8B/">AI 工程</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Claude-Code/">Claude Code</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Agent-Skill/">Agent Skill</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/CDP/">CDP</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%87%AA%E5%8A%A8%E5%8C%96/">浏览器自动化</a></span><div class="content"><h2 id="引子：原生工具是否足够"><a href="#引子：原生工具是否足够" class="headerlink" title="引子：原生工具是否足够"></a>引子：原生工具是否足够</h2><p>Claude Code 开箱即带两个联网工具：<code>WebSearch</code> 负责发现，<code>WebFetch</code> 负责提取。能力清单看似完整，但在真实的 Agent 联网任务中，会接连遇到三类典型障碍：</p>
 <ul>
 <li>读取微信公众号文章，<code>WebFetch</code> 返回的是「环境异常」的空壳；</li>
 <li>访问小红书账号页，正文在 JS 执行后才渲染，<code>curl</code> 仅能取回骨架；</li>
@@ -149,29 +329,5 @@
 <li><a href="https://michaelmaomao.github.io/2025/03/22/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%89%EF%BC%89%E2%80%94%E2%80%94%20Agent%E4%B8%8E%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E7%B3%BB%E7%BB%9F/">AI笔记系列（三）—— Agent与多智能体系统</a></li>
 <li><a href="https://michaelmaomao.github.io/2025/04/27/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E5%9B%9B%EF%BC%89%E2%80%94%E2%80%94%20%E9%AB%98%E5%BE%B7Mcp%20Server%EF%BC%9A%E6%89%93%E9%80%9AAI%E4%B8%8E%E5%9C%B0%E5%9B%BE%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%A1%A5%E6%A2%81/">AI笔记系列（四）—— 高德Mcp Server</a></li>
 </ul>
-<h1 id="AI笔记系列（四）——-高德Mcp-Server：打通AI与地图服务的桥梁"><a href="#AI笔记系列（四）——-高德Mcp-Server：打通AI与地图服务的桥梁" class="headerlink" title="AI笔记系列（四）—— 高德Mcp Server：打通AI与地图服务的桥梁"></a>AI笔记系列（四）—— 高德Mcp Server：打通AI与地图服务的桥梁</h1><p><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/AflzBIREc84MltAbixd9XrndlolZh2.png" alt="头图"></p></div><a class="more" href="/2025/04/27/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E5%9B%9B%EF%BC%89%E2%80%94%E2%80%94%20%E9%AB%98%E5%BE%B7Mcp%20Server%EF%BC%9A%E6%89%93%E9%80%9AAI%E4%B8%8E%E5%9C%B0%E5%9B%BE%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%A1%A5%E6%A2%81/#more">阅读更多</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2025/03/22/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%89%EF%BC%89%E2%80%94%E2%80%94%20Agent%E4%B8%8E%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E7%B3%BB%E7%BB%9F/">AI笔记系列（三）—— Agent与多智能体系统</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2025-03-22</time><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/AI/">AI</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Agent/">Agent</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93/">多智能体</a></span><div class="content"><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
-<li><a href="https://michaelmaomao.github.io/2025/01/27/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94%20%E7%8E%B0%E4%BB%A3AI%E4%BA%A7%E5%93%81%E5%BD%A2%E6%80%81%E8%A7%A3%E6%9E%90/#AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%80%EF%BC%89%E2%80%94%E2%80%94-%E7%8E%B0%E4%BB%A3AI%E4%BA%A7%E5%93%81%E5%BD%A2%E6%80%81%E8%A7%A3%E6%9E%90">AI笔记系列（一）—— 现代AI产品形态解析</a></li>
-<li><a href="https://michaelmaomao.github.io/2025/03/12/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%20AI%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%AE%9E%E8%B7%B5/">AI笔记系列（二）—— AI工作流实践</a></li>
-<li><a href="https://michaelmaomao.github.io/2025/03/22/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%89%EF%BC%89%E2%80%94%E2%80%94%20Agent%E4%B8%8E%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E7%B3%BB%E7%BB%9F/">AI笔记系列（三）—— Agent与多智能体系统</a></li>
-<li><a href="https://michaelmaomao.github.io/2025/04/27/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E5%9B%9B%EF%BC%89%E2%80%94%E2%80%94%20%E9%AB%98%E5%BE%B7Mcp%20Server%EF%BC%9A%E6%89%93%E9%80%9AAI%E4%B8%8E%E5%9C%B0%E5%9B%BE%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%A1%A5%E6%A2%81/">AI笔记系列（四）—— 高德Mcp Server</a></li>
-</ul>
-<h1 id="AI笔记系列（三）——-Agent与多智能体系统"><a href="#AI笔记系列（三）——-Agent与多智能体系统" class="headerlink" title="AI笔记系列（三）—— Agent与多智能体系统"></a>AI笔记系列（三）—— Agent与多智能体系统</h1><h2 id="AI-Agent的基本概念"><a href="#AI-Agent的基本概念" class="headerlink" title="AI-Agent的基本概念"></a>AI-Agent的基本概念</h2><p>AI-Agent（智能代理）是一种能够自主感知环境、做出决策并采取行动以实现特定目标的智能系统。Agent的核心决策逻辑是让大语言模型(LLM)根据动态变化的环境信息选择执行具体的行动或者对结果作出判断，并影响环境，通过多轮迭代重复执行上述步骤，直到完成目标。</p>
-<p>一个典型的Agent决策流程可以精简为：</p>
-<ul>
-<li><strong>P（感知）→ P（规划）→ A（行动）</strong></li>
-</ul>
-<p>其中：</p>
-<ul>
-<li><strong>感知（Perception）</strong>：Agent从环境中收集信息并提取相关知识的能力</li>
-<li><strong>规划（Planning）</strong>：Agent为了某一目标而作出的决策过程</li>
-<li><strong>行动（Action）</strong>：基于环境和规划做出的动作</li>
-</ul>
-<p>在工程实现上，Agent通常拆分为四大核心模块：</p>
-<ul>
-<li><strong>推理</strong>：使用LLM等模型进行思考和决策</li>
-<li><strong>记忆</strong>：存储历史信息和知识</li>
-<li><strong>工具</strong>：Agent可以调用的外部功能</li>
-<li><strong>行动</strong>：执行具体操作的能力</li>
-</ul>
-<p>目前Agent主流的决策模型是ReAct框架（Reasoning + Acting）及其变种，这种框架让Agent能够在思考和行动之间交替进行，从而更有效地完成复杂任务。</p></div><a class="more" href="/2025/03/22/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%89%EF%BC%89%E2%80%94%E2%80%94%20Agent%E4%B8%8E%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E7%B3%BB%E7%BB%9F/#more">阅读更多</a><hr></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-chevron-right&quot;&gt;&lt;&#x2F;i&gt;</a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+<h1 id="AI笔记系列（四）——-高德Mcp-Server：打通AI与地图服务的桥梁"><a href="#AI笔记系列（四）——-高德Mcp-Server：打通AI与地图服务的桥梁" class="headerlink" title="AI笔记系列（四）—— 高德Mcp Server：打通AI与地图服务的桥梁"></a>AI笔记系列（四）—— 高德Mcp Server：打通AI与地图服务的桥梁</h1><p><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/AflzBIREc84MltAbixd9XrndlolZh2.png" alt="头图"></p></div><a class="more" href="/2025/04/27/AI%E7%AC%94%E8%AE%B0%E7%B3%BB%E5%88%97%EF%BC%88%E5%9B%9B%EF%BC%89%E2%80%94%E2%80%94%20%E9%AB%98%E5%BE%B7Mcp%20Server%EF%BC%9A%E6%89%93%E9%80%9AAI%E4%B8%8E%E5%9C%B0%E5%9B%BE%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%A1%A5%E6%A2%81/#more">阅读更多</a><hr></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-chevron-right&quot;&gt;&lt;&#x2F;i&gt;</a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
  <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
