@@ -1,0 +1,278 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="A2UI 协议深度研究：让远程 Agent「安全地说 UI」"><meta name="keywords" content="AI Agent,协议,A2UI,Agent UI,声明式"><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>A2UI 协议深度研究：让远程 Agent「安全地说 UI」 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E5%AD%90%EF%BC%9A%E8%BF%9C%E7%A8%8B-Agent-%E7%BB%99%E4%BD%A0%E3%80%8C%E7%94%BB%E3%80%8D%E4%BA%86%E4%B8%AA%E7%95%8C%E9%9D%A2"><span class="toc-number">1.</span> <span class="toc-text">引子：远程 Agent 给你「画」了个界面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%AC%AC%E4%B8%80%E6%80%A7%E5%8E%9F%E7%90%86%EF%BC%9A%E8%B7%A8%E4%BF%A1%E4%BB%BB%E8%BE%B9%E7%95%8C%E7%9A%84-UI"><span class="toc-number">2.</span> <span class="toc-text">一、第一性原理：跨信任边界的 UI</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%9F%9B%E7%9B%BE"><span class="toc-number">2.1.</span> <span class="toc-text">核心矛盾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A0%B4%E5%B1%80%EF%BC%9A%E6%8A%8A%E3%80%8C%E7%94%9F%E6%88%90-UI%E3%80%8D%E5%92%8C%E3%80%8C%E6%89%A7%E8%A1%8C-UI%E3%80%8D%E8%A7%A3%E8%80%A6"><span class="toc-number">2.2.</span> <span class="toc-text">破局：把「生成 UI」和「执行 UI」解耦</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%B8%89%E5%B1%82%E6%9E%B6%E6%9E%84%EF%BC%9A%E6%8A%8A-UI-%E6%8B%86%E6%88%90%E4%B8%89%E4%B8%AA%E6%AD%A3%E4%BA%A4%E5%B1%82"><span class="toc-number">3.</span> <span class="toc-text">二、三层架构：把 UI 拆成三个正交层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%B8%BA-LLM-%E9%87%8F%E8%BA%AB%E7%9A%84%E8%AE%BE%E8%AE%A1%EF%BC%9A%E6%89%81%E5%B9%B3%E5%88%97%E8%A1%A8-ID-%E5%BC%95%E7%94%A8"><span class="toc-number">4.</span> <span class="toc-text">三、为 LLM 量身的设计：扁平列表 + ID 引用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%89%E5%85%A8%E6%A8%A1%E5%9E%8B%EF%BC%9ACatalog-%E7%99%BD%E5%90%8D%E5%8D%95%E4%B8%8E%E3%80%8C%E6%B6%88%E7%81%AD%E6%89%A7%E8%A1%8C%E9%9D%A2%E3%80%8D"><span class="toc-number">5.</span> <span class="toc-text">四、安全模型：Catalog 白名单与「消灭执行面」</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E9%98%B6%EF%BC%9A%E5%8F%8C%E9%87%8D-iframe%E2%80%94%E2%80%94%E5%B5%8C%E5%85%A5%E4%B8%8D%E5%8F%AF%E4%BF%A1-HTML-%E7%9A%84%E6%9E%81%E8%87%B4%E9%9A%94%E7%A6%BB"><span class="toc-number">5.1.</span> <span class="toc-text">进阶：双重 iframe——嵌入不可信 HTML 的极致隔离</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%9B%B4%E6%8E%A5%E7%94%A8-HTML-iframe%EF%BC%9F"><span class="toc-number">5.2.</span> <span class="toc-text">为什么不直接用 HTML&#x2F;iframe？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81UI-%E5%8D%8F%E8%AE%AE%E4%B8%89%E5%B7%A8%E5%A4%B4%EF%BC%9A%E4%BF%A1%E4%BB%BB%E6%94%BE%E5%93%AA%EF%BC%8C%E5%86%B3%E5%AE%9A%E4%BA%86%E4%BD%A0%E6%98%AF%E8%B0%81"><span class="toc-number">6.</span> <span class="toc-text">五、UI 协议三巨头：信任放哪，决定了你是谁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E4%B8%8E-A2A%EF%BC%9A%E4%BC%A0%E8%BE%93%E5%BA%95%E5%BA%A7"><span class="toc-number">7.</span> <span class="toc-text">六、与 A2A：传输底座</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E8%90%BD%E5%9C%B0%EF%BC%9A%E4%BB%8E-A2UI-%E5%80%9F%E9%89%B4%EF%BC%8C%E7%BB%99-Hermes-%E8%AE%BE%E8%AE%A1%E7%BB%93%E6%9E%84%E5%8C%96%E8%BE%93%E5%87%BA"><span class="toc-number">8.</span> <span class="toc-text">七、落地：从 A2UI 借鉴，给 Hermes 设计结构化输出</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E4%B8%AA-schema%EF%BC%88%E5%AF%B9%E9%BD%90-Hermes-%E7%9C%9F%E5%AE%9E%E6%8E%A5%E5%8F%A3%EF%BC%89"><span class="toc-number">8.1.</span> <span class="toc-text">三个 schema（对齐 Hermes 真实接口）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%90%BD%E5%9C%B0%E8%B7%AF%E5%BE%84"><span class="toc-number">8.2.</span> <span class="toc-text">落地路径</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E5%88%A4%E6%96%AD%E4%B8%8E%E5%90%AF%E7%A4%BA"><span class="toc-number">9.</span> <span class="toc-text">八、判断与启示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%9D%A5%E6%BA%90"><span class="toc-number">10.</span> <span class="toc-text">信息来源</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">57</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">43</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="post-info"><div id="post-title">A2UI 协议深度研究：让远程 Agent「安全地说 UI」</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2026-06-29</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/AI-%E5%B7%A5%E7%A8%8B/">AI 工程</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="引子：远程-Agent-给你「画」了个界面"><a href="#引子：远程-Agent-给你「画」了个界面" class="headerlink" title="引子：远程 Agent 给你「画」了个界面"></a>引子：远程 Agent 给你「画」了个界面</h2><p>设想你在和一个 Agent 聊天，让它帮你订一桌餐。它没有跟你来回文字拉扯（几人？哪天？几点？），而是直接甩给你一个带日期选择器、时间段、确认按钮的表单——你点几下就搞定。</p>
+<p>关键来了：<strong>这个表单，不是你本地 App 预先做好的页面，而是那个跑在别的公司服务器上的远程 Agent，「画」出来递给你的。</strong></p>
+<p>这立刻引出两个尖锐的问题：</p>
+<ul>
+<li>你<strong>怎么敢</strong>渲染一段来自不可信远程 Agent 的 UI？万一它塞段恶意 JS 呢？</li>
+<li>你又怎么让这份 UI 在 Web、手机、桌面上<strong>都长得一样</strong>，还完美继承你 App 的样式？</li>
+</ul>
+<p>传统答案是把 HTML&#x2F;JS 塞进 iframe——又重、又割裂、又是安全噩梦。Google 给出了另一个答案：<strong>A2UI（Agent-to-User Interface）</strong>，一套声明式 UI 协议。它的设计纲领一句话能说完：</p>
+<blockquote>
+<p><strong>传输一种 UI——像数据一样安全，又像代码一样有表现力。</strong></p>
+</blockquote>
+<p>这篇就讲透 A2UI：为什么需要它、它的三个反直觉设计、安全模型，以及 UI 协议「三巨头」里它和 MCP Apps、ChatKit 到底差在哪。最后落到一个实践——如何把它的思想借到一个自研 Agent 框架（以我的 Hermes 为例）。</p>
+<h2 id="一、第一性原理：跨信任边界的-UI"><a href="#一、第一性原理：跨信任边界的-UI" class="headerlink" title="一、第一性原理：跨信任边界的 UI"></a>一、第一性原理：跨信任边界的 UI</h2><span id="more"></span>
+
+<h3 id="核心矛盾"><a href="#核心矛盾" class="headerlink" title="核心矛盾"></a>核心矛盾</h3><p>理解 A2UI 要先抓住它要解决的那个矛盾。</p>
+<ul>
+<li><strong>过去</strong>：Agent 和 UI 在同一个 App 进程里，Agent 想画什么直接操作 DOM 就行，因为完全可信。</li>
+<li><strong>现在（多 Agent 时代）</strong>：干活的 Agent 往往是<strong>远程的</strong>——跑在别人服务器、别的组织里。它<strong>碰不到你的 UI</strong>，只能发消息。</li>
+</ul>
+<p>那远程 Agent 想给用户呈现富交互界面（表格、图表、表单），怎么办？传统答案是 iframe 嵌 HTML&#x2F;JS。问题一堆：重、视觉割裂（永远不匹配宿主样式）、安全边界复杂。</p>
+<h3 id="破局：把「生成-UI」和「执行-UI」解耦"><a href="#破局：把「生成-UI」和「执行-UI」解耦" class="headerlink" title="破局：把「生成 UI」和「执行 UI」解耦"></a>破局：把「生成 UI」和「执行 UI」解耦</h3><p>A2UI 的解法是<strong>解耦</strong>：</p>
+<ul>
+<li><strong>Agent 只「描述」UI 意图</strong>——发一段声明式 JSON 数据。</li>
+<li><strong>客户端用「自己的」原生组件渲染</strong>——完全掌控安全与样式。</li>
+</ul>
+<p>因为 Agent 发出的是「不可执行的数据」，所以安全；又因为描述足够丰富，所以有表现力。这就是「safe like data, expressive like code」的来历。</p>
+<blockquote>
+<p>本质上，这是 <strong>Server-Driven UI（SDUI）的复兴</strong>。Instagram 原生 App 约一半屏幕已是 SDUI。A2UI 把它从「自家服务端→自家客户端」（信任的）升级为「别人家的 Agent→我家客户端」（不信任的）这个更难的场景。</p>
+</blockquote>
+<h2 id="二、三层架构：把-UI-拆成三个正交层"><a href="#二、三层架构：把-UI-拆成三个正交层" class="headerlink" title="二、三层架构：把 UI 拆成三个正交层"></a>二、三层架构：把 UI 拆成三个正交层</h2><p>A2UI 把 UI 严格拆成三个正交层，这是理解它一切机制的基座：</p>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>关心的问题</th>
+<th>控制权</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>① UI 结构层</strong></td>
+<td>页面由哪些组件、怎么组合</td>
+<td>Agent</td>
+</tr>
+<tr>
+<td><strong>② 应用状态层</strong></td>
+<td>每个数据字段的当前值（Data Model）</td>
+<td>数据绑定（双向）</td>
+</tr>
+<tr>
+<td><strong>③ 渲染执行层</strong></td>
+<td>抽象组件如何映射到原生 widget</td>
+<td>客户端</td>
+</tr>
+</tbody></table>
+<p>为什么要这么拆？因为这三件事的<strong>变化频率和归属方完全不同</strong>：结构是 Agent 临场生成（频繁变）、数据是用户交互产生（实时变）、渲染是客户端固有能力（基本不变）。</p>
+<p>把「渲染」完全交给客户端，就实现了「一次生成、到处渲染」的跨平台——同一份 JSON 能在 Web（Lit&#x2F;Angular&#x2F;React）、移动（Flutter&#x2F;SwiftUI&#x2F;Compose）、桌面渲染。</p>
+<pre class="mermaid">flowchart TB
+    L1["① UI 结构层 Structure&lt;br/&gt;组件树 → Agent 生成"] --&gt;|通过 path 绑定| L2["② 应用状态层 State&lt;br/&gt;Data Model → 双向绑定"]
+    L2 --&gt;|驱动更新| L3["③ 渲染执行层 Rendering&lt;br/&gt;原生 widget → 客户端掌控"]
+    L1 --&gt;|映射| L3</pre>
+
+<h2 id="三、为-LLM-量身的设计：扁平列表-ID-引用"><a href="#三、为-LLM-量身的设计：扁平列表-ID-引用" class="headerlink" title="三、为 LLM 量身的设计：扁平列表 + ID 引用"></a>三、为 LLM 量身的设计：扁平列表 + ID 引用</h2><p>这是 A2UI <strong>最反直觉、也最精妙</strong>的设计。</p>
+<p>组织组件有两种方式：传统的嵌套树（像 HTML），和 A2UI 的<strong>扁平列表 + ID 引用</strong>。看个真实例子（v0.9.1）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;version&quot;</span><span class="punctuation">:</span><span class="string">&quot;v0.9.1&quot;</span><span class="punctuation">,</span><span class="attr">&quot;updateComponents&quot;</span><span class="punctuation">:</span><span class="punctuation">&#123;</span><span class="attr">&quot;surfaceId&quot;</span><span class="punctuation">:</span><span class="string">&quot;booking&quot;</span><span class="punctuation">,</span><span class="attr">&quot;components&quot;</span><span class="punctuation">:</span><span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span><span class="attr">&quot;id&quot;</span><span class="punctuation">:</span><span class="string">&quot;header&quot;</span><span class="punctuation">,</span><span class="attr">&quot;component&quot;</span><span class="punctuation">:</span><span class="string">&quot;Text&quot;</span><span class="punctuation">,</span><span class="attr">&quot;text&quot;</span><span class="punctuation">:</span><span class="string">&quot;# 订餐&quot;</span><span class="punctuation">,</span><span class="attr">&quot;variant&quot;</span><span class="punctuation">:</span><span class="string">&quot;h1&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="punctuation">&#123;</span><span class="attr">&quot;id&quot;</span><span class="punctuation">:</span><span class="string">&quot;date-picker&quot;</span><span class="punctuation">,</span><span class="attr">&quot;component&quot;</span><span class="punctuation">:</span><span class="string">&quot;DateTimeInput&quot;</span><span class="punctuation">,</span><span class="attr">&quot;value&quot;</span><span class="punctuation">:</span><span class="punctuation">&#123;</span><span class="attr">&quot;path&quot;</span><span class="punctuation">:</span><span class="string">&quot;/booking/date&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span><span class="attr">&quot;enableDate&quot;</span><span class="punctuation">:</span><span class="literal"><span class="keyword">true</span></span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="punctuation">&#123;</span><span class="attr">&quot;id&quot;</span><span class="punctuation">:</span><span class="string">&quot;submit-btn&quot;</span><span class="punctuation">,</span><span class="attr">&quot;component&quot;</span><span class="punctuation">:</span><span class="string">&quot;Button&quot;</span><span class="punctuation">,</span><span class="attr">&quot;child&quot;</span><span class="punctuation">:</span><span class="string">&quot;submit-text&quot;</span><span class="punctuation">,</span><span class="attr">&quot;action&quot;</span><span class="punctuation">:</span><span class="punctuation">&#123;</span><span class="attr">&quot;event&quot;</span><span class="punctuation">:</span><span class="punctuation">&#123;</span><span class="attr">&quot;name&quot;</span><span class="punctuation">:</span><span class="string">&quot;confirm_booking&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">&#125;</span><span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span><span class="punctuation">&#125;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>注意 <code>submit-btn</code> 的 <code>child: &quot;submit-text&quot;</code>——它不物理嵌套一个文本节点，而是<strong>引用另一个组件的 id</strong>。整个 UI 是一个扁平的组件列表，靠 id 互相引用组装。</p>
+<p>为什么不用更「自然」的嵌套树？因为要<strong>顺着 LLM 的脾性</strong>，而不是跟它较劲：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>嵌套树</th>
+<th>扁平列表 + ID</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>闭合性</td>
+<td>必须精确匹配括号，漏一个全错</td>
+<td>每条独立，无嵌套闭合压力</td>
+</tr>
+<tr>
+<td>流式生成</td>
+<td>难（要等完整树）</td>
+<td>易（逐条吐）</td>
+</tr>
+<tr>
+<td>纠错</td>
+<td>牵一发动全身</td>
+<td>补一条覆盖某 id</td>
+</tr>
+</tbody></table>
+<p>LLM 是 token-by-token 自回归生成，深度嵌套 JSON 要它「一次写对全部括号」违反生成特性——越深越容易错。扁平列表把「结构关系」从<strong>语法嵌套</strong>变成<strong>语义引用</strong>，让 LLM 可以<strong>边想边吐、错了就补</strong>。</p>
+<blockquote>
+<p>这是「LLM-friendly」从口号落到协议细节的典范。好的协议设计要顺着生成模型的脾性，而不是逼模型适应协议。</p>
+</blockquote>
+<p>配合<strong>数据绑定</strong>（组件用 path 绑定 Data Model，而非直接持有值），组件成了<strong>无状态纯渲染器</strong>——状态全在 Data Model，事件全回 Agent。这一进一出（value.path 读数据、action.event 发事件）构成组件的 I&#x2F;O 契约，是跨平台渲染能成立的前提。</p>
+<h2 id="四、安全模型：Catalog-白名单与「消灭执行面」"><a href="#四、安全模型：Catalog-白名单与「消灭执行面」" class="headerlink" title="四、安全模型：Catalog 白名单与「消灭执行面」"></a>四、安全模型：Catalog 白名单与「消灭执行面」</h2><p>A2UI 的安全核心是一句话：<strong>Agent 只能从客户端的「菜单」里点菜，不能冲进厨房。</strong></p>
+<p>这个「菜单」叫 <strong>Catalog</strong>——客户端预定义的可信组件白名单。Agent 说「我要一个 Button」，但 Button 的<strong>实际实现是客户端自己的</strong>。Agent 无法注入代码、无法访问 DOM、无法做任何超出 Catalog 的事。</p>
+<pre class="mermaid">flowchart TB
+    AG["Agent 想渲染某组件"] --&gt; CHECK{"在 Catalog 白名单?"}
+    CHECK --&gt;|是 预批准| OK["允许, 用客户端原生实现"]
+    CHECK --&gt;|否 未批准| BLOCK["拒绝, 防 UI 注入"]</pre>
+
+<p>那如果客户端想要更复杂的能力（嵌入一个图表、甚至受控的 iframe）怎么办？用 <strong>Smart Wrapper</strong>（开放注册表）：开发者把任意已有组件注册进 A2UI，把安全策略（沙箱、「信任阶梯」）写在自己的组件逻辑里，而非依赖协议核心兜底。</p>
+<h3 id="进阶：双重-iframe——嵌入不可信-HTML-的极致隔离"><a href="#进阶：双重-iframe——嵌入不可信-HTML-的极致隔离" class="headerlink" title="进阶：双重 iframe——嵌入不可信 HTML 的极致隔离"></a>进阶：双重 iframe——嵌入不可信 HTML 的极致隔离</h3><p>A2UI 甚至能安全嵌入一段<strong>不可信的第三方 HTML</strong>（比如一个 MCP App）。它用了一个反直觉的「双重 iframe」：</p>
+<ul>
+<li>外层 Sandbox Proxy（同源、不沙箱、验证来源）</li>
+<li>内层（allow-scripts 但<strong>严禁 allow-same-origin</strong>）</li>
+</ul>
+<p>为什么要双层？因为单 iframe 若同时 allow-scripts + allow-same-origin，可编程操作父 DOM 甚至移除自身 sandbox 逃逸。A2UI 内层严禁 allow-same-origin，使第三方 HTML 因独特 origin 失去 localStorage&#x2F;cookie&#x2F;IndexedDB，且无法触碰父 DOM。所有跨信任边界的数据流，都必须经 Agent 这道「中介」——零信任在 UI 层的极致体现。</p>
+<h3 id="为什么不直接用-HTML-iframe？"><a href="#为什么不直接用-HTML-iframe？" class="headerlink" title="为什么不直接用 HTML&#x2F;iframe？"></a>为什么不直接用 HTML&#x2F;iframe？</h3><p>这是社区最大的质疑。A2UI 的回答很硬：浏览器 HTML 天然绑定 CSS+JS，本质是「远程代码执行引擎」。企业多 Agent 场景下（让第三方 SaaS 的 Agent 跟自家 Agent 并存），接受任意 HTML 就是接受代码注入。<strong>把 UI 抽象成声明式 JSON，从根上消灭了「执行」这个攻击面。</strong></p>
+<h2 id="五、UI-协议三巨头：信任放哪，决定了你是谁"><a href="#五、UI-协议三巨头：信任放哪，决定了你是谁" class="headerlink" title="五、UI 协议三巨头：信任放哪，决定了你是谁"></a>五、UI 协议三巨头：信任放哪，决定了你是谁</h2><p>A2UI 不是唯一解。当下 Agent UI 协议有「三巨头」，它们的本质差异就一句话——<strong>信任放哪</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th><strong>A2UI（Google）</strong></th>
+<th><strong>MCP Apps（MCP 官方）</strong></th>
+<th><strong>ChatKit（OpenAI）</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>信任放哪</td>
+<td>客户端 catalog（无执行面）</td>
+<td>iframe 沙箱（容忍执行但隔离）</td>
+<td>OpenAI 平台（全栈托管）</td>
+</tr>
+<tr>
+<td>渲染方</td>
+<td>客户端原生组件</td>
+<td>iframe</td>
+<td>OpenAI 托管 widget</td>
+</tr>
+<tr>
+<td>自由度</td>
+<td>中（catalog 约束）</td>
+<td>高（任意 HTML&#x2F;JS）</td>
+<td>低（widget 类型约束）</td>
+</tr>
+<tr>
+<td>样式一致性</td>
+<td>完美继承宿主</td>
+<td>iframe 隔离（割裂）</td>
+<td>OpenAI 主题 + 有限定制</td>
+</tr>
+<tr>
+<td>跨平台</td>
+<td>声明式天生跨平台</td>
+<td>绑 Web&#x2F;iframe</td>
+<td>绑 OpenAI SDK</td>
+</tr>
+<tr>
+<td>生态</td>
+<td>开放（A2A&#x2F;AG-UI）</td>
+<td>MCP 生态</td>
+<td>OpenAI 闭环</td>
+</tr>
+</tbody></table>
+<p>选型 &#x3D; 回答「你愿意把 UI 安全托付给谁」：</p>
+<ul>
+<li><strong>企业多 Agent Mesh、要跨平台原生感</strong> → A2UI</li>
+<li><strong>MCP 工具、要高自由度富交互</strong> → MCP Apps</li>
+<li><strong>OpenAI 闭环、要快速上线</strong> → ChatKit</li>
+</ul>
+<p>三者<strong>分层共存</strong>，非一统天下。而且 A2UI 和 MCP Apps <strong>互补</strong>——A2UI 的 custom 节点能嵌入 MCP App（双重 iframe），Google 官方称「两者结合最佳」。</p>
+<blockquote>
+<p>一个判断：现在是「汽车工业早期 80 家厂商」阶段。真正能赢的标准，会是「无聊到产品团队能忍受 5-10 年」的那个，而非 demo 最酷的。A2UI 的「声明式 + 无执行面」最符合长期标准化特征，前提是 v1.0 稳定 + 渲染器生态补齐。</p>
+</blockquote>
+<h2 id="六、与-A2A：传输底座"><a href="#六、与-A2A：传输底座" class="headerlink" title="六、与 A2A：传输底座"></a>六、与 A2A：传输底座</h2><p>A2UI 反复强调「传输可插拔（A2A &#x2F; AG-UI &#x2F; SSE &#x2F; WebSocket）」，它不绑定传输。其中 <strong>A2A（Agent2Agent）</strong> 是最重量级的传输底座——A2UI 的 JSONL 消息，正是作为 A2A 的 data 类型 Part，在 Agent 间流式传输的。</p>
+<p>A2A 提供的「有状态、可流式、可中断恢复」传输，恰好是 agent-driven UI 在多轮对话里的刚需。A2A 的 Task 生命周期承载 A2UI 的 Surface 生命周期，SSE 承载渐进渲染。</p>
+<blockquote>
+<p>一句话：<strong>A2UI 定义「UI 长什么样」，A2A 定义「UI 怎么传过来」——一个管表现层，一个管通信层。</strong> A2A 的深度解读见本系列另一篇。</p>
+</blockquote>
+<h2 id="七、落地：从-A2UI-借鉴，给-Hermes-设计结构化输出"><a href="#七、落地：从-A2UI-借鉴，给-Hermes-设计结构化输出" class="headerlink" title="七、落地：从 A2UI 借鉴，给 Hermes 设计结构化输出"></a>七、落地：从 A2UI 借鉴，给 Hermes 设计结构化输出</h2><p>理论讲完，落到一个实际问题：<strong>如果不直接采用 A2UI 协议（标准尚早期），怎么把它的思想用一个自研 Agent 框架？</strong> 以我的 Hermes Agent 为例。</p>
+<p>Hermes 当前的输出主要是自然语言散文（给人看的），下游消费方是 CLI 和 Telegram。直接上 A2UI&#x2F;MCP Apps 的 iframe&#x2F;widget 模型过重。但 A2UI 的三个核心思想可以轻量迁移：</p>
+<table>
+<thead>
+<tr>
+<th>A2UI 思想</th>
+<th>Hermes 落地</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>① 声明式契约</td>
+<td>schema 描述意图，非执行命令</td>
+</tr>
+<tr>
+<td>② 状态&#x2F;渲染分离</td>
+<td>schema 只描述数据，CLI&#x2F;Web&#x2F;Telegram 各自渲染</td>
+</tr>
+<tr>
+<td>③ 扁平 + 版本化 + 增量</td>
+<td>扁平 JSON + schema_version + Task 状态流</td>
+</tr>
+</tbody></table>
+<p>一个意外收获：Hermes 自己的记忆里已经记录了「结构化生成成为标准实践」（Outlines&#x2F;Guidance&#x2F;Instructor，Pydantic→JSON Schema→FSM）。所以这套 schema 不是引入新依赖，而是<strong>把 Hermes 已学的技术用到它自己的输出上</strong>——学以致用的闭环。</p>
+<h3 id="三个-schema（对齐-Hermes-真实接口）"><a href="#三个-schema（对齐-Hermes-真实接口）" class="headerlink" title="三个 schema（对齐 Hermes 真实接口）"></a>三个 schema（对齐 Hermes 真实接口）</h3><p>我把 Hermes 的 cron&#x2F;jobs.json、messages_send、任务状态这些真实接口，抽象成三个 Pydantic schema。每个都带 schema_version（对应 A2UI 的 version 字段），字段扁平（对应 A2UI 的扁平列表）。</p>
+<p><strong>HermesCronJob</strong>（对齐 jobs.json）——让 LLM 直接产出可被 hermes cron create 消费的结构化意图，而非自然语言：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">HermesCronJob</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    schema_version: <span class="built_in">str</span> = <span class="string">&quot;1.0&quot;</span></span><br><span class="line">    kind: <span class="built_in">str</span> = <span class="string">&quot;cron_job&quot;</span></span><br><span class="line">    name: <span class="built_in">str</span></span><br><span class="line">    schedule: CronSchedule           <span class="comment"># kind: cron/interval, expr</span></span><br><span class="line">    prompt: <span class="built_in">str</span></span><br><span class="line">    deliver: <span class="built_in">str</span> = <span class="string">&quot;telegram:xxx&quot;</span></span><br><span class="line">    repeat_times: <span class="built_in">int</span> | <span class="literal">None</span> = <span class="literal">None</span>  <span class="comment"># None = 永久</span></span><br><span class="line">    model: <span class="built_in">str</span> | <span class="literal">None</span> = <span class="literal">None</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>HermesNotify</strong>（对齐 messages_send + 4 个通知模板）——把散文模板升级为结构化消息，多端按 category 差异化渲染：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">NotifyCategory</span>(<span class="built_in">str</span>, Enum):</span><br><span class="line">    TASK_COMPLETE = <span class="string">&quot;task_complete&quot;</span></span><br><span class="line">    ERROR = <span class="string">&quot;error&quot;</span></span><br><span class="line">    SUMMARY = <span class="string">&quot;summary&quot;</span></span><br><span class="line">    CODE_REVIEW = <span class="string">&quot;code_review&quot;</span></span><br><span class="line">    CUSTOM = <span class="string">&quot;custom&quot;</span>   <span class="comment"># 预留扩展位</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">HermesNotify</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    schema_version: <span class="built_in">str</span> = <span class="string">&quot;1.0&quot;</span></span><br><span class="line">    target: <span class="built_in">str</span></span><br><span class="line">    category: NotifyCategory</span><br><span class="line">    custom_kind: <span class="built_in">str</span> | <span class="literal">None</span> = <span class="literal">None</span>    <span class="comment"># category=CUSTOM 时必填</span></span><br><span class="line">    priority: NotifyPriority = NotifyPriority.NORMAL</span><br><span class="line">    title: <span class="built_in">str</span></span><br><span class="line">    body: NotifyBody</span><br></pre></td></tr></table></figure>
+
+<p>CUSTOM 预留位 + custom_kind 校验，是为 Hermes 自进化产生的新通知类型（技能进化报告、Dojo 结果）留口子——避免频繁改枚举，又用校验防滥用。</p>
+<p><strong>HermesTask</strong>（任务执行单元 + 状态流）——对应 A2UI 的增量更新（updateDataModel）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">TaskState</span>(<span class="built_in">str</span>, Enum):</span><br><span class="line">    PENDING = <span class="string">&quot;pending&quot;</span>; RUNNING = <span class="string">&quot;running&quot;</span></span><br><span class="line">    COMPLETED = <span class="string">&quot;completed&quot;</span>; FAILED = <span class="string">&quot;failed&quot;</span>; PAUSED = <span class="string">&quot;paused&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">HermesTask</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    schema_version: <span class="built_in">str</span> = <span class="string">&quot;1.0&quot;</span></span><br><span class="line">    task_id: <span class="built_in">str</span></span><br><span class="line">    title: <span class="built_in">str</span></span><br><span class="line">    state: TaskState = TaskState.PENDING</span><br><span class="line">    progress: TaskProgress</span><br><span class="line">    result: <span class="type">Any</span> | <span class="literal">None</span> = <span class="literal">None</span></span><br><span class="line">    error: <span class="built_in">str</span> | <span class="literal">None</span> = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">transition_to</span>(<span class="params">self, new_state: TaskState</span>) -&gt; <span class="string">&quot;HermesTask&quot;</span>:</span><br><span class="line">        <span class="comment"># 合法状态转换校验, 防状态损坏</span></span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+
+<p>最有意思的是 HermesTask 和 <strong>A2A 的 Task 模型天然同构</strong>——这意味着 Hermes 未来若要接入多 Agent Mesh，HermesTask 几乎可直接映射为 A2A Task，<strong>接入阻抗极低</strong>。这是一个「先按 A2UI&#x2F;A2A 思想设计自己的 schema，未来自然对接标准」的低风险路径。</p>
+<h3 id="落地路径"><a href="#落地路径" class="headerlink" title="落地路径"></a>落地路径</h3><ol>
+<li><strong>Phase 1</strong>：Pydantic 定义三个 schema（复用 Hermes 已学的 Outlines&#x2F;Instructor）</li>
+<li><strong>Phase 2</strong>：接入 hermes cron create &#x2F; messages_send</li>
+<li><strong>Phase 3</strong>：Task 状态流 + WebUI 卡片渲染</li>
+</ol>
+<h2 id="八、判断与启示"><a href="#八、判断与启示" class="headerlink" title="八、判断与启示"></a>八、判断与启示</h2><p>把 A2UI 放回更大的图景，四点判断：</p>
+<p><strong>1. A2UI 是「跨信任边界 agent-driven UI」当前最正经的开放答案。</strong> 它用声明式 + Catalog 白名单，从根上消灭执行面，做到「安全如数据、表达如代码」。在企业多 Agent Mesh 场景，这套设计哲学是对的。</p>
+<p><strong>2. 三个反直觉设计是它的精髓。</strong> 三层解耦、扁平列表+ID 引用（为 LLM）、Catalog 守门——每一个都是对「UI 该怎么生成」的重新思考，而非堆功能。</p>
+<p><strong>3. 三巨头分层共存，A2UI 与 MCP Apps 互补。</strong> 别纠结「选谁」，按场景：Mesh 跨平台选 A2UI，MCP 富交互选 MCP Apps，OpenAI 闭环选 ChatKit。</p>
+<p><strong>4. 对自研框架，思想比协议更值得借。</strong> 标准尚早期（v1.0 候选、渲染器未齐），现在 all-in 风险高。但它的「声明式输出 + 状态&#x2F;渲染分离 + 扁平版本化」思想，可以立刻用 Pydantic 落到自己的 schema 上——既改善当下输出，又为未来对接标准留好低阻抗通道。</p>
+<hr>
+<p>Agent 时代正在重走互联网协议分层的路：UI 表现层（A2UI）、Agent 通信层（A2A）、工具接入层（MCP），各有一套开放标准，各司其职。A2UI 补上的，是「Agent 怎么把界面安全地递给用户」这一层。理解了它，你就能判断：当远程 Agent 要给你「画」个界面时，什么样的设计才既敢用、又好看。</p>
+<h2 id="信息来源"><a href="#信息来源" class="headerlink" title="信息来源"></a>信息来源</h2><table>
+<thead>
+<tr>
+<th>来源</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A2UI 官网</td>
+<td><a href="https://a2ui.org/">https://a2ui.org/</a></td>
+</tr>
+<tr>
+<td>What is A2UI</td>
+<td><a href="https://a2ui.org/introduction/what-is-a2ui/">https://a2ui.org/introduction/what-is-a2ui/</a></td>
+</tr>
+<tr>
+<td>Google 官方公告（2025-12-15）</td>
+<td><a href="https://developers.googleblog.com/introducing-a2ui-an-open-project-for-agent-driven-interfaces/">https://developers.googleblog.com/introducing-a2ui-an-open-project-for-agent-driven-interfaces/</a></td>
+</tr>
+<tr>
+<td>GitHub a2ui-project&#x2F;a2ui</td>
+<td><a href="https://github.com/a2ui-project/a2ui">https://github.com/a2ui-project/a2ui</a></td>
+</tr>
+<tr>
+<td>Hacker News 讨论</td>
+<td><a href="https://news.ycombinator.com/item?id=46286407">https://news.ycombinator.com/item?id=46286407</a></td>
+</tr>
+<tr>
+<td>MCP Apps in A2UI（双重 iframe）</td>
+<td><a href="https://a2ui.org/guides/mcp-apps-in-a2ui/">https://a2ui.org/guides/mcp-apps-in-a2ui/</a></td>
+</tr>
+<tr>
+<td>下一篇：A2A 协议深度解读</td>
+<td>（本博客 Agent UI 系列）</td>
+</tr>
+</tbody></table>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">MichaelMao</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://michaelmaomao.github.io/2026/06/29/A2UI%E5%8D%8F%E8%AE%AE%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6-%E8%AE%A9%E8%BF%9C%E7%A8%8BAgent%E5%AE%89%E5%85%A8%E5%9C%B0%E8%AF%B4UI/">http://michaelmaomao.github.io/2026/06/29/A2UI%E5%8D%8F%E8%AE%AE%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6-%E8%AE%A9%E8%BF%9C%E7%A8%8BAgent%E5%AE%89%E5%85%A8%E5%9C%B0%E8%AF%B4UI/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://michaelMaoMao.github.io">MMao</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/AI-Agent/">AI Agent</a><a class="post-meta__tags" href="/tags/%E5%8D%8F%E8%AE%AE/">协议</a><a class="post-meta__tags" href="/tags/A2UI/">A2UI</a><a class="post-meta__tags" href="/tags/Agent-UI/">Agent UI</a><a class="post-meta__tags" href="/tags/%E5%A3%B0%E6%98%8E%E5%BC%8F/">声明式</a></div><div class="post-qr-code"><div class="post-qr-code-item"><img class="post-qr-code__img" src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"><div class="post-qr-code__desc">我要吐槽下</div></div></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2026/06/29/A2A%E5%8D%8F%E8%AE%AE%E6%B7%B1%E5%BA%A6%E8%A7%A3%E8%AF%BB-Agent%E9%97%B4%E9%80%9A%E4%BF%A1%E7%9A%84%E9%80%9A%E7%94%A8%E8%AF%AD%E8%A8%80/"><i class="fa fa-chevron-left">  </i><span>A2A 协议深度解读：Agent 间通信的通用语言（A2UI 的传输底座）</span></a></div><div class="next-post pull-right"><a href="/2026/06/13/ClaudeCode%20%E6%80%9D%E8%80%83%20-%20Loop%20Agent%20%E4%B8%8E%E9%95%BF%E4%BC%9A%E8%AF%9D/"><span>ClaudeCode 思考 - Loop 价值拆解：从解放人到自进化</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
