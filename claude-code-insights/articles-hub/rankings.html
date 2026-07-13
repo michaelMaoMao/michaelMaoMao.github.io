@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>排行榜 — Anthropic Articles</title>
+<style>
+:root{--ivory:#FAF9F5;--paper:#FFF;--slate:#141413;--clay:#D97757;--oat:#E3DACC;--olive:#788C5D;--g100:#F5F5F4;--g300:#D6D3D1;--g500:#78716C;--g700:#44403C;--serif:Georgia,serif;--sans:system-ui,sans-serif;--mono:'SF Mono',Menlo,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--ivory);color:var(--slate);line-height:1.6}
+a{color:var(--clay);text-decoration:none}a:hover{text-decoration:underline}
+header{background:var(--slate);color:var(--ivory);padding:2rem}
+header h1{font-family:var(--serif);font-size:2rem;margin-bottom:.5rem}
+nav{background:var(--paper);border-bottom:1px solid var(--g300);padding:0 2rem;display:flex;gap:1.5rem}
+nav a{color:var(--slate);padding:.75rem 0;font-size:.9rem;border-bottom:2px solid transparent}
+nav a:hover{border-bottom-color:var(--clay);text-decoration:none}
+nav a.active{border-bottom-color:var(--clay);font-weight:600}
+main{max-width:1200px;margin:0 auto;padding:2rem}
+.controls{display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.controls button{padding:.5rem 1rem;border:1px solid var(--g300);border-radius:6px;background:var(--paper);cursor:pointer;font-size:.85rem}
+.controls button.active{background:var(--clay);color:white;border-color:var(--clay)}
+table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--g300);border-radius:8px;overflow:hidden}
+th{text-align:left;padding:.75rem 1rem;background:var(--g100);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);border-bottom:1px solid var(--g300);cursor:pointer}
+th:hover{color:var(--clay)}
+td{padding:.6rem 1rem;border-bottom:1px solid var(--g100);font-size:.9rem}
+tr:hover{background:var(--g100)}
+.rank-num{font-family:var(--serif);font-weight:700;color:var(--clay);text-align:center;width:40px}
+.score-cell{font-weight:700;font-family:var(--mono)}
+.bar{height:6px;border-radius:3px;background:var(--clay);display:inline-block;vertical-align:middle;margin-right:.5rem}
+.grade{font-size:.75rem;padding:2px 8px;border-radius:4px;font-weight:600;display:inline-block}
+.g-S{background:#FDE68A;color:#92400E}.g-A{background:#BBF7D0;color:#166534}.g-B{background:#BFDBFE;color:#1E40AF}
+.g-C{background:var(--g100);color:var(--g700)}.g-D{background:var(--g300);color:var(--g500)}
+footer{text-align:center;padding:2rem;color:var(--g500);font-size:.85rem;border-top:1px solid var(--g300);margin-top:2rem}
+</style>
+</head>
+<body>
+<header><h1>排行榜</h1><p>按各维度排序 — 点击表头切换排序维度</p></header>
+<nav>
+  <a href="index.html">总览</a><a href="rankings.html" class="active">排行榜</a>
+  <a href="categories.html">分类浏览</a><a href="relations.html">文章关系图</a><a href="github-map.html">GitHub 映射</a>
+</nav>
+<main>
+<div class="controls" id="fc"></div>
+<table><thead><tr>
+<th data-col="0">#</th><th data-col="1">文章标题</th><th data-col="2">板块</th><th data-col="3">分类</th>
+<th data-col="4" class="sorted">综合评分</th><th data-col="5">技术深度</th><th data-col="6">可操作性</th>
+<th data-col="7">创新性</th><th data-col="8">影响力</th><th data-col="9">教育价值</th>
+<th data-col="10">时效性</th><th data-col="11">可复现性</th><th>等级</th>
+</tr></thead><tbody id="tb"></tbody></table>
+</main>
+<footer>Anthropic Articles Knowledge Management System</footer>
+<script>
+const A=[
+{slug:"effective-context-engineering",t:"Effective Context Engineering",s:"engineering",c:"C2",ov:9.0,scores:[8,9,9,9,10,8,7]},
+{slug:"advanced-tool-use",t:"Introducing Advanced Tool Use",s:"engineering",c:"C4",ov:8.9,scores:[10,9,9,9,9,8,8]},
+{slug:"contextual-retrieval",t:"Introducing Contextual Retrieval",s:"engineering",c:"C2",ov:8.9,scores:[9,9,9,9,9,8,9]},
+{slug:"building-effective-agents",t:"Building Effective AI Agents",s:"engineering",c:"C1",ov:8.8,scores:[8,9,8,10,9,9,8]},
+{slug:"writing-effective-tools",t:"Writing Effective Tools for Agents",s:"engineering",c:"C2",ov:8.7,scores:[9,10,7,8,9,8,9]},
+{slug:"claude-code-best-practices",t:"Claude Code: Best Practices",s:"engineering",c:"C2",ov:8.3,scores:[7,10,5,10,9,7,10]},
+{slug:"think-tool",t:'The "Think" Tool',s:"engineering",c:"C2",ov:8.3,scores:[8,9,7,8,9,7,10]},
+{slug:"multi-agent-research-system",t:"Multi-Agent Research System",s:"engineering",c:"C1",ov:8.2,scores:[9,8,8,9,9,7,6]},
+{slug:"desktop-extensions-mcp",t:"Desktop Extensions: MCP",s:"engineering",c:"C4",ov:8.0,scores:[8,10,6,8,8,6,10]},
+{slug:"beyond-permission-prompts",t:"Beyond Permission Prompts",s:"engineering",c:"C4",ov:8.0,scores:[8,9,7,8,8,7,9]},
+{slug:"code-execution-mcp",t:"Code Execution with MCP",s:"engineering",c:"C4",ov:7.9,scores:[8,9,7,8,8,7,8]},
+{slug:"scaling-managed-agents",t:"Scaling Managed Agents",s:"engineering",c:"C1",ov:7.7,scores:[8,7,9,8,8,9,5]},
+{slug:"agent-skills",t:"Agent Skills",s:"engineering",c:"C1",ov:7.6,scores:[7,8,7,8,8,7,8]},
+{slug:"harness-design-long-running",t:"Harness Design Long-Running",s:"engineering",c:"C1",ov:7.4,scores:[8,7,8,7,8,8,6]},
+{slug:"c-compiler-parallel-claudes",t:"C Compiler Parallel Claudes",s:"engineering",c:"C1",ov:7.3,scores:[7,7,8,7,8,8,7]},
+{slug:"effective-harnesses-agents",t:"Effective Harnesses Agents",s:"engineering",c:"C1",ov:7.3,scores:[8,7,7,8,8,7,6]},
+{slug:"demystifying-evals-agents",t:"Demystifying Evals",s:"engineering",c:"C1",ov:7.2,scores:[7,8,6,7,9,7,7]},
+{slug:"teaching-claude-why",t:"Teaching Claude Why",s:"research",c:"C3",ov:7.5,scores:[8,5,9,9,8,9,5]},
+{slug:"automated-alignment-researchers",t:"Automated Alignment Researchers",s:"research",c:"C3",ov:7.1,scores:[9,5,8,8,7,8,5]},
+{slug:"natural-language-autoencoders",t:"NL Autoencoders",s:"research",c:"C3",ov:7.0,scores:[9,4,9,7,7,9,4]},
+{slug:"claude-code-auto-mode",t:"Claude Code Auto Mode",s:"engineering",c:"C4",ov:6.9,scores:[6,9,5,7,7,7,8]},
+{slug:"infrastructure-noise-evals",t:"Infrastructure Noise Evals",s:"engineering",c:"C1",ov:6.7,scores:[9,5,8,6,7,7,5]},
+{slug:"what-81000-people-want",t:"What 81K People Want from AI",s:"research",c:"C3",ov:6.7,scores:[6,5,7,8,7,8,6]},
+{slug:"swe-bench-verified",t:"SWE-bench Verified",s:"engineering",c:"C1",ov:6.6,scores:[8,6,5,8,7,5,6]},
+{slug:"ai-resistant-evaluations",t:"AI-Resistant Evaluations",s:"engineering",c:"C2",ov:6.6,scores:[6,7,7,6,7,8,5]},
+{slug:"biomysterybench",t:"BioMysteryBench",s:"research",c:"C3",ov:6.6,scores:[9,4,8,6,6,8,5]},
+{slug:"donating-alignment-tool",t:"Donating Alignment Tool",s:"research",c:"C3",ov:6.4,scores:[6,7,5,7,6,8,7]},
+{slug:"eval-awareness-browsecomp",t:"Eval Awareness BrowseComp",s:"engineering",c:"C3",ov:6.3,scores:[7,4,8,6,7,8,4]},
+{slug:"project-deal",t:"Project Deal",s:"research",c:"C3",ov:5.9,scores:[5,4,7,7,6,8,4]},
+{slug:"what-81000-people-economics",t:"What 81K: Economics of AI",s:"research",c:"C5",ov:5.7,scores:[5,4,6,7,6,8,5]},
+{slug:"personal-guidance",t:"Personal Guidance",s:"research",c:"C3",ov:5.5,scores:[5,4,6,6,6,8,4]},
+{slug:"project-vend-phase-two",t:"Project Vend Phase Two",s:"research",c:"C3",ov:5.1,scores:[5,4,6,6,6,6,3]},
+{slug:"economic-index-survey",t:"Economic Index Survey",s:"research",c:"C5",ov:5.1,scores:[4,5,5,6,5,8,4]},
+{slug:"2028-scenarios",t:"2028 Scenarios",s:"research",c:"C5",ov:5.1,scores:[4,3,5,7,6,9,3]},
+{slug:"claude-code-quality-update",t:"Claude Code Quality Update",s:"engineering",c:"C4",ov:4.7,scores:[5,6,3,5,5,5,3]},
+{slug:"postmortem-three-issues",t:"Postmortem Three Issues",s:"engineering",c:"C4",ov:4.2,scores:[5,5,2,4,5,4,3]},
+{slug:"anthropic-institute-focus",t:"Institute Focus Areas",s:"research",c:"C5",ov:3.9,scores:[3,3,3,5,4,8,3]}
+];
+const dims=["","title","section","category","ov","td","ac","nv","im","ev","tm","rp"];
+let filter="all",sCol=4,sAsc=false;
+function g(v){return v>=9?"S":v>=8?"A":v>=7?"B":v>=6?"C":"D"}
+function gc(v){return"g-"+g(v)}
+function render(){
+  let d=filter==="all"?[...A]:A.filter(a=>a.s===filter);
+  d.sort((a,b)=>{
+    let va,vb;
+    if(sCol===1){va=a.t;vb=b.t}else if(sCol===2){va=a.s;vb=b.s}else if(sCol===3){va=a.c;vb=b.c}else if(sCol===4){va=a.ov;vb=b.ov}else{va=a.scores[sCol-5];vb=b.scores[sCol-5]}
+    return sAsc?(va>vb?1:-1):(va<vb?1:-1)
+  });
+  const tb=document.getElementById("tb");
+  while(tb.firstChild)tb.removeChild(tb.firstChild);
+  d.forEach((a,i)=>{
+    const tr=document.createElement("tr");
+    const rank=document.createElement("td");rank.className="rank-num";rank.textContent=i+1;tr.appendChild(rank);
+    const title=document.createElement("td");const strong=document.createElement("strong");const a2=document.createElement("a");a2.href="articles/"+a.slug+".html";a2.textContent=a.t;a2.style.color="var(--clay)";a2.style.textDecoration="none";strong.appendChild(a2);title.appendChild(strong);tr.appendChild(title);
+    const sec=document.createElement("td");sec.textContent=a.s;tr.appendChild(sec);
+    const cat=document.createElement("td");cat.textContent=a.c;tr.appendChild(cat);
+    const sc=document.createElement("td");sc.className="score-cell";sc.textContent=a.ov.toFixed(1);tr.appendChild(sc);
+    a.scores.forEach(v=>{const td=document.createElement("td");td.textContent=v;tr.appendChild(td)});
+    const gr=document.createElement("td");const span=document.createElement("span");span.className="grade "+gc(a.ov);span.textContent=g(a.ov);gr.appendChild(span);tr.appendChild(gr);
+    tb.appendChild(tr)
+  })
+}
+// Build filter buttons
+const fc=document.getElementById("fc");
+["all","engineering","research"].forEach(f=>{
+  const btn=document.createElement("button");
+  btn.textContent=f==="all"?"全部":f==="engineering"?"Engineering":"Research";
+  if(f==="all")btn.className="active";
+  btn.addEventListener("click",()=>{filter=f;fc.querySelectorAll("button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");render()});
+  fc.appendChild(btn)
+});
+// Sort headers
+document.querySelectorAll("th[data-col]").forEach(th=>{
+  th.addEventListener("click",()=>{
+    const col=parseInt(th.dataset.col);
+    if(sCol===col)sAsc=!sAsc;else{sCol=col;sAsc=false}
+    document.querySelectorAll("th").forEach(h=>h.classList.remove("sorted"));
+    th.classList.add("sorted");
+    render()
+  })
+});
+render();
+</script>
+</body>
+</html>

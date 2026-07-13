@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分类浏览 — Anthropic Articles</title>
+<style>
+:root{--ivory:#FAF9F5;--paper:#FFF;--slate:#141413;--clay:#D97757;--oat:#E3DACC;--olive:#788C5D;--g100:#F5F5F4;--g300:#D6D3D1;--g500:#78716C;--g700:#44403C;--serif:Georgia,serif;--sans:system-ui,sans-serif;--mono:'SF Mono',Menlo,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--ivory);color:var(--slate);line-height:1.6}
+a{color:var(--clay);text-decoration:none}a:hover{text-decoration:underline}
+header{background:var(--slate);color:var(--ivory);padding:2rem}
+header h1{font-family:var(--serif);font-size:2rem;margin-bottom:.5rem}
+nav{background:var(--paper);border-bottom:1px solid var(--g300);padding:0 2rem;display:flex;gap:1.5rem}
+nav a{color:var(--slate);padding:.75rem 0;font-size:.9rem;border-bottom:2px solid transparent}
+nav a:hover{border-bottom-color:var(--clay);text-decoration:none}
+nav a.active{border-bottom-color:var(--clay);font-weight:600}
+main{max-width:1200px;margin:0 auto;padding:2rem}
+.cat-section{margin-bottom:2.5rem}
+.cat-header{font-family:var(--serif);font-size:1.3rem;padding:.75rem 1rem;background:var(--paper);border-left:4px solid var(--clay);margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}
+.cat-header .count{font-size:.85rem;color:var(--g500)}
+.articles-grid{display:grid;gap:.75rem}
+.art-card{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;display:grid;grid-template-columns:1fr 60px 60px;align-items:center;gap:1rem}
+.art-card:hover{border-color:var(--clay)}
+.art-card h4{font-family:var(--serif);font-size:.95rem;margin-bottom:.25rem}
+.art-card .meta{font-size:.8rem;color:var(--g500)}
+.art-card .tags{margin-top:.5rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.art-card .tag{font-size:.7rem;padding:2px 6px;border-radius:3px;background:var(--g100);color:var(--g500)}
+.score{font-family:var(--mono);font-size:1.2rem;font-weight:700;text-align:center}
+.grade{font-size:.7rem;padding:2px 6px;border-radius:4px;font-weight:600;display:inline-block;text-align:center}
+.g-S{background:#FDE68A;color:#92400E}.g-A{background:#BBF7D0;color:#166534}.g-B{background:#BFDBFE;color:#1E40AF}
+.g-C{background:var(--g100);color:var(--g700)}.g-D{background:var(--g300);color:var(--g500)}
+footer{text-align:center;padding:2rem;color:var(--g500);font-size:.85rem;border-top:1px solid var(--g300);margin-top:2rem}
+</style>
+</head>
+<body>
+<header><h1>分类浏览</h1><p>按技术领域分类浏览全部文章</p></header>
+<nav>
+  <a href="index.html">总览</a><a href="rankings.html">排行榜</a><a href="categories.html" class="active">分类浏览</a>
+  <a href="relations.html">文章关系图</a><a href="github-map.html">GitHub 映射</a>
+</nav>
+<main>
+
+<div class="cat-section">
+  <div class="cat-header">C1: Agent 开发 <span class="count">10 篇</span></div>
+  <div class="articles-grid">
+    <div class="art-card"><div><h4><a href="articles/building-effective-agents.html">Building Effective AI Agents</a></h4><div class="meta">2024-12-19 | agent-architecture</div><div class="tags"><span class="tag">agent</span><span class="tag">workflow</span><span class="tag">orchestration</span></div></div><div class="score">8.8</div><div><span class="grade g-A">A</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/multi-agent-research-system.html">How We Built Multi-Agent Research System</a></h4><div class="meta">2025-06-13 | multi-agent</div><div class="tags"><span class="tag">multi-agent</span><span class="tag">research</span><span class="tag">parallelization</span></div></div><div class="score">8.2</div><div><span class="grade g-A">A</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/scaling-managed-agents.html">Scaling Managed Agents</a></h4><div class="meta">2026-04-08 | agent-architecture</div><div class="tags"><span class="tag">managed-agents</span><span class="tag">decoupling</span></div></div><div class="score">7.7</div><div><span class="grade g-B">B</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/agent-skills.html">Equipping Agents with Agent Skills</a></h4><div class="meta">2025-10-16 | agent-skills</div><div class="tags"><span class="tag">agent-skills</span><span class="tag">procedural-knowledge</span></div></div><div class="score">7.6</div><div><span class="grade g-B">B</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/harness-design-long-running.html">Harness Design for Long-Running Apps</a></h4><div class="meta">2026-03-24 | agent-harness</div><div class="tags"><span class="tag">harness</span><span class="tag">long-running</span></div></div><div class="score">7.4</div><div><span class="grade g-B">B</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/c-compiler-parallel-claudes.html">Building a C Compiler with Parallel Claudes</a></h4><div class="meta">2026-02-05 | multi-agent</div><div class="tags"><span class="tag">multi-agent</span><span class="tag">fan-out</span></div></div><div class="score">7.3</div><div><span class="grade g-B">B</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/effective-harnesses-agents.html">Effective Harnesses for Long-Running Agents</a></h4><div class="meta">2025-11-26 | agent-harness</div><div class="tags"><span class="tag">harness</span><span class="tag">compaction</span></div></div><div class="score">7.3</div><div><span class="grade g-B">B</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/demystifying-evals-agents.html">Demystifying Evals for AI Agents</a></h4><div class="meta">2026-01-09 | agent-eval</div><div class="tags"><span class="tag">eval</span><span class="tag">benchmark</span></div></div><div class="score">7.2</div><div><span class="grade g-B">B</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/swe-bench-verified.html">SWE-bench Verified</a></h4><div class="meta">2025-01-06 | agent-eval</div><div class="tags"><span class="tag">SWE-bench</span><span class="tag">benchmark</span></div></div><div class="score">6.6</div><div><span class="grade g-C">C</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/infrastructure-noise-evals.html">Quantifying Infrastructure Noise</a></h4><div class="meta">2026-02-05 | agent-eval</div><div class="tags"><span class="tag">eval</span><span class="tag">infrastructure</span></div></div><div class="score">6.7</div><div><span class="grade g-C">C</span></div></div>
+  </div>
+</div>
+
+<div class="cat-section">
+  <div class="cat-header">C2: 工程实践 <span class="count">6 篇</span></div>
+  <div class="articles-grid">
+    <div class="art-card"><div><h4><a href="articles/effective-context-engineering.html">Effective Context Engineering for AI Agents</a></h4><div class="meta">2025-09-29 | context-engineering</div><div class="tags"><span class="tag">context</span><span class="tag">compaction</span><span class="tag">memory</span></div></div><div class="score">9.0</div><div><span class="grade g-S">S</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/contextual-retrieval.html">Introducing Contextual Retrieval</a></h4><div class="meta">2024-09-19 | context-engineering</div><div class="tags"><span class="tag">RAG</span><span class="tag">embedding</span></div></div><div class="score">8.9</div><div><span class="grade g-S">S</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/writing-effective-tools.html">Writing Effective Tools for Agents</a></h4><div class="meta">2025-09-11 | tool-design</div><div class="tags"><span class="tag">MCP</span><span class="tag">tool-design</span><span class="tag">ACI</span></div></div><div class="score">8.7</div><div><span class="grade g-A">A</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/claude-code-best-practices.html">Claude Code: Best Practices</a></h4><div class="meta">2025-04-18 | coding-best-practices</div><div class="tags"><span class="tag">CLAUDE.md</span><span class="tag">agentic-coding</span></div></div><div class="score">8.3</div><div><span class="grade g-A">A</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/think-tool.html">The "Think" Tool</a></h4><div class="meta">2025-03-20 | prompt-engineering</div><div class="tags"><span class="tag">think-tool</span><span class="tag">reasoning</span></div></div><div class="score">8.3</div><div><span class="grade g-A">A</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/ai-resistant-evaluations.html">AI-Resistant Technical Evaluations</a></h4><div class="meta">2026-01-21 | coding-best-practices</div><div class="tags"><span class="tag">eval</span><span class="tag">interview</span></div></div><div class="score">6.6</div><div><span class="grade g-C">C</span></div></div>
+  </div>
+</div>
+
+<div class="cat-section">
+  <div class="cat-header">C4: 工具与平台 <span class="count">6 篇</span></div>
+  <div class="articles-grid">
+    <div class="art-card"><div><h4><a href="articles/advanced-tool-use.html">Introducing Advanced Tool Use</a></h4><div class="meta">2025-11-24 | sdk</div><div class="tags"><span class="tag">tool-search</span><span class="tag">programmatic</span></div></div><div class="score">8.9</div><div><span class="grade g-S">S</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/desktop-extensions-mcp.html">Desktop Extensions: One-Click MCP</a></h4><div class="meta">2025-06-26 | mcp</div><div class="tags"><span class="tag">MCP</span><span class="tag">MCPB</span></div></div><div class="score">8.0</div><div><span class="grade g-A">A</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/beyond-permission-prompts.html">Beyond Permission Prompts (Sandboxing)</a></h4><div class="meta">2025-10-20 | claude-code</div><div class="tags"><span class="tag">sandboxing</span><span class="tag">security</span></div></div><div class="score">8.0</div><div><span class="grade g-A">A</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/code-execution-mcp.html">Code Execution with MCP</a></h4><div class="meta">2025-11-04 | mcp</div><div class="tags"><span class="tag">MCP</span><span class="tag">code-execution</span></div></div><div class="score">7.9</div><div><span class="grade g-A">A</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/claude-code-auto-mode.html">Claude Code Auto Mode</a></h4><div class="meta">2026-03-25 | claude-code</div><div class="tags"><span class="tag">auto-mode</span><span class="tag">permissions</span></div></div><div class="score">6.9</div><div><span class="grade g-C">C</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/claude-code-quality-update.html">Claude Code Quality Update</a></h4><div class="meta">2026-05-01 | claude-code</div><div class="tags"><span class="tag">quality</span><span class="tag">bug-fix</span></div></div><div class="score">4.7</div><div><span class="grade g-D">D</span></div></div>
+  </div>
+</div>
+
+<div class="cat-section">
+  <div class="cat-header">C3: 模型研究 <span class="count">9 篇</span></div>
+  <div class="articles-grid">
+    <div class="art-card"><div><h4><a href="articles/teaching-claude-why.html">Teaching Claude Why</a></h4><div class="meta">2026-05-08 | alignment</div><div class="tags"><span class="tag">alignment</span><span class="tag">safety</span></div></div><div class="score">7.5</div><div><span class="grade g-B">B</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/automated-alignment-researchers.html">Automated Alignment Researchers</a></h4><div class="meta">2026-04-14 | alignment</div><div class="tags"><span class="tag">alignment</span><span class="tag">automated</span></div></div><div class="score">7.1</div><div><span class="grade g-B">B</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/natural-language-autoencoders.html">Natural Language Autoencoders</a></h4><div class="meta">2026-05-07 | interpretability</div><div class="tags"><span class="tag">interpretability</span><span class="tag">transparency</span></div></div><div class="score">7.0</div><div><span class="grade g-B">B</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/what-81000-people-want.html">What 81,000 People Want from AI</a></h4><div class="meta">2026-03-18 | societal-impacts</div><div class="tags"><span class="tag">survey</span><span class="tag">user-research</span></div></div><div class="score">6.7</div><div><span class="grade g-C">C</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/biomysterybench.html">BioMysteryBench</a></h4><div class="meta">2026-04-29 | science</div><div class="tags"><span class="tag">science</span><span class="tag">bioinformatics</span></div></div><div class="score">6.6</div><div><span class="grade g-C">C</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/donating-alignment-tool.html">Donating Alignment Tool</a></h4><div class="meta">2026-05-07 | alignment</div><div class="tags"><span class="tag">alignment</span><span class="tag">open-source</span></div></div><div class="score">6.4</div><div><span class="grade g-C">C</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/project-deal.html">Project Deal</a></h4><div class="meta">2026-04-24 | societal-impacts</div><div class="tags"><span class="tag">negotiation</span><span class="tag">experiment</span></div></div><div class="score">5.9</div><div><span class="grade g-C">C</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/personal-guidance.html">Personal Guidance</a></h4><div class="meta">2026-04-30 | societal-impacts</div><div class="tags"><span class="tag">user-behavior</span></div></div><div class="score">5.5</div><div><span class="grade g-C">C</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/project-vend-phase-two.html">Project Vend: Phase Two</a></h4><div class="meta">2025-12-18 | societal-impacts</div><div class="tags"><span class="tag">autonomous</span><span class="tag">experiment</span></div></div><div class="score">5.1</div><div><span class="grade g-C">C</span></div></div>
+  </div>
+</div>
+
+<div class="cat-section">
+  <div class="cat-header">C5: 安全与政策 <span class="count">4 篇</span></div>
+  <div class="articles-grid">
+    <div class="art-card"><div><h4><a href="articles/what-81000-people-economics.html">What 81K People: Economics of AI</a></h4><div class="meta">2026-04-22 | economic-research</div></div><div class="score">5.7</div><div><span class="grade g-C">C</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/economic-index-survey.html">Economic Index Survey</a></h4><div class="meta">2026-04-22 | economic-research</div></div><div class="score">5.1</div><div><span class="grade g-C">C</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/2028-scenarios.html">2028: Two Scenarios</a></h4><div class="meta">2026-05-14 | policy</div></div><div class="score">5.1</div><div><span class="grade g-C">C</span></div></div>
+    <div class="art-card"><div><h4><a href="articles/anthropic-institute-focus.html">Institute Focus Areas</a></h4><div class="meta">2026-05-07 | policy</div></div><div class="score">3.9</div><div><span class="grade g-D">D</span></div></div>
+  </div>
+</div>
+
+</main>
+<footer>Anthropic Articles Knowledge Management System</footer>
+</body>
+</html>

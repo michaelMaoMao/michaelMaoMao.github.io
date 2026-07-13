@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub 映射 — Anthropic Articles</title>
+<style>
+:root{--ivory:#FAF9F5;--paper:#FFF;--slate:#141413;--clay:#D97757;--oat:#E3DACC;--olive:#788C5D;--g100:#F5F5F4;--g300:#D6D3D1;--g500:#78716C;--g700:#44403C;--serif:Georgia,serif;--sans:system-ui,sans-serif;--mono:'SF Mono',Menlo,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--ivory);color:var(--slate);line-height:1.6}
+a{color:var(--clay);text-decoration:none}a:hover{text-decoration:underline}
+header{background:var(--slate);color:var(--ivory);padding:2rem}
+header h1{font-family:var(--serif);font-size:2rem;margin-bottom:.5rem}
+nav{background:var(--paper);border-bottom:1px solid var(--g300);padding:0 2rem;display:flex;gap:1.5rem}
+nav a{color:var(--slate);padding:.75rem 0;font-size:.9rem;border-bottom:2px solid transparent}
+nav a:hover{border-bottom-color:var(--clay);text-decoration:none}
+nav a.active{border-bottom-color:var(--clay);font-weight:600}
+main{max-width:1200px;margin:0 auto;padding:2rem}
+h2{font-family:var(--serif);font-size:1.3rem;margin:1.5rem 0 1rem;color:var(--clay)}
+.project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin-bottom:2rem}
+.proj-card{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1.25rem}
+.proj-card h4{font-family:var(--serif);font-size:1rem;margin-bottom:.25rem}
+.proj-card .stars{font-family:var(--mono);font-size:.9rem;color:var(--clay);font-weight:700;margin-bottom:.5rem}
+.proj-card p{font-size:.85rem;color:var(--g500);margin-bottom:.75rem}
+.proj-card .lang{font-size:.75rem;padding:2px 8px;border-radius:4px;background:var(--oat);display:inline-block;margin-right:.5rem}
+.proj-card .relation{font-size:.75rem;padding:2px 8px;border-radius:4px;display:inline-block}
+.relation-official{background:#BBF7D0;color:#166534}
+.relation-community{background:#BFDBFE;color:#1E40AF}
+.relation-derived{background:#FDE68A;color:#92400E}
+.articles-link{font-size:.8rem;color:var(--g500);margin-top:.5rem;border-top:1px solid var(--g100);padding-top:.5rem}
+.articles-link span{display:inline-block;margin:2px 4px 2px 0;padding:1px 6px;border-radius:3px;background:var(--g100);font-size:.75rem}
+footer{text-align:center;padding:2rem;color:var(--g500);font-size:.85rem;border-top:1px solid var(--g300);margin-top:2rem}
+</style>
+</head>
+<body>
+<header><h1>GitHub 项目映射</h1><p>Anthropic 官方仓库与文章的关联关系</p></header>
+<nav>
+  <a href="index.html">总览</a><a href="rankings.html">排行榜</a><a href="categories.html">分类浏览</a>
+  <a href="relations.html">文章关系图</a><a href="github-map.html" class="active">GitHub 映射</a>
+</nav>
+<main>
+
+<h2>Official Projects (anthropics)</h2>
+<div class="project-grid">
+  <div class="proj-card">
+    <h4><a href="https://github.com/anthropics/skills">skills</a></h4>
+    <div class="stars">139K stars</div>
+    <p>Agent Skills — 公共技能仓库</p>
+    <span class="lang">Python</span><span class="relation relation-official">Official</span>
+    <div class="articles-link">关联文章: <span>Agent Skills</span><span>Building Effective Agents</span><span>Scaling Managed Agents</span></div>
+  </div>
+  <div class="proj-card">
+    <h4><a href="https://github.com/anthropics/claude-code">claude-code</a></h4>
+    <div class="stars">125K stars</div>
+    <p>Agentic coding tool — 终端中的 AI 编程助手</p>
+    <span class="lang">Shell</span><span class="relation relation-official">Official</span>
+    <div class="articles-link">关联文章: <span>Best Practices</span><span>Auto Mode</span><span>Sandboxing</span><span>Context Engineering</span></div>
+  </div>
+  <div class="proj-card">
+    <h4><a href="https://github.com/anthropics/claude-cookbooks">claude-cookbooks</a></h4>
+    <div class="stars">43.5K stars</div>
+    <p>Claude 使用示例和指南集合</p>
+    <span class="lang">Jupyter Notebook</span><span class="relation relation-official">Official</span>
+    <div class="articles-link">关联文章: <span>Building Effective Agents</span><span>Advanced Tool Use</span><span>Contextual Retrieval</span></div>
+  </div>
+  <div class="proj-card">
+    <h4><a href="https://github.com/anthropics/prompt-eng-interactive-tutorial">prompt-eng-interactive-tutorial</a></h4>
+    <div class="stars">35.8K stars</div>
+    <p>Anthropic 官方 Prompt 工程交互式教程</p>
+    <span class="lang">Jupyter Notebook</span><span class="relation relation-official">Official</span>
+    <div class="articles-link">关联文章: <span>Writing Effective Tools</span></div>
+  </div>
+  <div class="proj-card">
+    <h4><a href="https://github.com/anthropics/financial-services">financial-services</a></h4>
+    <div class="stars">26.3K stars</div>
+    <p>金融服务行业示例</p>
+    <span class="lang">Python</span><span class="relation relation-official">Official</span>
+    <div class="articles-link">关联文章: <span>Building Effective Agents</span></div>
+  </div>
+  <div class="proj-card">
+    <h4><a href="https://github.com/anthropics/courses">courses</a></h4>
+    <div class="stars">21.5K stars</div>
+    <p>Anthropic 教育课程</p>
+    <span class="lang">Jupyter Notebook</span><span class="relation relation-official">Official</span>
+    <div class="articles-link">关联文章: <span>Building Effective Agents</span><span>Advanced Tool Use</span></div>
+  </div>
+  <div class="proj-card">
+    <h4><a href="https://github.com/anthropics/claude-plugins-official">claude-plugins-official</a></h4>
+    <div class="stars">21K stars</div>
+    <p>官方 Claude Code 插件目录</p>
+    <span class="lang">Python</span><span class="relation relation-official">Official</span>
+    <div class="articles-link">关联文章: <span>Agent Skills</span></div>
+  </div>
+  <div class="proj-card">
+    <h4><a href="https://github.com/anthropics/claude-agent-sdk-python">claude-agent-sdk-python</a></h4>
+    <div class="stars">7K stars</div>
+    <p>Claude Agent SDK Python 版</p>
+    <span class="lang">Python</span><span class="relation relation-official">Official</span>
+    <div class="articles-link">关联文章: <span>Advanced Tool Use</span><span>Building Effective Agents</span><span>Multi-Agent</span></div>
+  </div>
+  <div class="proj-card">
+    <h4><a href="https://github.com/anthropics/claude-code-action">claude-code-action</a></h4>
+    <div class="stars">7.7K stars</div>
+    <p>Claude Code GitHub Action</p>
+    <span class="lang">TypeScript</span><span class="relation relation-official">Official</span>
+    <div class="articles-link">关联文章: <span>Best Practices</span></div>
+  </div>
+  <div class="proj-card">
+    <h4><a href="https://github.com/anthropics/claude-agent-sdk-typescript">claude-agent-sdk-typescript</a></h4>
+    <div class="stars">1.5K stars</div>
+    <p>Claude Agent SDK TypeScript 版</p>
+    <span class="lang">Shell</span><span class="relation relation-official">Official</span>
+    <div class="articles-link">关联文章: <span>Advanced Tool Use</span><span>Building Effective Agents</span></div>
+  </div>
+</div>
+
+<h2>Derived / Community Projects</h2>
+<div class="project-grid">
+  <div class="proj-card">
+    <h4><a href="https://github.com/anthropics/html-effectiveness">html-effectiveness</a></h4>
+    <div class="stars">--</div>
+    <p>HTML 作为 AI 输出格式的 20 个示例</p>
+    <span class="lang">HTML</span><span class="relation relation-derived">Derived</span>
+    <div class="articles-link">关联文章: <span>Building Effective Agents</span> | 本地路径: ../html-effectiveness</div>
+  </div>
+</div>
+
+</main>
+<footer>Anthropic Articles Knowledge Management System | GitHub 数据更新: 2026-05-21</footer>
+</body>
+</html>

@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code 路线图</title>
+<style>
+
+:root {
+  --ivory: #FAF9F5;
+  --paper: #FFFFFF;
+  --slate: #141413;
+  --clay: #D97757;
+  --clay-light: #F0D5C9;
+  --oat: #E3DACC;
+  --olive: #788C5D;
+  --olive-light: #E8EDDF;
+  --blue: #4A6FA5;
+  --blue-light: #D6E4F0;
+  --g100: #F5F5F4;
+  --g200: #E7E5E4;
+  --g300: #D6D3D1;
+  --g400: #A8A29E;
+  --g500: #78716C;
+  --g700: #44403C;
+  --serif: Georgia, 'Times New Roman', serif;
+  --sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'SF Mono', 'Fira Code', Menlo, monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--ivory); color: var(--slate); line-height: 1.7; }
+a { color: var(--clay); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+header { background: var(--slate); color: var(--ivory); padding: 0; position: relative; overflow: hidden; }
+.hero { position: relative; max-width: 1200px; margin: 0 auto; padding: 3.5rem 2rem 2rem; display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center; z-index: 1; }
+.hero-flow { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; opacity: 0.35; pointer-events: none; }
+.hero-flow line { stroke-linecap: round; }
+@keyframes flowDash { to { stroke-dashoffset: -40; } }
+.hero-flow .flow-line { animation: flowDash 3s linear infinite; }
+.hero-flow .node-pulse { animation: nodeGlow 2.5s ease-in-out infinite alternate; }
+@keyframes nodeGlow { 0% { r: 4; opacity: 0.5; } 100% { r: 7; opacity: 1; } }
+.hero h1 { font-family: var(--serif); font-size: clamp(2rem, 5vw, 3.2rem); margin-bottom: 0.75rem; letter-spacing: -0.03em; line-height: 1.15; }
+.hero .subtitle { color: var(--g300); font-size: clamp(0.9rem, 1.5vw, 1.05rem); max-width: 540px; line-height: 1.65; }
+header .version-badge { display: inline-block; background: var(--clay); color: white; padding: 4px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; margin-left: 0.6rem; vertical-align: middle; }
+.hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.hero-stat { text-align: center; padding: 0.75rem 1.25rem; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(4px); transition: background 0.2s, border-color 0.2s; }
+.hero-stat:hover { background: rgba(255,255,255,0.1); border-color: rgba(217,119,87,0.3); }
+.hero-stat .hero-val { font-family: var(--serif); font-size: 1.8rem; font-weight: 700; line-height: 1.1; color: var(--ivory); }
+.hero-stat .hero-val span { font-size: 0.75rem; font-weight: 400; color: var(--g400); margin-left: 2px; }
+.hero-stat .hero-label { font-size: 0.7rem; color: var(--g400); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.25rem; }
+.hero-stat .hero-trend { font-size: 0.68rem; color: var(--g500); margin-top: 0.15rem; }
+@media (max-width: 768px) { .hero { grid-template-columns: 1fr; padding: 2.5rem 1.5rem 1.5rem; } .hero-stats { grid-template-columns: repeat(2, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .hero-flow .flow-line { animation: none; } .hero-flow .node-pulse { animation: none; r: 5; opacity: 0.7; } }
+
+nav { background: var(--paper); border-bottom: 1px solid var(--g300); padding: 0 2rem; display: flex; gap: 1.5rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+nav a { color: var(--slate); padding: 0.75rem 0; font-size: 0.9rem; border-bottom: 2px solid transparent; transition: border-color 0.2s; }
+nav a:hover { border-bottom-color: var(--clay); text-decoration: none; }
+nav a.active { border-bottom-color: var(--clay); font-weight: 600; }
+
+main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2.5rem; }
+.stat-card { background: var(--paper); border: 1px solid var(--g300); border-radius: 10px; padding: 1.25rem; transition: border-color 0.2s, box-shadow 0.2s; }
+.stat-card:hover { border-color: var(--clay); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+.stat-card h3 { font-family: var(--serif); font-size: 0.75rem; color: var(--g500); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+.stat-card .value { font-size: 2rem; font-weight: 700; line-height: 1.1; }
+.stat-card .value span { font-size: 0.9rem; color: var(--g500); font-weight: 400; }
+.stat-card .trend { font-size: 0.8rem; color: var(--olive); margin-top: 0.3rem; }
+
+.section-title { font-family: var(--serif); font-size: 1.5rem; margin: 3rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--clay); display: flex; align-items: center; gap: 0.75rem; }
+.section-title.primary { font-size: 1.75rem; }
+.section-title.secondary { font-size: 1.25rem; border-bottom-width: 1px; }
+.section-title .icon { font-size: 1.2rem; }
+
+.featured-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; margin-bottom: 2rem; }
+.featured-card { background: var(--paper); border: 1px solid var(--g300); border-radius: 10px; padding: 1.5rem; transition: border-color 0.2s, box-shadow 0.2s; position: relative; overflow: hidden; }
+.featured-card:hover { border-color: var(--clay); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+.featured-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+.featured-card.major::before { background: var(--clay); }
+.featured-card.feature::before { background: var(--blue); }
+.featured-card.infra::before { background: var(--olive); }
+
+/* L1 Hero cards */
+.featured-card.hero-card { grid-column: 1 / -1; display: grid; grid-template-columns: 160px 1fr; gap: 1.5rem; padding: 2rem; background: linear-gradient(135deg, var(--paper) 0%, var(--g100) 100%); border-color: var(--g200); }
+.featured-card.hero-card .hero-version { font-family: var(--serif); font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 700; color: var(--clay); line-height: 1; writing-mode: vertical-lr; text-orientation: mixed; transform: rotate(180deg); align-self: center; justify-self: center; }
+.featured-card.hero-card .hero-content { }
+.featured-card.hero-card::before { width: 5px; }
+.featured-card.hero-card:hover { box-shadow: 0 8px 30px rgba(217,119,87,0.12); }
+
+/* L3 Compact cards */
+.featured-card.compact-card { padding: 0.85rem 1.25rem 0.85rem 1.5rem; cursor: pointer; }
+.featured-card.compact-card .compact-summary { font-size: 0.88rem; color: var(--g700); line-height: 1.5; }
+.featured-card.compact-card .synopsis,
+.featured-card.compact-card .highlights,
+.featured-card.compact-card .featured-header .date,
+.featured-card.compact-card .featured-header ~ div:not(.compact-summary) { display: none; }
+.featured-card.compact-card .compact-expand { display: none; font-size: 0.78rem; color: var(--g500); margin-top: 0.25rem; }
+.featured-card.compact-card.expanded .synopsis,
+.featured-card.compact-card.expanded .highlights { display: block; }
+.featured-card.compact-card.expanded .compact-summary { display: none; }
+.featured-card.compact-card.expanded .compact-expand { display: none; }
+
+/* Era divider */
+.era-divider { grid-column: 1 / -1; padding: 1.5rem 0 0.5rem; border-top: 1px solid var(--g200); margin-top: 0.5rem; }
+.era-divider:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+.era-divider h3 { font-family: var(--serif); font-size: 1.1rem; color: var(--slate); margin-bottom: 0.15rem; }
+.era-divider p { font-size: 0.82rem; color: var(--g500); }
+
+@media (max-width: 768px) { .featured-card.hero-card { grid-template-columns: 1fr; } .featured-card.hero-card .hero-version { writing-mode: horizontal-tb; transform: none; font-size: 2rem; justify-self: start; } }
+
+.featured-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem; }
+.featured-header .version-tag { font-family: var(--mono); font-size: 1.1rem; font-weight: 700; color: var(--clay); }
+.featured-header .date { font-size: 0.85rem; color: var(--g500); }
+.featured-card .synopsis { font-size: 0.95rem; color: var(--g700); margin-bottom: 1rem; line-height: 1.6; }
+.featured-card .synopsis code { background: var(--g100); padding: 1px 6px; border-radius: 4px; font-family: var(--mono); font-size: 0.85em; }
+
+.tag { display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-right: 0.3rem; margin-bottom: 0.3rem; }
+.tag-major { background: var(--clay-light); color: #9B4D23; }
+.tag-feature { background: var(--blue-light); color: #2C5282; }
+.tag-security { background: #FEE2E2; color: #991B1B; }
+.tag-perf { background: var(--olive-light); color: #3D5A1E; }
+.tag-platform { background: #E9D5FF; color: #6B21A8; }
+.tag-infra { background: var(--g100); color: var(--g700); }
+
+.highlights { list-style: none; padding: 0; }
+.highlights li { padding: 0.35rem 0 0.35rem 1.25rem; position: relative; font-size: 0.9rem; color: var(--g700); line-height: 1.5; }
+.highlights li::before { content: ''; position: absolute; left: 0; top: 0.7rem; width: 6px; height: 6px; border-radius: 50%; background: var(--clay); }
+.highlights li code { background: var(--g100); padding: 1px 5px; border-radius: 3px; font-family: var(--mono); font-size: 0.85em; }
+
+.timeline { position: relative; margin-bottom: 2rem; padding-left: 40px; }
+.timeline::before { content: ''; position: absolute; left: 13px; top: 0; bottom: 0; width: 2px; background: var(--g300); transform: translateX(-50%); }
+
+.era { margin-bottom: 2rem; position: relative; }
+.era::before { content: ''; position: absolute; left: var(--dot-left, -27px); top: 0.35rem; width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--clay); background: var(--ivory); z-index: 1; }
+.era h3 { font-family: var(--serif); font-size: 1.15rem; margin-bottom: 0.5rem; color: var(--slate); }
+.era .era-meta { font-size: 0.85rem; color: var(--g500); margin-bottom: 0.75rem; }
+
+.version-row { display: grid; grid-template-columns: 100px 1fr; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--g100); align-items: baseline; }
+.version-row:last-child { border-bottom: none; }
+.version-row .ver { font-family: var(--mono); font-size: 0.85rem; font-weight: 600; color: var(--clay); }
+.version-row .desc { font-size: 0.85rem; color: var(--g700); }
+.version-row .desc code { background: var(--g100); padding: 1px 4px; border-radius: 3px; font-family: var(--mono); font-size: 0.82em; }
+.version-row:hover { background: var(--g100); border-radius: 6px; padding-left: 0.5rem; padding-right: 0.5rem; }
+
+.chart-container { background: var(--paper); border: 1px solid var(--g300); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; }
+.chart-bar-group { margin-bottom: 0.75rem; }
+.chart-bar-label { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem; }
+.chart-bar-label .name { font-weight: 600; }
+.chart-bar-label .count { color: var(--g500); }
+.chart-bar-track { background: var(--g100); border-radius: 4px; height: 8px; overflow: hidden; }
+.chart-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.chart-bar-fill.v0 { background: var(--g400); }
+.chart-bar-fill.v1 { background: var(--clay); }
+.chart-bar-fill.v2 { background: var(--blue); }
+.chart-bar-fill.v21 { background: var(--olive); }
+
+/* Enhanced chart styles */
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+@media (max-width: 900px) { .chart-grid { grid-template-columns: 1fr; } }
+
+.svg-chart { width: 100%; height: auto; }
+.svg-chart text { font-family: var(--sans); }
+
+.donut-center { transition: transform 0.3s; transform-origin: center; }
+.donut-center:hover { transform: scale(1.05); }
+
+.heat-cell { transition: fill 0.2s, stroke 0.2s; cursor: pointer; }
+.heat-cell:hover { stroke: var(--slate); stroke-width: 2; }
+
+.tooltip-box { pointer-events: none; opacity: 0; transition: opacity 0.15s; }
+.tooltip-box.show { opacity: 1; }
+
+.milestone-node { cursor: pointer; transition: r 0.2s, filter 0.2s; }
+.milestone-node:hover { filter: drop-shadow(0 0 6px rgba(217,119,87,0.5)); }
+
+.milestone-label { transition: opacity 0.2s; }
+.milestone-group:hover .milestone-label { opacity: 1 !important; }
+
+.area-path { transition: opacity 0.3s; }
+.area-path:hover { opacity: 0.9; }
+
+/* Stat counter animation */
+.stat-card .value { transition: color 0.3s; }
+.stat-card:hover .value { color: var(--clay); }
+
+@keyframes countUp { from { opacity: 0.5; } to { opacity: 1; } }
+.count-animate { animation: countUp 0.6s ease; }
+
+@keyframes drawLine { from { stroke-dashoffset: 2000; } to { stroke-dashoffset: 0; } }
+.draw-animate { stroke-dasharray: 2000; animation: drawLine 2s ease forwards; }
+
+@keyframes fillArea { from { opacity: 0; } to { opacity: 1; } }
+.area-animate { animation: fillArea 1.5s ease forwards; }
+
+@keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.pop-animate { animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+/* Heatmap legend */
+.heat-legend { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--g500); margin-top: 0.75rem; }
+.heat-legend-cell { width: 14px; height: 14px; border-radius: 2px; }
+
+/* Roadmap styles */
+.roadmap-phase { background: var(--paper); border: 1px solid var(--g300); border-radius: 12px; padding: 1.75rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; }
+.roadmap-phase::after { content: ''; position: absolute; top: 0; right: 0; width: 120px; height: 120px; border-radius: 50%; opacity: 0.06; pointer-events: none; }
+.roadmap-phase.shipped::after { background: var(--olive); }
+.roadmap-phase.iterating::after { background: var(--clay); }
+.roadmap-phase.vision::after { background: var(--blue); }
+.roadmap-phase h3 { font-family: var(--serif); font-size: 1.2rem; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem; }
+.roadmap-phase .phase-meta { font-size: 0.82rem; color: var(--g500); margin-bottom: 1rem; }
+.phase-badge { display: inline-block; font-size: 0.7rem; padding: 2px 10px; border-radius: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.phase-badge.shipped { background: var(--olive-light); color: #3D5A1E; }
+.phase-badge.iterating { background: var(--clay-light); color: #9B4D23; }
+.phase-badge.vision { background: var(--blue-light); color: #2C5282; }
+.roadmap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+.roadmap-item { background: var(--g100); border-radius: 8px; padding: 1rem 1.25rem; border-left: 3px solid var(--g300); transition: border-color 0.2s, background 0.2s; }
+.roadmap-item:hover { border-color: var(--clay); background: var(--paper); }
+.roadmap-item h4 { font-size: 0.95rem; margin-bottom: 0.3rem; color: var(--slate); }
+.roadmap-item p { font-size: 0.85rem; color: var(--g700); line-height: 1.5; }
+.roadmap-item code { background: var(--paper); padding: 1px 5px; border-radius: 3px; font-family: var(--mono); font-size: 0.82em; }
+.roadmap-item .item-tag { font-size: 0.7rem; color: var(--g500); margin-top: 0.4rem; }
+
+.source-bar { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--g200); }
+.source-link { font-size: 0.78rem; color: var(--g500); padding: 3px 10px; background: var(--g100); border-radius: 12px; transition: color 0.2s, background 0.2s; }
+.source-link:hover { color: var(--clay); background: var(--clay-light); text-decoration: none; }
+
+.model-timeline { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.model-card { background: var(--paper); border: 1px solid var(--g300); border-radius: 10px; padding: 1.25rem; text-align: center; transition: border-color 0.2s; }
+.model-card:hover { border-color: var(--clay); }
+.model-card .model-name { font-family: var(--serif); font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
+.model-card .model-date { font-size: 0.8rem; color: var(--g500); }
+.model-card .model-desc { font-size: 0.85rem; color: var(--g700); margin-top: 0.5rem; line-height: 1.4; }
+
+footer { text-align: center; padding: 2rem; color: var(--g500); font-size: 0.85rem; border-top: 1px solid var(--g300); margin-top: 2rem; }
+footer a { color: var(--clay); }
+
+.filter-bar { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.filter-btn { padding: 0.4rem 0.9rem; border: 1px solid var(--g300); border-radius: 20px; background: var(--paper); font-size: 0.82rem; cursor: pointer; transition: all 0.2s; color: var(--g700); }
+.filter-btn:hover { border-color: var(--clay); color: var(--clay); }
+.filter-btn.active { background: var(--clay); color: white; border-color: var(--clay); }
+
+.search-box { background: var(--paper); border: 1px solid var(--g300); border-radius: 8px; padding: 0.6rem 1rem; font-size: 0.9rem; width: 100%; max-width: 400px; margin-bottom: 1.5rem; transition: border-color 0.2s; }
+.search-box:focus { outline: none; border-color: var(--clay); }
+
+.collapsible-toggle { cursor: pointer; user-select: none; }
+.collapsible-toggle:hover { color: var(--clay); }
+.collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+.collapsible-content.open { max-height: 5000px; }
+
+@media (max-width: 768px) {
+  header h1 { font-size: 1.8rem; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .version-row { grid-template-columns: 80px 1fr; }
+  .model-timeline { grid-template-columns: 1fr; }
+  nav { overflow-x: auto; }
+  .filter-btn { padding: 0.55rem 1rem; font-size: 0.85rem; }
+  .section-title { font-size: 1.25rem; margin-top: 2rem; }
+  .section-title.primary { font-size: 1.4rem; }
+  .section-bridge { font-size: 0.85rem; }
+  nav a { padding: 0.85rem 0; min-height: 44px; display: flex; align-items: center; }
+  .roadmap-grid { grid-template-columns: 1fr; }
+  .chart-grid { grid-template-columns: 1fr; }
+  .evolution-track { flex-wrap: wrap; gap: 0.5rem; }
+  .evo-node { max-width: 45%; }
+  .evolution-track::before { display: none; }
+  .hero-stat .hero-val { font-size: 1.4rem; }
+  .scroll-top { width: 44px; height: 44px; bottom: 1rem; right: 1rem; }
+}
+@media (max-width: 375px) {
+  .hero { padding: 2rem 1rem 1rem; }
+  .hero h1 { font-size: 1.5rem; }
+  .hero-stats { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .hero-stat { padding: 0.5rem 0.75rem; }
+  .hero-stat .hero-val { font-size: 1.2rem; }
+  main { padding: 1rem; }
+  .stats { grid-template-columns: 1fr; }
+  .featured-card { padding: 1rem; }
+}
+
+.scroll-top { position: fixed; bottom: 2rem; right: 2rem; width: 40px; height: 40px; background: var(--clay); color: white; border: none; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 200; }
+.scroll-top.visible { display: flex; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.featured-card, .stat-card, .model-card, .roadmap-phase { opacity: 0; transform: translateY(12px); transition: opacity 0.4s ease, transform 0.4s ease; }
+.featured-card.in-view, .stat-card.in-view, .model-card.in-view, .roadmap-phase.in-view { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .featured-card, .stat-card, .model-card, .roadmap-phase { opacity: 1; transform: none; transition: none; }
+}
+
+/* ===== Enhanced Roadmap ===== */
+.evolution-track { display: flex; justify-content: space-between; align-items: flex-start; position: relative; padding: 2.5rem 1.5rem 1rem; margin: 0 -1rem; }
+.evolution-track::before { content: ''; position: absolute; top: calc(2.5rem + 22px - 1.5px); left: 8%; right: 8%; height: 3px; background: linear-gradient(90deg, var(--olive) 0%, var(--olive) 35%, var(--clay) 55%, var(--blue) 85%, var(--blue-light) 100%); border-radius: 2px; }
+.evo-node { position: relative; z-index: 2; text-align: center; flex: 1; max-width: 200px; cursor: pointer; transition: transform 0.3s; }
+.evo-node:hover { transform: translateY(-4px); }
+.evo-dot { width: 44px; height: 44px; border-radius: 50%; margin: 0 auto 0.55rem; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; border: 3px solid; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.evo-node.done .evo-dot { background: var(--olive); border-color: var(--olive); color: white; }
+.evo-node.now .evo-dot { background: var(--clay); border-color: var(--clay); color: white; animation: evoPulse 2s ease infinite; }
+.evo-node.soon .evo-dot { background: var(--ivory); border-color: var(--clay); color: var(--clay); border-style: dashed; }
+.evo-node.future .evo-dot { background: var(--ivory); border-color: var(--blue); color: var(--blue); border-style: dashed; }
+.evo-title { font-family: var(--serif); font-size: 0.82rem; font-weight: 700; color: var(--slate); margin-bottom: 0.1rem; }
+.evo-sub { font-size: 0.7rem; color: var(--g500); }
+.evo-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; margin-top: 0.35rem; max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.evo-node:hover .evo-tags { max-height: 60px; }
+.evo-tag { font-size: 0.58rem; padding: 1px 5px; border-radius: 3px; background: var(--g100); color: var(--g500); white-space: nowrap; }
+@keyframes evoPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(217,119,87,0.4); } 50% { box-shadow: 0 0 0 12px rgba(217,119,87,0); } }
+
+.radar-wrap { background: var(--paper); border: 1px solid var(--g300); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+.radar-legend { display: flex; gap: 0.8rem; justify-content: center; margin-top: 0.75rem; flex-wrap: wrap; }
+.radar-legend-item { display: flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; color: var(--g500); cursor: pointer; padding: 3px 10px; border-radius: 16px; transition: all 0.2s; user-select: none; }
+.radar-legend-item:hover { background: var(--g100); }
+.radar-legend-item.active { background: var(--clay-light); color: var(--slate); font-weight: 600; }
+.radar-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.radar-layer { transition: opacity 0.3s; cursor: pointer; }
+
+.roadmap-toolbar { display: flex; gap: 0.45rem; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; }
+.rm-filter { padding: 0.38rem 0.85rem; border: 1px solid var(--g300); border-radius: 20px; background: var(--paper); font-size: 0.78rem; cursor: pointer; transition: all 0.2s; color: var(--g700); }
+.rm-filter:hover { border-color: var(--clay); color: var(--clay); }
+.rm-filter.active { background: var(--clay); color: white; border-color: var(--clay); }
+.view-toggle { display: flex; border: 1px solid var(--g300); border-radius: 8px; overflow: hidden; margin-left: auto; }
+.view-btn { padding: 0.38rem 0.7rem; font-size: 0.76rem; border: none; background: var(--paper); cursor: pointer; color: var(--g500); transition: all 0.2s; font-family: var(--sans); }
+.view-btn.active { background: var(--slate); color: white; }
+
+.rm-item { background: var(--g100); border-radius: 8px; padding: 1rem 1.2rem; border-left: 3px solid var(--g300); transition: all 0.3s; }
+.rm-item:hover { border-color: var(--clay); background: var(--paper); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.05); }
+.rm-item h4 { font-size: 0.93rem; margin-bottom: 0.25rem; color: var(--slate); display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+.rm-item p { font-size: 0.82rem; color: var(--g700); line-height: 1.5; }
+.maturity-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.45rem; }
+.maturity-steps { display: flex; gap: 2px; }
+.m-step { width: 28px; height: 4px; border-radius: 2px; background: var(--g200); transition: background 0.3s; }
+.m-step.on { background: var(--olive); }
+.m-step.on.iter { background: var(--clay); }
+.m-step.on.vis { background: var(--blue); }
+.maturity-label { font-size: 0.65rem; color: var(--g500); }
+.progress-row { margin-top: 0.35rem; }
+.progress-track { background: var(--g200); border-radius: 3px; height: 3px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+.progress-fill.shipped { background: var(--olive); }
+.progress-fill.iter { background: var(--clay); }
+.progress-fill.vis { background: var(--blue); }
+.progress-pct { font-size: 0.62rem; color: var(--g500); margin-top: 0.1rem; text-align: right; }
+.rm-cat { font-size: 0.62rem; padding: 1px 6px; border-radius: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+.rm-cat.agent { background: var(--clay-light); color: #9B4D23; }
+.rm-cat.platform { background: var(--blue-light); color: #2C5282; }
+.rm-cat.safety { background: var(--olive-light); color: #3D5A1E; }
+.rm-cat.ecosystem { background: var(--olive-light); color: #3D5A1E; }
+.detail-toggle { font-size: 0.76rem; color: var(--clay); cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem; margin-top: 0.45rem; user-select: none; border: none; background: none; padding: 0; font-family: inherit; }
+.detail-toggle:hover { text-decoration: underline; }
+.detail-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+.detail-content.open { max-height: 300px; }
+#depGraphWrap.open { max-height: 700px; }
+.detail-inner { padding-top: 0.5rem; font-size: 0.8rem; color: var(--g700); line-height: 1.5; border-top: 1px solid var(--g200); margin-top: 0.45rem; }
+.dep-link { display: inline-block; font-size: 0.7rem; padding: 1px 6px; background: var(--g100); border-radius: 3px; color: var(--clay); margin: 0.1rem 0.1rem 0.1rem 0; }
+
+.tl-view { position: relative; padding-left: 2.5rem; }
+.tl-view::before { content: ''; position: absolute; left: 0.75rem; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--olive), var(--clay) 40%, var(--clay) 70%, var(--blue)); border-radius: 1px; }
+.tl-item { position: relative; padding: 0.75rem 0 1.3rem 1.5rem; }
+.tl-item::before { content: ''; position: absolute; left: -1.55rem; top: 0.95rem; width: 14px; height: 14px; border-radius: 50%; border: 3px solid; z-index: 1; }
+.tl-item.shipped::before { border-color: var(--olive); background: var(--olive); }
+.tl-item.iterating::before { border-color: var(--clay); background: var(--clay); }
+.tl-item.vision::before { border-color: var(--blue); background: var(--ivory); }
+.tl-phase-label { font-family: var(--serif); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+.tl-phase-label.shipped { color: var(--olive); }
+.tl-phase-label.iterating { color: var(--clay); }
+.tl-phase-label.vision { color: var(--blue); }
+.tl-item h4 { font-size: 0.9rem; color: var(--slate); margin-bottom: 0.15rem; }
+.tl-item p { font-size: 0.8rem; color: var(--g700); line-height: 1.4; }
+.tl-item .rm-cat { margin-right: 0.3rem; }
+
+.dep-graph-wrap { background: var(--paper); border: 1px solid var(--g300); border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem; overflow-x: auto; }
+.dep-node { cursor: pointer; transition: filter 0.2s; }
+.dep-node:hover { filter: drop-shadow(0 0 8px rgba(217,119,87,0.5)); }
+.dep-edge { transition: stroke-opacity 0.3s, stroke-width 0.2s; }
+.cap-compare { display: grid; gap: 0.55rem; padding: 0.5rem 0; }
+.cap-row { display: grid; grid-template-columns: 90px 1fr; gap: 0.6rem; align-items: center; }
+.cap-label { font-size: 0.82rem; font-weight: 500; color: var(--g700); }
+.cap-bars { display: flex; gap: 3px; align-items: center; }
+.cap-bar { height: 6px; border-radius: 3px; transition: width 0.8s ease; }
+.cap-bar.now { background: var(--clay); opacity: 0.45; }
+.cap-bar.near { background: var(--clay); }
+.cap-bar.goal { background: var(--blue); opacity: 0.3; }
+.cap-val { font-size: 0.66rem; color: var(--g500); font-family: var(--mono); white-space: nowrap; }
+
+
+</style>
+</head>
+<body style="padding:0;">
+
+<section id="roadmap">
+  <h2 class="section-title primary"><span class="icon">&#9733;</span> 未来规划 &amp; 路线图</h2>
+  <p class="section-bridge" style="font-size:0.9rem;color:var(--g500);margin:-0.5rem 0 1.5rem;max-width:640px;">过去已清晰，未来正在构建。基于 Code with Claude 2026 Keynote 和 Anthropic 趋势报告，展望 Claude Code 的下一个阶段。</p>
+  <p style="font-size:0.9rem; color:var(--g700); margin-bottom:1.5rem; line-height:1.6;">
+    基于 Code with Claude 2026 Keynote、Anthropic 2026 Agentic Coding Trends Report、官方 What's New 周报、以及 MIT Tech Review 等媒体采访综合整理。Anthropic 的战略主线清晰：从"编码助手"演进为"自主工程组织"。
+  </p>
+
+  <!-- Evolution Pathway -->
+  <div class="chart-container">
+    <h3 style="font-family:var(--serif); font-size:1rem; margin-bottom:0.25rem;">进化路径</h3>
+    <p style="font-size:0.78rem; color:var(--g500); margin-bottom:0.75rem;">悬停查看每个阶段的关键能力</p>
+    <div class="evolution-track">
+      <div class="evo-node done">
+        <div class="evo-dot">&#9874;</div>
+        <div class="evo-title">编码助手</div>
+        <div class="evo-sub">v0.2.x | 2025.01-04</div>
+        <div class="evo-tags"><span class="evo-tag">斜杠命令</span><span class="evo-tag">MCP 调试</span><span class="evo-tag">权限管理</span></div>
+      </div>
+      <div class="evo-node done">
+        <div class="evo-dot">&#9881;</div>
+        <div class="evo-title">开发平台</div>
+        <div class="evo-sub">v1.0.x | 2025.05-09</div>
+        <div class="evo-tags"><span class="evo-tag">Plan Mode</span><span class="evo-tag">CLAUDE.md</span><span class="evo-tag">Claude 4</span></div>
+      </div>
+      <div class="evo-node done">
+        <div class="evo-dot">&#9889;</div>
+        <div class="evo-title">多 Agent 系统</div>
+        <div class="evo-sub">v2.0-2.1 | 2025.10-2026.05</div>
+        <div class="evo-tags"><span class="evo-tag">Background Agent</span><span class="evo-tag">Agent View</span><span class="evo-tag">Plugin</span></div>
+      </div>
+      <div class="evo-node now">
+        <div class="evo-dot">&#9752;</div>
+        <div class="evo-title">自主工程组织</div>
+        <div class="evo-sub">2026 H2 | 进行中</div>
+        <div class="evo-tags"><span class="evo-tag">Dreaming</span><span class="evo-tag">Teammates</span><span class="evo-tag">Swarm</span></div>
+      </div>
+      <div class="evo-node future">
+        <div class="evo-dot">&#10024;</div>
+        <div class="evo-title">自我进化</div>
+        <div class="evo-sub">2027+ | 终极愿景</div>
+        <div class="evo-tags"><span class="evo-tag">Self-Building</span><span class="evo-tag">Agent SDK</span><span class="evo-tag">Safety AI</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Capability Comparison -->
+  <div class="chart-container">
+    <h3 style="font-family:var(--serif); font-size:1rem; margin-bottom:0.4rem;">能力演进对比</h3>
+    <div style="display:flex; gap:1.5rem; margin-bottom:0.6rem; font-size:0.7rem; color:var(--g500);">
+      <span><span style="display:inline-block;width:14px;height:4px;background:var(--clay);opacity:0.45;border-radius:2px;vertical-align:middle;margin-right:4px;"></span>当前</span>
+      <span><span style="display:inline-block;width:14px;height:4px;background:var(--clay);border-radius:2px;vertical-align:middle;margin-right:4px;"></span>近期</span>
+      <span><span style="display:inline-block;width:14px;height:4px;background:var(--blue);opacity:0.3;border-radius:2px;vertical-align:middle;margin-right:4px;"></span>愿景</span>
+    </div>
+    <div class="cap-compare" id="capCompare"></div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="roadmap-toolbar">
+    <button class="rm-filter active" data-cat="all">全部</button>
+    <button class="rm-filter" data-cat="agent">Agent 能力</button>
+    <button class="rm-filter" data-cat="platform">平台支持</button>
+    <button class="rm-filter" data-cat="safety">安全合规</button>
+    <button class="rm-filter" data-cat="ecosystem">生态扩展</button>
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="cards">卡片</button>
+      <button class="view-btn" data-view="timeline">时间线</button>
+    </div>
+  </div>
+
+  <!-- ===== Card View ===== -->
+  <div id="rmCardView">
+
+    <!-- Phase 1: Shipped -->
+    <div class="roadmap-phase shipped">
+      <h3><span class="phase-badge shipped">已发布</span> 已落地但仍在快速迭代的核心能力</h3>
+      <div class="phase-meta">2026.04 ~ 2026.05 | 已对用户可用，持续改进中</div>
+      <div class="roadmap-grid">
+
+        <div class="rm-item" data-cat="agent">
+          <h4>Dreaming（梦境）<span class="rm-cat agent">Agent</span></h4>
+          <p>异步后台进程，Agent 在空闲时回顾历史会话、提取模式、发现知识盲区、自主修复不一致性。使 Agent 在特定代码库上持续变强。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on"></span><span class="m-step on"></span><span class="m-step on"></span><span class="m-step"></span></div><span class="maturity-label">Preview</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill shipped" style="width:70%"></div></div><div class="progress-pct">70%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            实现机制：后台服务进程定期扫描会话历史，提取代码模式、架构决策和常见错误。目前处于研究预览阶段，仅对部分用户开放。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">Memory 系统</span><span class="dep-link">Background Agent</span></div>
+          </div></div>
+        </div>
+
+        <div class="rm-item" data-cat="agent">
+          <h4>Outcomes（目标驱动）<span class="rm-cat agent">Agent</span></h4>
+          <p>定义成功条件和 rubric 评分标准，Agent 自主迭代直到达标。本质上将 /goal 命令的完成条件机制产品化，支持长时间自主工作。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on"></span><span class="m-step on"></span><span class="m-step on"></span><span class="m-step on"></span></div><span class="maturity-label">Shipped</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill shipped" style="width:90%"></div></div><div class="progress-pct">90%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            已在 v2.1.139 通过 <code>/goal</code> 命令落地。用户可设置完成条件（如"所有测试通过"、"lint 无错误"），Claude 持续工作直到满足。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">/goal 命令</span><span class="dep-link">Auto-iterate</span></div>
+          </div></div>
+        </div>
+
+        <div class="rm-item" data-cat="agent">
+          <h4>Multi-Agent Orchestration<span class="rm-cat agent">Agent</span></h4>
+          <p>Swarm Mode 正式化 — 创建 Agent 舰队，各 Agent 拥有不同角色和工具，协调完成复杂任务。基于 TeammateTool 13 种操作构建。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on"></span><span class="m-step on"></span><span class="m-step on"></span><span class="m-step on"></span></div><span class="maturity-label">Shipped</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill shipped" style="width:85%"></div></div><div class="progress-pct">85%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            v2.1.50 引入 Worktree 隔离，v2.1.139 Agent View 统一管理。当前支持 13 种 TeammateTool 操作，可创建协调舰队。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">Agent View</span><span class="dep-link">Worktree 隔离</span><span class="dep-link">TeamCreate</span></div>
+          </div></div>
+        </div>
+
+        <div class="rm-item" data-cat="platform">
+          <h4>Routines（例行任务）<span class="rm-cat platform">平台</span></h4>
+          <p>可调度自动化：绑定 prompt + repo + tools，通过 cron 定时、webhook 触发、GitHub event 触发运行。醒来即见可合并的 PR。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on"></span><span class="m-step on"></span><span class="m-step on"></span><span class="m-step on"></span></div><span class="maturity-label">Shipped</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill shipped" style="width:80%"></div></div><div class="progress-pct">80%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            v2.1.72 引入 <code>/loop</code> 和 CronCreate/CronDelete 工具。Webhook 和 GitHub event 触发在后续版本逐步增强。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">Cron 调度</span><span class="dep-link">Background Agent</span></div>
+          </div></div>
+        </div>
+
+        <div class="rm-item" data-cat="platform">
+          <h4>CI Auto-Fix<span class="rm-cat platform">平台</span></h4>
+          <p>监控 PR 状态，检测 CI 失败，自动修复代码并推送变更。配合 <code>/autofix-pr</code> 从终端开启。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on"></span><span class="m-step on"></span><span class="m-step on"></span><span class="m-step"></span></div><span class="maturity-label">Preview</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill shipped" style="width:75%"></div></div><div class="progress-pct">75%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            与 GitHub 深度集成，监控 PR 的 CI 状态。检测到失败后自动分析日志、定位问题、生成修复并推送。目前支持常见 linter 和测试框架。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">GitHub 集成</span><span class="dep-link">Routines</span></div>
+          </div></div>
+        </div>
+
+        <div class="rm-item" data-cat="platform">
+          <h4>Desktop App + Remote Control<span class="rm-cat platform">平台</span></h4>
+          <p>全屏 GUI 桌面应用（Mac/Windows），支持富媒体预览。Remote Control 实现本地启动、手机/浏览器/桌面端无缝续接。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on"></span><span class="m-step on"></span><span class="m-step on"></span><span class="m-step on"></span></div><span class="maturity-label">Shipped</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill shipped" style="width:80%"></div></div><div class="progress-pct">80%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            Desktop App (Week 17+) 和 Remote Control (Week 20+) 已先后发布。支持 Markdown、代码高亮、图片内联渲染，以及跨设备会话续接。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">Chrome 集成</span><span class="dep-link">命名会话</span></div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Phase 2: Iterating -->
+    <div class="roadmap-phase iterating">
+      <h3><span class="phase-badge iterating">快速迭代中</span> 明确提及、正在推进的中期目标</h3>
+      <div class="phase-meta">2026 H2 预期 | 已有早期实现或 feature flag</div>
+      <div class="roadmap-grid">
+
+        <div class="rm-item" data-cat="agent">
+          <h4>Agents as Persistent Teammates<span class="rm-cat agent">Agent</span></h4>
+          <p>Agent 作为持久队友，能学习、记忆、在小时/天/周尺度上自主工作。不再是"一次性对话"，而是长期协作的团队成员。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on iter"></span><span class="m-step on iter"></span><span class="m-step"></span><span class="m-step"></span></div><span class="maturity-label">Preview</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill iter" style="width:35%"></div></div><div class="progress-pct">35%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            Keynote 核心愿景之一。当前 Background Agent 已支持跨会话运行，但"持久队友"需要 Memory 系统 + Dreaming 的成熟。预计需要 Dreaming 正式发布后逐步落地。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">Dreaming</span><span class="dep-link">Persistent Memory</span><span class="dep-link">Agent View</span></div>
+          </div></div>
+        </div>
+
+        <div class="rm-item" data-cat="agent">
+          <h4>Cross-Team Swarm 协作<span class="rm-cat agent">Agent</span></h4>
+          <p>当前 Swarm Mode 限于单项目内多 Agent。下一步是跨团队 Agent 协作：不同项目的 Agent 共享上下文、协调依赖、同步进度。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on iter"></span><span class="m-step"></span><span class="m-step"></span><span class="m-step"></span></div><span class="maturity-label">Research</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill iter" style="width:20%"></div></div><div class="progress-pct">20%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            需要先解决跨项目上下文共享、权限隔离和依赖同步等核心问题。TeammateTool 当前仅支持单 repo 内操作，跨 repo 协作是下一个架构挑战。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">TeammateTool 扩展</span><span class="dep-link">Persistent Teammates</span></div>
+          </div></div>
+        </div>
+
+        <div class="rm-item" data-cat="ecosystem">
+          <h4>Persistent Agent Memories<span class="rm-cat ecosystem">生态</span></h4>
+          <p>每个 Agent 拥有持久化记忆（不限于项目级 CLAUDE.md），能跨会话积累专业知识和项目偏好。习得专业化能力。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on iter"></span><span class="m-step on iter"></span><span class="m-step"></span><span class="m-step"></span></div><span class="maturity-label">Preview</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill iter" style="width:30%"></div></div><div class="progress-pct">30%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            当前 memory 系统以项目级 CLAUDE.md 为主。Agent 级持久记忆需要权限版本控制、审计追踪和隔离机制，是 Agent SDK 的关键前置能力。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">Dreaming</span><span class="dep-link">权限系统</span><span class="dep-link">Agent SDK</span></div>
+          </div></div>
+        </div>
+
+        <div class="rm-item" data-cat="safety">
+          <h4>Enterprise Governance 增强<span class="rm-cat safety">安全</span></h4>
+          <p>可观测性（OTEL tracing 深化）、安全审计（hook 全链路追踪）、成本控制（细粒度预算管理）、合规性（managed settings 策略强制）。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on iter"></span><span class="m-step on iter"></span><span class="m-step on iter"></span><span class="m-step"></span></div><span class="maturity-label">Beta</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill iter" style="width:55%"></div></div><div class="progress-pct">55%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            v2.1.x 持续推进中。OTEL 已有基础（span agent_id），managed settings 已支持策略强制。下一步是全链路 hook 追踪和预算管理面板。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">OTEL 集成</span><span class="dep-link">Hook 系统</span><span class="dep-link">Managed Settings</span></div>
+          </div></div>
+        </div>
+
+        <div class="rm-item" data-cat="platform">
+          <h4>Ultraplan / Ultraplan Review<span class="rm-cat platform">平台</span></h4>
+          <p>云端协作规划 — CLI 起草 Plan，Web 编辑器评审和评论，远程或本地执行。协作式代码规划的完整工作流。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on iter"></span><span class="m-step on iter"></span><span class="m-step"></span><span class="m-step"></span></div><span class="maturity-label">Preview</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill iter" style="width:40%"></div></div><div class="progress-pct">40%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            <code>/ultraplan</code> 已在 v2.1.101 自动配置云端环境，<code>/ultrareview</code> 作为公共研究预览在 Week 17 发布。Web 编辑器评审功能正在开发中。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">Plan Mode</span><span class="dep-link">Desktop App</span></div>
+          </div></div>
+        </div>
+
+        <div class="rm-item" data-cat="agent">
+          <h4>Automated Code Review 深度集成<span class="rm-cat agent">Agent</span></h4>
+          <p>每个 PR 自动触发代码审查（安全/性能/架构/复杂度各一个专业 reviewer），审查结果作为 PR comment 发布。已在 Anthropic 内部全量使用。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on iter"></span><span class="m-step on iter"></span><span class="m-step"></span><span class="m-step"></span></div><span class="maturity-label">Preview</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill iter" style="width:45%"></div></div><div class="progress-pct">45%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            v2.1.147 将 <code>/simplify</code> 重命名为 <code>/code-review</code>，支持 effort 级别和 <code>--comment</code> 参数。自动化 PR review 是下一个目标，需要 GitHub App 深度集成。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">GitHub App</span><span class="dep-link">/code-review</span><span class="dep-link">CI Auto-Fix</span></div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Phase 3: Vision -->
+    <div class="roadmap-phase vision">
+      <h3><span class="phase-badge vision">长期愿景</span> Anthropic 描绘的终极方向</h3>
+      <div class="phase-meta">2027+ 预期 | 战略层面明确提及</div>
+      <div class="roadmap-grid">
+
+        <div class="rm-item" data-cat="agent">
+          <h4>"Claude Builds Itself"<span class="rm-cat agent">Agent</span></h4>
+          <p>MIT Tech Review 报道中 Anthropic 工程师 Jiang 明确表示终极目标 — Claude 能够构建自己。Self-improving engineering organization。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on vis"></span><span class="m-step"></span><span class="m-step"></span><span class="m-step"></span></div><span class="maturity-label">Research</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill vis" style="width:10%"></div></div><div class="progress-pct">10%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            依赖所有前置能力的成熟：Agent 需要能理解 Claude Code 自身的代码库、自主编写和测试代码、通过安全审查后合入主分支。这是能力链的最远端。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">Persistent Teammates</span><span class="dep-link">Cross-Team Swarm</span><span class="dep-link">Self-Improving Safety</span></div>
+          </div></div>
+        </div>
+
+        <div class="rm-item" data-cat="ecosystem">
+          <h4>Agentic 能力超越编码<span class="rm-cat ecosystem">生态</span></h4>
+          <p>将 Agent 协调能力从软件开发扩展到法律、金融、运营、客服等知识工作领域。Claude Code 作为"开发者操作系统"的自然延伸。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on vis"></span><span class="m-step"></span><span class="m-step"></span><span class="m-step"></span></div><span class="maturity-label">Research</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill vis" style="width:5%"></div></div><div class="progress-pct">5%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            Anthropic 定位 Claude Code 为"开发者操作系统"(Developer OS)。其他领域是 Agent 协调能力的自然延伸，但需要 Domain Expert Agents 的成熟。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">Agent SDK</span><span class="dep-link">Domain Expert Agents</span></div>
+          </div></div>
+        </div>
+
+        <div class="rm-item" data-cat="ecosystem">
+          <h4>Domain Expert Agents<span class="rm-cat ecosystem">生态</span></h4>
+          <p>让非工程师也能通过自然语言定义和使用 Agent。Agent SDK 使外部开发者构建自定义 Agent 工作流，降低 AI 使用门槛。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on vis"></span><span class="m-step"></span><span class="m-step"></span><span class="m-step"></span></div><span class="maturity-label">Research</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill vis" style="width:15%"></div></div><div class="progress-pct">15%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            Claude Managed Agents 已有雏形。Agent SDK 将允许外部开发者定义 Agent 角色和工具集，构建垂直领域专用的 Agent 工作流。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">Agent SDK</span><span class="dep-link">Persistent Memory</span><span class="dep-link">Plugin 生态</span></div>
+          </div></div>
+        </div>
+
+        <div class="rm-item" data-cat="safety">
+          <h4>Self-Improving Safety<span class="rm-cat safety">安全</span></h4>
+          <p>安全架构从设计阶段嵌入 Agentic 系统。Agent 在自主工作中自动遵守安全边界，减少人工审查负担。Constitutional AI 与 Agentic 系统深度融合。</p>
+          <div class="maturity-row"><div class="maturity-steps"><span class="m-step on vis"></span><span class="m-step"></span><span class="m-step"></span><span class="m-step"></span></div><span class="maturity-label">Research</span></div>
+          <div class="progress-row"><div class="progress-track"><div class="progress-fill vis" style="width:10%"></div></div><div class="progress-pct">10%</div></div>
+          <button class="detail-toggle" onclick="toggleDetail(this)">&#9654; 查看详情</button>
+          <div class="detail-content"><div class="detail-inner">
+            Anthropic 核心价值观驱动的安全研究。当前安全依赖 Hook 系统、权限沙箱和 managed settings。未来目标是让安全能力内置于 Agent 行为中，而非外部约束。
+            <div style="margin-top:0.3rem; font-size:0.72rem; color:var(--g500);">依赖：<span class="dep-link">Constitutional AI</span><span class="dep-link">Hook 系统</span></div>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== Timeline View ===== -->
+  <div id="rmTimelineView" style="display:none;">
+    <div class="tl-view" id="tlContainer"></div>
+  </div>
+
+  <!-- Dependency Graph (collapsible) -->
+  <div style="margin-top:1.5rem;">
+    <button class="detail-toggle" onclick="toggleDepGraph(this)" style="font-size:0.88rem;font-weight:500;font-family:var(--serif);padding:0.3rem 0;">&#9654; 查看功能依赖关系图</button>
+    <div class="detail-content" id="depGraphWrap">
+      <div class="dep-graph-wrap">
+        <p style="font-size:0.78rem; color:var(--g500); margin-bottom:0.5rem;">悬停节点查看关联功能，箭头表示依赖方向</p>
+        <svg id="depGraph" viewBox="0 0 900 420" class="svg-chart"></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sources -->
+  <div class="source-bar" style="margin-top:1.5rem;">
+    <span style="font-size:0.78rem; color:var(--g500); font-weight:600;">信息来源:</span>
+    <a class="source-link" href="https://simonwillison.net/2026/May/6/code-w-claude-2026" target="_blank">Simon Willison 实时博客</a>
+    <a class="source-link" href="https://www.youtube.com/watch?v=wjvESxKgqaQ" target="_blank">Code with Claude 2026 Keynote</a>
+    <a class="source-link" href="https://resources.anthropic.com/hubfs/2026%20Agentic%20Coding%20Trends%20Report.pdf" target="_blank">Anthropic 2026 Trends Report</a>
+    <a class="source-link" href="https://www.technologyreview.com/2026/05/21/1137735/anthropics-code-with-claude-showed-off-codings-future-whether-you-like-it-or-not" target="_blank">MIT Tech Review 报道</a>
+    <a class="source-link" href="https://code.claude.com/docs/en/whats-new" target="_blank">官方 What's New</a>
+  </div>
+
+</section>
+
+</main>
+</section>
+
+<script>
+
+// ===== SVG Helper =====
+function svgEl(tag, attrs) {
+  var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (var k in attrs) { el.setAttribute(k, attrs[k]); }
+  return el;
+}
+function svgText(parent, x, y, text, attrs) {
+  var t = svgEl('text', Object.assign({x:x, y:y, 'font-size':'11', fill:'#78716C', 'font-family':'system-ui'}, attrs||{}));
+  t.textContent = text;
+  parent.appendChild(t);
+  return t;
+}
+
+// ===== Data =====
+var versionSeries = [
+  { name:'v0.2.x', count:37, color:'#A8A29E', label:'早期测试' },
+  { name:'v1.0.x', count:82, color:'#D97757', label:'首个正式版' },
+  { name:'v2.0.x', count:57, color:'#4A6FA5', label:'功能成熟' },
+  { name:'v2.1.x', count:130, color:'#788C5D', label:'多 Agent 协作' }
+];
+
+var monthlyData = [
+  {m:'25.01',v0:9,v1:0,v2:0,v21:0},{m:'25.02',v0:7,v1:0,v2:0,v21:0},
+  {m:'25.03',v0:8,v1:0,v2:0,v21:0},{m:'25.04',v0:10,v1:3,v2:0,v21:0},
+  {m:'25.05',v0:3,v1:22,v2:0,v21:0},{m:'25.06',v0:0,v1:20,v2:0,v21:0},
+  {m:'25.07',v0:0,v1:18,v2:2,v21:0},{m:'25.08',v0:0,v1:19,v2:5,v21:0},
+  {m:'25.09',v0:0,v1:0,v2:16,v21:0},{m:'25.10',v0:0,v1:0,v2:14,v21:0},
+  {m:'25.11',v0:0,v1:0,v2:13,v21:0},{m:'25.12',v0:0,v1:0,v2:15,v21:0},
+  {m:'26.01',v0:0,v1:0,v2:0,v21:24},{m:'26.02',v0:0,v1:0,v2:0,v21:26},
+  {m:'26.03',v0:0,v1:0,v2:0,v21:28},{m:'26.04',v0:0,v1:0,v2:0,v21:27},
+  {m:'26.05',v0:0,v1:0,v2:0,v21:25}
+];
+
+var milestones = [
+  {ver:'v0.2.31',date:'25.04',text:'自定义斜杠命令',cat:'platform'},
+  {ver:'v1.0.x',date:'25.06',text:'Plan Mode',cat:'feature'},
+  {ver:'v2.0.58',date:'25.12',text:'Opus 4.5 for Pro',cat:'model'},
+  {ver:'v2.0.60',date:'25.12',text:'Background Agent',cat:'major'},
+  {ver:'v2.0.64',date:'25.12',text:'命名会话',cat:'feature'},
+  {ver:'v2.0.72',date:'25.12',text:'Chrome 集成',cat:'platform'},
+  {ver:'v2.0.74',date:'25.12',text:'LSP 工具',cat:'feature'},
+  {ver:'v2.1.16',date:'26.01',text:'任务管理系统',cat:'major'},
+  {ver:'v2.1.18',date:'26.01',text:'自定义快捷键',cat:'feature'},
+  {ver:'v2.1.50',date:'26.02',text:'Worktree 隔离',cat:'major'},
+  {ver:'v2.1.72',date:'26.03',text:'/loop + Cron',cat:'feature'},
+  {ver:'v2.1.84',date:'26.03',text:'PowerShell 预览',cat:'platform'},
+  {ver:'v2.1.94',date:'26.04',text:'Bedrock Mantle',cat:'platform'},
+  {ver:'v2.1.139',date:'26.05',text:'Agent View',cat:'major'},
+  {ver:'v2.1.142',date:'26.05',text:'Fast Opus 4.7',cat:'model'}
+];
+
+var tokenChanges = [
+  {ver:'v2.1.16',delta:7114},{ver:'v2.1.21',delta:442},{ver:'v2.1.20',delta:-1928},
+  {ver:'v2.1.9',delta:963},{ver:'v2.1.6',delta:742}
+];
+
+// ===== 1. Donut Chart =====
+(function(){
+  var svg = document.getElementById('donutChart');
+  var total = versionSeries.reduce(function(s,v){return s+v.count},0);
+  var cx=160, cy=130, r=80, ir=50;
+  var startAngle = -Math.PI/2;
+  versionSeries.forEach(function(vs){
+    var angle = (vs.count/total)*Math.PI*2;
+    var endAngle = startAngle + angle;
+    var largeArc = angle > Math.PI ? 1 : 0;
+    var x1=cx+r*Math.cos(startAngle), y1=cy+r*Math.sin(startAngle);
+    var x2=cx+r*Math.cos(endAngle), y2=cy+r*Math.sin(endAngle);
+    var ix1=cx+ir*Math.cos(endAngle), iy1=cy+ir*Math.sin(endAngle);
+    var ix2=cx+ir*Math.cos(startAngle), iy2=cy+ir*Math.sin(startAngle);
+    var d='M'+x1+','+y1+' A'+r+','+r+' 0 '+largeArc+' 1 '+x2+','+y2+
+          ' L'+ix1+','+iy1+' A'+ir+','+ir+' 0 '+largeArc+' 0 '+ix2+','+iy2+' Z';
+    var path=svgEl('path',{d:d,fill:vs.color,opacity:'0.85','class':'area-path'});
+    path.addEventListener('mouseenter',function(){ path.setAttribute('opacity','1'); path.setAttribute('transform','scale(1.03)'); path.style.transformOrigin=cx+'px '+cy+'px'; });
+    path.addEventListener('mouseleave',function(){ path.setAttribute('opacity','0.85'); path.setAttribute('transform',''); });
+    svg.appendChild(path);
+    var midAngle = startAngle + angle/2;
+    var lx=cx+(r+22)*Math.cos(midAngle), ly=cy+(r+22)*Math.sin(midAngle);
+    var label=svgEl('text',{x:lx,y:ly,'text-anchor':'middle','font-size':'10',fill:'#44403C','font-weight':'600'});
+    label.textContent=vs.count;
+    svg.appendChild(label);
+    startAngle=endAngle;
+  });
+  var centerText=svgEl('text',{x:cx,y:cy-4,'text-anchor':'middle','font-size':'22','font-weight':'700',fill:'#141413'});
+  centerText.textContent=total+'+';
+  svg.appendChild(centerText);
+  var subText=svgEl('text',{x:cx,y:cy+14,'text-anchor':'middle','font-size':'10',fill:'#78716C'});
+  subText.textContent='总版本数';
+  svg.appendChild(subText);
+  // Legend
+  var ly=240;
+  versionSeries.forEach(function(vs,i){
+    var lx=40+(i%2)*160;
+    svg.appendChild(svgEl('rect',{x:lx,y:ly+Math.floor(i/2)*20,width:10,height:10,rx:2,fill:vs.color}));
+    svgText(svg,lx+14,ly+9+Math.floor(i/2)*20,vs.name+' ('+vs.count+')',{'font-size':'11','fill':'#44403C'});
+  });
+})();
+
+// ===== 2. Monthly Bar Chart =====
+(function(){
+  var svg=document.getElementById('barChart');
+  var pad={l:35,r:10,t:10,b:40};
+  var w=480-pad.l-pad.r, h=280-pad.t-pad.b;
+  var maxV=30;
+  var barW=w/monthlyData.length*0.7;
+  var gap=w/monthlyData.length;
+  // Grid lines
+  for(var i=0;i<=5;i++){
+    var yy=pad.t+h-h*(i*6/maxV);
+    svg.appendChild(svgEl('line',{x1:pad.l,y1:yy,x2:pad.l+w,y2:yy,stroke:'#E7E5E4','stroke-width':'1'}));
+    svgText(svg,pad.l-5,yy+3,i*6+'',{'text-anchor':'end','font-size':'9'});
+  }
+  // Bars
+  var colors=['#A8A29E','#D97757','#4A6FA5','#788C5D'];
+  monthlyData.forEach(function(d,idx){
+    var vals=[d.v0,d.v1,d.v2,d.v21];
+    var sum=vals.reduce(function(a,b){return a+b},0);
+    var yy=pad.t+h-h*(sum/maxV);
+    var x=pad.l+idx*gap+(gap-barW)/2;
+    if(sum>0){
+      var rect=svgEl('rect',{x:x,y:yy,width:barW,height:h*(sum/maxV),rx:3,fill:sum>20?'#D97757':sum>15?'#4A6FA5':sum>10?'#788C5D':'#A8A29E',opacity:'0.8'});
+      rect.addEventListener('mouseenter',function(){rect.setAttribute('opacity','1');rect.setAttribute('fill','#D97757');});
+      rect.addEventListener('mouseleave',function(){rect.setAttribute('opacity','0.8');rect.setAttribute('fill',sum>20?'#D97757':sum>15?'#4A6FA5':sum>10?'#788C5D':'#A8A29E');});
+      svg.appendChild(rect);
+      if(sum>=10){svgText(svg,x+barW/2,yy-4,sum+'',{'text-anchor':'middle','font-size':'9','font-weight':'600',fill:'#44403C'});}
+    }
+    svgText(svg,x+barW/2,pad.t+h+14,d.m.replace('25.',"'25.").replace('26.',"'26."),{'text-anchor':'middle','font-size':'8','fill':'#A8A29E','transform':'rotate(-45,'+(x+barW/2)+','+(pad.t+h+14)+')'});
+  });
+})();
+
+// ===== 3. Cumulative Area Chart =====
+(function(){
+  var svg=document.getElementById('areaChart');
+  var pad={l:45,r:20,t:15,b:35};
+  var w=900-pad.l-pad.r, h=320-pad.t-pad.b;
+  var maxTotal=306;
+  // Grid
+  for(var i=0;i<=5;i++){
+    var yy=pad.t+h-h*(i/maxTotal*5*60/maxTotal);
+    svg.appendChild(svgEl('line',{x1:pad.l,y1:yy,x2:pad.l+w,y2:yy,stroke:'#E7E5E4','stroke-dasharray':'3,3'}));
+    svgText(svg,pad.l-8,yy+3,(i*60)+'',{'text-anchor':'end','font-size':'9'});
+  }
+  // Cumulative lines
+  var cumData=[];
+  var cum={v0:0,v1:0,v2:0,v21:0};
+  monthlyData.forEach(function(d){
+    cum.v0+=d.v0;cum.v1+=d.v1;cum.v2+=d.v2;cum.v21+=d.v21;
+    cumData.push({m:d.m,v0:cum.v0,v1:cum.v1,v2:cum.v2,v21:cum.v21,total:cum.v0+cum.v1+cum.v2+cum.v21});
+  });
+  var colors=[{k:'v0',c:'#A8A29E'},{k:'v1',c:'#D97757'},{k:'v2',c:'#4A6FA5'},{k:'v21',c:'#788C5D'}];
+  var xStep=w/(cumData.length-1);
+  function yScale(v){return pad.t+h-h*(v/maxTotal);}
+  function xPos(i){return pad.l+i*xStep;}
+  colors.forEach(function(series){
+    var pts=cumData.map(function(d,i){return xPos(i)+','+yScale(d[series.k]);}).join(' ');
+    svg.appendChild(svgEl('polyline',{points:pts,fill:'none',stroke:series.c,'stroke-width':'2',opacity:'0.7','class':'draw-animate'}));
+    var areaPts=pts+' '+xPos(cumData.length-1)+','+yScale(0)+' '+xPos(0)+','+yScale(0);
+    svg.appendChild(svgEl('polygon',{points:areaPts,fill:series.c,opacity:'0.08','class':'area-animate'}));
+  });
+  // Total line
+  var totalPts=cumData.map(function(d,i){return xPos(i)+','+yScale(d.total);}).join(' ');
+  svg.appendChild(svgEl('polyline',{points:totalPts,fill:'none',stroke:'#141413','stroke-width':'2.5','class':'draw-animate'}));
+  // Dots + labels
+  cumData.forEach(function(d,i){
+    if(d.total%30<5||i===cumData.length-1||i===0){
+      svg.appendChild(svgEl('circle',{cx:xPos(i),cy:yScale(d.total),r:'3.5',fill:'#141413'}));
+      svgText(svg,xPos(i),yScale(d.total)-8,d.total+'',{'text-anchor':'middle','font-size':'9','font-weight':'600',fill:'#141413'});
+    }
+    if(i%2===0||i===cumData.length-1){
+      svgText(svg,xPos(i),pad.t+h+16,d.m.replace('25.',"'25.").replace('26.',"'26."),{'text-anchor':'middle','font-size':'9','fill':'#A8A29E'});
+    }
+  });
+})();
+
+// ===== 4. Milestone Bubble Chart =====
+(function(){
+  var svg=document.getElementById('milestoneChart');
+  var pad={l:80,r:20,t:30,b:20};
+  var w=900-pad.l-pad.r, h=420-pad.t-pad.b;
+  var catColors={major:'#D97757',feature:'#4A6FA5',platform:'#9333EA',model:'#788C5D'};
+  var catNames={major:'核心架构',feature:'重大功能',platform:'平台支持',model:'模型演进'};
+  var cats=['major','feature','platform','model'];
+  var laneH=h/cats.length;
+  // Lane backgrounds & labels
+  cats.forEach(function(cat,ci){
+    var yy=pad.t+ci*laneH;
+    svg.appendChild(svgEl('rect',{x:pad.l,y:yy,width:w,height:laneH-4,rx:6,fill:ci%2===0?'#FAF9F5':'#FFFFFF',opacity:'0.8'}));
+    svgText(svg,pad.l-8,yy+laneH/2+4,catNames[cat],{'text-anchor':'end','font-size':'11','font-weight':'600',fill:catColors[cat]});
+  });
+  // Timeline axis
+  var months=['25.01','25.04','25.07','25.10','26.01','26.04','26.05'];
+  function xForDate(d){
+    var parts=d.split('.');
+    var m=parseInt(parts[0])-25;
+    var mon=parseInt(parts[1]);
+    var totalM=m*12+mon;
+    return pad.l+(totalM/16)*w;
+  }
+  months.forEach(function(m){
+    var x=xForDate(m);
+    svg.appendChild(svgEl('line',{x1:x,y1:pad.t,x2:x,y2:pad.t+h,stroke:'#E7E5E4','stroke-dasharray':'2,4'}));
+    svgText(svg,x,pad.t+h+15,"'"+m,{'text-anchor':'middle','font-size':'9',fill:'#A8A29E'});
+  });
+  // Nodes with overlap detection
+  var placed=[];// track {x, catIdx} to detect overlaps
+  milestones.forEach(function(ms,idx){
+    var catIdx=cats.indexOf(ms.cat);
+    var x=xForDate(ms.date);
+    // Check for overlap with previously placed nodes in same lane
+    var offset=0;
+    placed.forEach(function(p){
+      if(p.catIdx===catIdx && Math.abs(p.x-x)<50){
+        offset+=50;
+      }
+    });
+    x=x+offset;
+    placed.push({x:x,catIdx:catIdx});
+    var y=pad.t+catIdx*laneH+laneH/2;
+    var g=svgEl('g',{'class':'milestone-group'});
+    // Connecting line
+    g.appendChild(svgEl('line',{x1:x,y1:y,x2:x,y2:y+18,stroke:catColors[ms.cat],'stroke-width':'1',opacity:'0.4'}));
+    // Circle
+    var circle=svgEl('circle',{cx:x,cy:y-4,r:'14',fill:catColors[ms.cat],opacity:'0.15'});
+    g.appendChild(circle);
+    var dot=svgEl('circle',{cx:x,cy:y-4,r:'6',fill:catColors[ms.cat],'class':'milestone-node',style:'animation-delay:'+(idx*0.1)+'s'});
+    g.appendChild(dot);
+    // Version label
+    svgText(g,x,y-20,ms.ver,{'text-anchor':'middle','font-size':'8','font-weight':'600',fill:catColors[ms.cat],'class':'milestone-label',opacity:'0.7'});
+    // Feature text
+    svgText(g,x,y+30,ms.text,{'text-anchor':'middle','font-size':'9',fill:'#44403C'});
+    svg.appendChild(g);
+  });
+})();
+
+// ===== 5. Heatmap =====
+(function(){
+  var svg=document.getElementById('heatChart');
+  var pad={l:40,r:20,t:10,b:30};
+  var w=900-pad.l-pad.r, h=180-pad.t-pad.b;
+  var years=['2025','2026'];
+  var cellW=w/12, cellH=h/2;
+  function heatColor(v){
+    if(v===0)return'#EDEDE9';if(v<=8)return'#D6D3D1';if(v<=15)return'#D97757';
+    if(v<=22)return'#B85A3A';return'#8B3E22';
+  }
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var releaseByMonth=[
+    [9,7,8,10,3,0,0,0,0,0,0,0],
+    [0,0,0,0,24,26,28,27,25,0,0,0]
+  ];
+  // Month headers
+  months.forEach(function(m,i){
+    svgText(svg,pad.l+i*cellW+cellW/2,pad.t-2,m,{'text-anchor':'middle','font-size':'9',fill:'#A8A29E'});
+  });
+  years.forEach(function(year,yi){
+    svgText(svg,pad.l-5,pad.t+yi*cellH+cellH/2+4,year,{'text-anchor':'end','font-size':'10','fill':'#78716C','font-weight':'600'});
+    for(var mi=0;mi<12;mi++){
+      var v=releaseByMonth[yi][mi];
+      var x=pad.l+mi*cellW, y=pad.t+yi*cellH;
+      var rect=svgEl('rect',{x:x+1,y:y+1,width:cellW-2,height:cellH-2,rx:4,fill:heatColor(v),'class':'heat-cell'});
+      rect.addEventListener('mouseenter',function(){
+        rect.setAttribute('stroke','#141413');rect.setAttribute('stroke-width','2');
+      });
+      rect.addEventListener('mouseleave',function(){
+        rect.removeAttribute('stroke');rect.removeAttribute('stroke-width');
+      });
+      svg.appendChild(rect);
+      if(v>0){
+        svgText(svg,x+cellW/2,y+cellH/2+4,v,{'text-anchor':'middle','font-size':'11','font-weight':'600',fill:v>15?'#FFFFFF':'#44403C'});
+      }
+    }
+  });
+})();
+
+// ===== 6. Token Change Chart =====
+(function(){
+  var svg=document.getElementById('tokenChart');
+  var pad={l:55,r:20,t:10,b:30};
+  var w=440-pad.l-pad.r, h=200-pad.t-pad.b;
+  var maxAbs=7114;
+  tokenChanges.forEach(function(tc,i){
+    var y=pad.t+10+i*36;
+    var bw=Math.abs(tc.delta)/maxAbs*w;
+    var isNeg=tc.delta<0;
+    var x=isNeg?pad.l+w/2-bw:pad.l+w/2;
+    svgText(svg,pad.l-5,y+5,tc.ver,{'text-anchor':'end','font-size':'10','font-weight':'600',fill:'#44403C','font-family':'SF Mono,Menlo,monospace'});
+    svg.appendChild(svgEl('rect',{x:x,y:y-6,width:bw,height:18,rx:4,fill:isNeg?'#FEE2E2':'#788C5D',opacity:'0.8'}));
+    svgText(svg,x+bw+5,y+5,(tc.delta>0?'+':'')+tc.delta,{'font-size':'9',fill:isNeg?'#991B1B':'#3D5A1E','font-weight':'600'});
+  });
+  // Zero line
+  svg.appendChild(svgEl('line',{x1:pad.l+w/2,y1:pad.t,x2:pad.l+w/2,y2:pad.t+h,stroke:'#A8A29E','stroke-dasharray':'3,3'}));
+})();
+
+// ===== 7. Key Metrics Panel =====
+(function(){
+  var panel=document.getElementById('metricsPanel');
+  var metrics=[
+    {label:'系统提示词最大增量',value:'+7,114 tokens',note:'v2.1.16',color:'#D97757'},
+    {label:'最大单版本变更数',value:'40+',note:'v2.1.101 / v2.1.147',color:'#4A6FA5'},
+    {label:'最长连续内存泄漏修复',value:'7 处',note:'v2.1.50',color:'#788C5D'},
+    {label:'最高月度发布频率',value:'28 releases',note:'2026.03',color:'#9333EA'},
+    {label:'默认 Effort 提升',value:'medium → high',note:'v2.1.94',color:'#D97757'},
+    {label:'Fast Mode 模型升级',value:'Opus 4.6 → 4.7',note:'v2.1.142',color:'#4A6FA5'}
+  ];
+  metrics.forEach(function(m){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex; align-items:center; gap:0.75rem; padding:0.5rem 0; border-bottom:1px solid #F5F5F4;';
+    var dot=document.createElement('span');
+    dot.style.cssText='width:8px;height:8px;border-radius:50%;flex-shrink:0;background:'+m.color;
+    var info=document.createElement('div');
+    info.style.cssText='flex:1;min-width:0;';
+    var label=document.createElement('div');
+    label.style.cssText='font-size:0.8rem;color:#78716C;';
+    label.textContent=m.label;
+    var valRow=document.createElement('div');
+    valRow.style.cssText='display:flex;justify-content:space-between;align-items:baseline;';
+    var val=document.createElement('span');
+    val.style.cssText='font-weight:600;color:#141413;font-size:0.9rem;';
+    val.textContent=m.value;
+    var note=document.createElement('span');
+    note.style.cssText='font-size:0.75rem;color:#A8A29E;font-family:SF Mono,Menlo,monospace;';
+    note.textContent=m.note;
+    valRow.appendChild(val);
+    valRow.appendChild(note);
+    info.appendChild(label);
+    info.appendChild(valRow);
+    row.appendChild(dot);
+    row.appendChild(info);
+    panel.appendChild(row);
+  });
+})();
+
+// ===== Scroll-to-top button =====
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('scrollTopBtn');
+  if (window.scrollY > 500) { btn.classList.add('visible'); } else { btn.classList.remove('visible'); }
+});
+
+// ===== Nav active state =====
+document.querySelectorAll('nav a').forEach(function(a) {
+  a.addEventListener('click', function() {
+    document.querySelectorAll('nav a').forEach(function(n) { n.classList.remove('active'); });
+    this.classList.add('active');
+  });
+});
+
+// ===== Collapsible sections =====
+function toggleSection(el) {
+  var content = el.nextElementSibling;
+  var isOpen = content.classList.contains('open');
+  content.classList.toggle('open');
+  el.textContent = isOpen ? '▶ 展开全部版本' : '▼ 收起版本列表';
+}
+
+// ===== Filter buttons =====
+document.querySelectorAll('.filter-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    this.classList.add('active');
+    var filter = this.dataset.filter;
+    document.querySelectorAll('.featured-card').forEach(function(card) {
+      if (filter === 'all' || card.dataset.tags.indexOf(filter) !== -1) { card.style.display = ''; } else { card.style.display = 'none'; }
+    });
+  });
+});
+
+// ===== Search =====
+document.getElementById('searchInput').addEventListener('input', function() {
+  var query = this.value.toLowerCase();
+  document.querySelectorAll('.featured-card').forEach(function(card) {
+    if (card.textContent.toLowerCase().indexOf(query) !== -1) { card.style.display = ''; } else { card.style.display = 'none'; }
+  });
+  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelector('.filter-btn[data-filter="all"]').classList.add('active');
+});
+
+// ===== Enhanced Roadmap: Capability Comparison =====
+(function(){
+  var el = document.getElementById('capCompare');
+  if (!el) return;
+  var dims = [
+    {label:'编码能力', now:85, near:92, goal:98},
+    {label:'Agent协作', now:60, near:80, goal:95},
+    {label:'自主性',   now:40, near:65, goal:90},
+    {label:'企业级',   now:55, near:75, goal:90},
+    {label:'平台覆盖', now:70, near:85, goal:95},
+    {label:'生态扩展', now:45, near:70, goal:90}
+  ];
+  dims.forEach(function(d) {
+    var row = document.createElement('div');
+    row.className = 'cap-row';
+    var label = document.createElement('span');
+    label.className = 'cap-label';
+    label.textContent = d.label;
+    var bars = document.createElement('span');
+    bars.className = 'cap-bars';
+    bars.appendChild(createBar(d.now, 'now', d.now + '%'));
+    bars.appendChild(createBar(d.near - d.now, 'near', ''));
+    bars.appendChild(createBar(d.goal - d.near, 'goal', ''));
+    var val = document.createElement('span');
+    val.className = 'cap-val';
+    val.textContent = d.now + '% → ' + d.goal + '%';
+    row.appendChild(label);
+    row.appendChild(bars);
+    row.appendChild(val);
+    el.appendChild(row);
+  });
+  function createBar(w, cls, text) {
+    var bar = document.createElement('span');
+    bar.className = 'cap-bar ' + cls;
+    bar.style.width = (w * 2.5) + 'px';
+    return bar;
+  }
+})();
+
+// ===== Enhanced Roadmap: View Toggle & Timeline =====
+(function(){
+  var cardView = document.getElementById('rmCardView');
+  var tlView = document.getElementById('rmTimelineView');
+  if (!cardView || !tlView) return;
+
+  var phases = [
+    {label:'已发布', cls:'shipped', items:[
+      {t:'Dreaming（梦境）',cat:'agent',p:'异步后台进程，空闲时回顾历史、提取模式、发现盲区'},
+      {t:'Outcomes（目标驱动）',cat:'agent',p:'定义成功条件，Agent 自主迭代直到达标'},
+      {t:'Multi-Agent Orchestration',cat:'agent',p:'Swarm Mode 正式化，Agent 舰队协调'},
+      {t:'Routines（例行任务）',cat:'platform',p:'cron/webhook/GitHub event 调度的自动化'},
+      {t:'CI Auto-Fix',cat:'platform',p:'监控 PR 状态，CI 失败自动修复'},
+      {t:'Desktop App + Remote Control',cat:'platform',p:'全屏 GUI + 跨设备续接'}
+    ]},
+    {label:'快速迭代中', cls:'iterating', items:[
+      {t:'Agents as Persistent Teammates',cat:'agent',p:'长期协作的团队成员'},
+      {t:'Cross-Team Swarm 协作',cat:'agent',p:'跨项目 Agent 共享上下文、协调依赖'},
+      {t:'Persistent Agent Memories',cat:'ecosystem',p:'跨会话积累专业知识'},
+      {t:'Enterprise Governance 增强',cat:'safety',p:'OTEL/审计/预算/合规全面加强'},
+      {t:'Ultraplan / Ultraplan Review',cat:'platform',p:'云端协作规划完整工作流'},
+      {t:'Automated Code Review',cat:'agent',p:'每 PR 自动多维度代码审查'}
+    ]},
+    {label:'长期愿景', cls:'vision', items:[
+      {t:'"Claude Builds Itself"',cat:'agent',p:'终极目标 — Claude 能够构建自己'},
+      {t:'Agentic 能力超越编码',cat:'ecosystem',p:'扩展到法律/金融/运营等知识工作领域'},
+      {t:'Domain Expert Agents',cat:'ecosystem',p:'非工程师也能定义和使用 Agent'},
+      {t:'Self-Improving Safety',cat:'safety',p:'安全内置，Constitutional AI 深度融合'}
+    ]}
+  ];
+
+  var container = document.getElementById('tlContainer');
+  var catNames = {agent:'Agent', platform:'平台', safety:'安全', ecosystem:'生态'};
+  phases.forEach(function(phase) {
+    var label = document.createElement('div');
+    label.className = 'tl-phase-label ' + phase.cls;
+    label.textContent = phase.label;
+    container.appendChild(label);
+    phase.items.forEach(function(item) {
+      var div = document.createElement('div');
+      div.className = 'tl-item ' + phase.cls;
+      div.setAttribute('data-cat', item.cat);
+      var h4 = document.createElement('h4');
+      h4.textContent = item.t;
+      var catSpan = document.createElement('span');
+      catSpan.className = 'rm-cat ' + item.cat;
+      catSpan.textContent = catNames[item.cat] || item.cat;
+      h4.appendChild(catSpan);
+      var p = document.createElement('p');
+      p.textContent = item.p;
+      div.appendChild(h4);
+      div.appendChild(p);
+      container.appendChild(div);
+    });
+  });
+
+  document.querySelectorAll('.view-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.view-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var view = btn.dataset.view;
+      cardView.style.display = view === 'cards' ? '' : 'none';
+      tlView.style.display = view === 'timeline' ? '' : 'none';
+    });
+  });
+})();
+
+// ===== Enhanced Roadmap: Category Filter =====
+document.querySelectorAll('.rm-filter').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.rm-filter').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    var cat = btn.dataset.cat;
+    document.querySelectorAll('#rmCardView .rm-item').forEach(function(item) {
+      item.style.display = (cat === 'all' || item.dataset.cat === cat) ? '' : 'none';
+    });
+    document.querySelectorAll('#rmTimelineView .tl-item').forEach(function(item) {
+      item.style.display = (cat === 'all' || item.dataset.cat === cat) ? '' : 'none';
+    });
+  });
+});
+
+// ===== Enhanced Roadmap: Dependency Graph =====
+function toggleDepGraph(btn) {
+  var wrap = document.getElementById('depGraphWrap');
+  if (!wrap) return;
+  var isOpen = wrap.classList.contains('open');
+  wrap.classList.toggle('open');
+  if (!isOpen) {
+    wrap.style.maxHeight = '700px';
+  } else {
+    wrap.style.maxHeight = '';
+  }
+  btn.textContent = isOpen ? '▶ 查看功能依赖关系图' : '▼ 收起功能依赖关系图';
+  if (!isOpen && !wrap.dataset.drawn) {
+    drawDepGraph();
+    wrap.dataset.drawn = '1';
+  }
+}
+
+function drawDepGraph() {
+  var svg = document.getElementById('depGraph');
+  if (!svg) return;
+
+  var nodes = [
+    {id:'dreaming', label:'Dreaming', x:100, y:80, phase:'shipped'},
+    {id:'memory', label:'Persistent\nMemory', x:300, y:80, phase:'iter'},
+    {id:'teammates', label:'Persistent\nTeammates', x:500, y:80, phase:'iter'},
+    {id:'routines', label:'Routines', x:100, y:200, phase:'shipped'},
+    {id:'swarm', label:'Cross-Team\nSwarm', x:300, y:200, phase:'iter'},
+    {id:'buildself', label:'"Claude Builds\nItself"', x:500, y:200, phase:'vision'},
+    {id:'outcomes', label:'Outcomes', x:100, y:320, phase:'shipped'},
+    {id:'review', label:'Code Review\n深度集成', x:300, y:320, phase:'iter'},
+    {id:'domainsdk', label:'Domain Expert\nAgents', x:500, y:320, phase:'vision'},
+    {id:'governance', label:'Enterprise\nGovernance', x:700, y:80, phase:'iter'},
+    {id:'ultraplan', label:'Ultraplan', x:700, y:200, phase:'iter'},
+    {id:'safety', label:'Self-Improving\nSafety', x:700, y:320, phase:'vision'}
+  ];
+
+  var edges = [
+    {from:'dreaming', to:'memory'}, {from:'memory', to:'teammates'},
+    {from:'routines', to:'swarm'}, {from:'swarm', to:'buildself'},
+    {from:'teammates', to:'buildself'}, {from:'outcomes', to:'review'},
+    {from:'review', to:'domainsdk'}, {from:'buildself', to:'domainsdk'},
+    {from:'governance', to:'safety'}, {from:'domainsdk', to:'safety'}
+  ];
+
+  var phaseColors = {shipped:'#788C5D', iter:'#D97757', vision:'#4A6FA5'};
+  var nodeMap = {};
+  nodes.forEach(function(n) { nodeMap[n.id] = n; });
+
+  edges.forEach(function(e) {
+    var from = nodeMap[e.from], to = nodeMap[e.to];
+    if (!from || !to) return;
+    var dx = to.x - from.x, dy = to.y - from.y;
+    var dist = Math.sqrt(dx*dx + dy*dy);
+    var nx = dx/dist, ny = dy/dist;
+    var startX = from.x + nx*30, startY = from.y + ny*30;
+    var endX = to.x - nx*30, endY = to.y - ny*30;
+    svg.appendChild(svgEl('line', {
+      x1:startX, y1:startY, x2:endX, y2:endY,
+      stroke:'#D6D3D1', 'stroke-width':'1.5', 'stroke-dasharray':'4,3',
+      'class':'dep-edge', 'data-from':e.from, 'data-to':e.to
+    }));
+    var ax = endX - nx*8, ay = endY - ny*8;
+    var px = -ny*4, py = nx*4;
+    svg.appendChild(svgEl('path', {
+      d:'M'+endX+','+endY+' L'+(ax+px)+','+(ay+py)+' L'+(ax-px)+','+(ay-py)+' Z',
+      fill:'#D6D3D1', 'class':'dep-edge', 'data-from':e.from, 'data-to':e.to
+    }));
+  });
+
+  nodes.forEach(function(n) {
+    var g = svgEl('g', {'class':'dep-node', 'data-id':n.id});
+    g.appendChild(svgEl('circle', {cx:n.x, cy:n.y, r:28, fill:phaseColors[n.phase], 'fill-opacity':'0.12', stroke:phaseColors[n.phase], 'stroke-width':'2'}));
+    g.appendChild(svgEl('circle', {cx:n.x, cy:n.y, r:5, fill:phaseColors[n.phase]}));
+    n.label.split('\n').forEach(function(line, li) {
+      svgText(g, n.x, n.y + 42 + li*13, line, {'text-anchor':'middle', 'font-size':'9', 'fill':'#44403C', 'font-weight':'500'});
+    });
+    svg.appendChild(g);
+    g.addEventListener('mouseenter', function() {
+      svg.querySelectorAll('.dep-edge').forEach(function(edge) {
+        if (edge.dataset.from === n.id || edge.dataset.to === n.id) {
+          edge.setAttribute('stroke', phaseColors[n.phase]);
+          edge.setAttribute('fill', phaseColors[n.phase]);
+          edge.setAttribute('stroke-width', '3');
+          edge.setAttribute('stroke-dasharray', '');
+          edge.setAttribute('stroke-opacity', '1');
+        } else {
+          edge.setAttribute('stroke-opacity', '0.12');
+          edge.setAttribute('fill-opacity', '0.12');
+        }
+      });
+    });
+    g.addEventListener('mouseleave', function() {
+      svg.querySelectorAll('.dep-edge').forEach(function(edge) {
+        edge.setAttribute('stroke', '#D6D3D1');
+        edge.setAttribute('fill', '#D6D3D1');
+        edge.setAttribute('fill-opacity', '1');
+        edge.setAttribute('stroke-width', '1.5');
+        edge.setAttribute('stroke-dasharray', '4,3');
+        edge.setAttribute('stroke-opacity', '1');
+      });
+    });
+  });
+}
+
+// ===== Detail Toggle =====
+function toggleDetail(btn) {
+  var content = btn.nextElementSibling;
+  var isOpen = content.classList.contains('open');
+  content.classList.toggle('open');
+  btn.textContent = isOpen ? '▶ 查看详情' : '▼ 收起详情';
+}
+
+// ===== Smooth scroll for nav links =====
+document.querySelectorAll('nav a').forEach(function(a) {
+  a.addEventListener('click', function(e) {
+    e.preventDefault();
+    var target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      var navHeight = document.querySelector('nav').offsetHeight;
+      window.scrollTo({ top: target.offsetTop - navHeight - 16, behavior: 'smooth' });
+    }
+  });
+});
+
+// ===== Counter Animation =====
+(function() {
+  var counters = document.querySelectorAll('.counter');
+  var animated = false;
+  function animateCounters() {
+    if (animated) return;
+    animated = true;
+    counters.forEach(function(el) {
+      var target = parseInt(el.getAttribute('data-target'), 10);
+      var duration = 1200;
+      var start = 0;
+      var startTime = null;
+      function step(ts) {
+        if (!startTime) startTime = ts;
+        var progress = Math.min((ts - startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.floor(eased * target);
+        if (progress < 1) requestAnimationFrame(step);
+        else el.textContent = target;
+      }
+      requestAnimationFrame(step);
+    });
+  }
+  var heroStats = document.querySelector('.hero-stats');
+  if (heroStats) {
+    var obs = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) { animateCounters(); obs.disconnect(); }
+    }, { threshold: 0.3 });
+    obs.observe(heroStats);
+  }
+})();
+
+// ===== Reading Progress Bar =====
+(function() {
+  var bar = document.createElement('div');
+  bar.style.cssText = 'position:fixed;top:0;left:0;height:3px;background:var(--clay);z-index:999;transition:width 0.1s linear;width:0;';
+  document.body.appendChild(bar);
+  var ticking = false;
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        var scrollTop = window.pageYOffset;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+})();
+
+// ===== Intersection Observer for scroll-triggered animations =====
+(function() {
+  var cards = document.querySelectorAll('.featured-card, .stat-card, .model-card, .roadmap-phase');
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  cards.forEach(function(card) { obs.observe(card); });
+})();
+
+// ===== Timeline dot-line alignment fix =====
+(function() {
+  var timeline = document.querySelector('.timeline');
+  if (!timeline) return;
+  var tlRect = timeline.getBoundingClientRect();
+  var line = timeline.querySelector('.era')
+    ? (function() {
+        var style = getComputedStyle(timeline, '::before');
+        var left = parseFloat(style.left);
+        var width = parseFloat(style.width);
+        return { center: left + width / 2 };
+      })()
+    : null;
+  if (!line) return;
+  var eras = timeline.querySelectorAll('.era');
+  eras.forEach(function(era) {
+    var eraRect = era.getBoundingClientRect();
+    var offset = eraRect.left - tlRect.left;
+    var dotCenterFromEra = line.center - offset;
+    era.style.setProperty('--dot-left', (dotCenterFromEra - 7) + 'px');
+  });
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文章关系图 — Anthropic Articles</title>
+<style>
+:root{--ivory:#FAF9F5;--paper:#FFF;--slate:#141413;--clay:#D97757;--oat:#E3DACC;--olive:#788C5D;--g100:#F5F5F4;--g300:#D6D3D1;--g500:#78716C;--g700:#44403C;--serif:Georgia,serif;--sans:system-ui,sans-serif;--mono:'SF Mono',Menlo,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--ivory);color:var(--slate);line-height:1.6}
+a{color:var(--clay);text-decoration:none}a:hover{text-decoration:underline}
+header{background:var(--slate);color:var(--ivory);padding:2rem}
+header h1{font-family:var(--serif);font-size:2rem;margin-bottom:.5rem}
+nav{background:var(--paper);border-bottom:1px solid var(--g300);padding:0 2rem;display:flex;gap:1.5rem}
+nav a{color:var(--slate);padding:.75rem 0;font-size:.9rem;border-bottom:2px solid transparent}
+nav a:hover{border-bottom-color:var(--clay);text-decoration:none}
+nav a.active{border-bottom-color:var(--clay);font-weight:600}
+main{max-width:1200px;margin:0 auto;padding:2rem}
+.mermaid-container{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:2rem;overflow-x:auto;margin-bottom:2rem}
+.legend{display:flex;gap:2rem;margin-bottom:1rem;font-size:.85rem;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:.5rem}
+.legend-color{width:20px;height:3px;display:inline-block}
+.legend-node{width:12px;height:12px;border-radius:2px;display:inline-block}
+h2{font-family:var(--serif);font-size:1.3rem;margin:1.5rem 0 1rem;color:var(--clay)}
+.path-list{display:grid;gap:.75rem}
+.path-card{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem}
+.path-card h4{font-family:var(--serif);margin-bottom:.5rem}
+.path-steps{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.step{padding:4px 12px;border-radius:4px;font-size:.85rem;background:var(--oat);white-space:nowrap}
+.arrow{color:var(--clay);font-weight:700}
+footer{text-align:center;padding:2rem;color:var(--g500);font-size:.85rem;border-top:1px solid var(--g300);margin-top:2rem}
+</style>
+</head>
+<body>
+<header><h1>文章关系图</h1><p>文章间前置/后续关系 — 学习路径推荐</p></header>
+<nav>
+  <a href="index.html">总览</a><a href="rankings.html">排行榜</a><a href="categories.html">分类浏览</a>
+  <a href="relations.html" class="active">文章关系图</a><a href="github-map.html">GitHub 映射</a>
+</nav>
+<main>
+<div class="legend">
+  <div class="legend-item"><span class="legend-node" style="background:var(--clay)"></span> 核心文章 (S/A级)</div>
+  <div class="legend-item"><span class="legend-node" style="background:var(--olive)"></span> 重要文章 (B级)</div>
+  <div class="legend-item"><span class="legend-node" style="background:var(--g300)"></span> 参考文章 (C/D级)</div>
+</div>
+
+<div class="mermaid-container">
+<pre class="mermaid">
+flowchart TD
+  CR["Contextual Retrieval<br/>8.9 S"]
+  BEA["Building Effective Agents<br/>8.8 A"]
+  SWE["SWE-bench Verified<br/>6.6 C"]
+  TT["Think Tool<br/>8.3 A"]
+  CCBP["Claude Code Best Practices<br/>8.3 A"]
+  DXE["Desktop Extensions MCP<br/>8.0 A"]
+  MARS["Multi-Agent Research System<br/>8.2 A"]
+  WET["Writing Effective Tools<br/>8.7 A"]
+  ECE["Effective Context Engineering<br/>9.0 S"]
+  BPP["Beyond Permission Prompts<br/>8.0 A"]
+  AS["Agent Skills<br/>7.6 B"]
+  CEMCP["Code Execution with MCP<br/>7.9 A"]
+  EHA["Effective Harnesses<br/>7.3 B"]
+  ATU["Advanced Tool Use<br/>8.9 S"]
+  DEA["Demystifying Evals<br/>7.2 B"]
+  AIE["AI-Resistant Evals<br/>6.6 C"]
+  CCC["C Compiler Parallel<br/>7.3 B"]
+  INE["Infrastructure Noise<br/>6.7 C"]
+  HDL["Harness Design Long-Running<br/>7.4 B"]
+  CCA["Claude Code Auto Mode<br/>6.9 C"]
+  SMA["Scaling Managed Agents<br/>7.7 B"]
+
+  CR --> ECE
+  BEA --> ECE
+  BEA --> WET
+  BEA --> MARS
+  BEA --> SWE
+  BEA --> TT
+  ECE --> HDL
+  ECE --> EHA
+  WET --> ATU
+  WET --> AS
+  ATU --> CEMCP
+  ATU --> DXE
+  CCBP --> BPP
+  CCBP --> ECE
+  BPP --> CCA
+  EHA --> HDL
+  EHA --> SMA
+  SWE --> DEA
+  DEA --> INE
+  MARS --> SMA
+  MARS --> ECE
+  AS --> SMA
+
+  style CR fill:#BBF7D0,stroke:#166534
+  style BEA fill:#FDE68A,stroke:#92400E
+  style ECE fill:#FDE68A,stroke:#92400E
+  style ATU fill:#FDE68A,stroke:#92400E
+  style WET fill:#BBF7D0,stroke:#166534
+  style CCBP fill:#BBF7D0,stroke:#166534
+  style TT fill:#BBF7D0,stroke:#166534
+  style MARS fill:#BBF7D0,stroke:#166534
+  style DXE fill:#BBF7D0,stroke:#166534
+  style BPP fill:#BBF7D0,stroke:#166534
+  style CEMCP fill:#BBF7D0,stroke:#166534
+</pre>
+</div>
+
+<h2>推荐学习路径</h2>
+<div class="path-list">
+  <div class="path-card">
+    <h4>路径 1: Agent 开发基础</h4>
+    <div class="path-steps">
+      <span class="step">Building Effective Agents</span><span class="arrow">→</span>
+      <span class="step"><a href="articles/writing-effective-tools.html">Writing Effective Tools</a></span><span class="arrow">→</span>
+      <span class="step"><a href="articles/advanced-tool-use.html">Advanced Tool Use</a></span><span class="arrow">→</span>
+      <span class="step"><a href="articles/code-execution-mcp.html">Code Execution with MCP</a></span>
+    </div>
+  </div>
+  <div class="path-card">
+    <h4>路径 2: Context 工程进阶</h4>
+    <div class="path-steps">
+      <span class="step"><a href="articles/contextual-retrieval.html">Contextual Retrieval</a></span><span class="arrow">→</span>
+      <span class="step">Building Effective Agents</span><span class="arrow">→</span>
+      <span class="step"><a href="articles/effective-context-engineering.html">Effective Context Engineering</a></span><span class="arrow">→</span>
+      <span class="step"><a href="articles/effective-harnesses-agents.html">Effective Harnesses</a></span><span class="arrow">→</span>
+      <span class="step"><a href="articles/scaling-managed-agents.html">Scaling Managed Agents</a></span>
+    </div>
+  </div>
+  <div class="path-card">
+    <h4>路径 3: Claude Code 工程实践</h4>
+    <div class="path-steps">
+      <span class="step"><a href="articles/claude-code-best-practices.html">Claude Code Best Practices</a></span><span class="arrow">→</span>
+      <span class="step">Beyond Permission Prompts</span><span class="arrow">→</span>
+      <span class="step"><a href="articles/claude-code-auto-mode.html">Claude Code Auto Mode</a></span>
+    </div>
+  </div>
+  <div class="path-card">
+    <h4>路径 4: 评估方法论</h4>
+    <div class="path-steps">
+      <span class="step">Building Effective Agents</span><span class="arrow">→</span>
+      <span class="step"><a href="articles/swe-bench-verified.html">SWE-bench Verified</a></span><span class="arrow">→</span>
+      <span class="step"><a href="articles/demystifying-evals-agents.html">Demystifying Evals</a></span><span class="arrow">→</span>
+      <span class="step"><a href="articles/infrastructure-noise-evals.html">Infrastructure Noise</a></span>
+    </div>
+  </div>
+  <div class="path-card">
+    <h4>路径 5: 多 Agent 系统</h4>
+    <div class="path-steps">
+      <span class="step">Building Effective Agents</span><span class="arrow">→</span>
+      <span class="step"><a href="articles/multi-agent-research-system.html">Multi-Agent Research System</a></span><span class="arrow">→</span>
+      <span class="step"><a href="articles/c-compiler-parallel-claudes.html">C Compiler Parallel Claudes</a></span>
+    </div>
+  </div>
+</div>
+</main>
+<footer>Anthropic Articles Knowledge Management System</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:"base",themeVariables:{primaryColor:"#BBF7D0",primaryTextColor:"#141413",lineColor:"#D97757",secondaryColor:"#E3DACC"}})</script>
+</body>
+</html>

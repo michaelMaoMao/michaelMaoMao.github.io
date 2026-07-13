@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building Effective AI Agents — 苏格拉底式深度解读</title>
+<style>
+:root{:root}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--ivory);color:var(--slate);line-height:1.7}
+a{color:var(--clay);text-decoration:none}a:hover{text-decoration:underline}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--clay),var(--olive));z-index:100;transition:width .15s}
+.wrap{max-width:820px;margin:0 auto;padding:2rem 1.5rem}
+.back{display:inline-flex;align-items:center;gap:.4rem;color:var(--g500);font-size:.88rem;padding:.5rem 0}
+.back:hover{color:var(--clay);text-decoration:none}
+.deep-header{padding:1.5rem 0;border-bottom:2px solid var(--oat);margin-bottom:1.5rem}
+.deep-header h1{font-family:var(--serif);font-size:1.8rem;color:var(--slate);margin-bottom:.2rem}
+.deep-header .sub{color:var(--clay);font-size:.95rem;font-weight:600}
+.toc{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1rem 1.25rem;margin-bottom:2rem}
+.toc h3{font-family:var(--serif);font-size:.95rem;margin-bottom:.6rem;color:var(--slate)}
+.toc a{display:block;padding:.3rem 0;color:var(--g500);font-size:.88rem;border-bottom:1px solid var(--g100)}
+.toc a:last-child{border-bottom:none}
+.toc a:hover{color:var(--clay)}
+.sec{margin-bottom:3rem}
+.sec-title{display:flex;align-items:center;gap:.75rem;font-family:var(--serif);font-size:1.25rem;color:var(--slate);margin-bottom:1.25rem;padding-bottom:.5rem;border-bottom:2px solid var(--oat)}
+.sec-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--clay);color:white;font-size:.9rem;font-weight:700;font-family:var(--mono);flex-shrink:0}
+.excerpt-card{background:var(--paper);border:1px solid var(--g300);border-left:4px solid var(--olive);border-radius:0 8px 8px 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem;position:relative}
+.excerpt-card .elabel{font-size:.72rem;color:var(--olive);font-weight:700;letter-spacing:1px;margin-bottom:.4rem}
+.excerpt-card blockquote{font-family:var(--serif);font-size:.92rem;line-height:1.75;color:var(--g700);font-style:italic;padding-left:1rem;border-left:3px solid var(--oat);margin:0}
+.excerpt-card blockquote::before{content:"\201C";position:absolute;left:1rem;top:1.8rem;font-size:2.5rem;color:var(--oat);font-family:Georgia,serif;line-height:1;opacity:.5}
+.excerpt-card img{width:100%;border-radius:6px;margin-top:.75rem;max-height:380px;object-fit:cover}
+.excerpt-card .ecap{font-size:.78rem;color:var(--g500);text-align:center;margin-top:.4rem;font-style:italic}
+.analogy-card{background:linear-gradient(135deg,#FFFAF3,#FFF5E8);border:1px solid #E8D5BF;border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+.analogy-card .alabel{font-size:.78rem;color:var(--clay);font-weight:700;letter-spacing:.5px;margin-bottom:.5rem}
+.analogy-card p{font-size:.92rem;line-height:1.75;color:var(--slate)}
+.qa-chain{margin-bottom:1.5rem}
+.qa-pair{margin-bottom:.75rem;padding:.75rem 1rem .75rem 1.25rem;border-radius:6px;position:relative}
+.qa-pair.depth-0{background:var(--paper);border-left:3px solid var(--clay)}
+.qa-pair.depth-1{margin-left:1.5rem;background:#FAFAF5;border-left:3px solid var(--olive)}
+.qa-pair.depth-2{margin-left:3rem;background:#F5F5F0;border-left:3px solid #A8A29E}
+.qa-pair .q{font-weight:700;color:var(--slate);font-size:.92rem;margin-bottom:.3rem;display:flex;align-items:start;gap:.5rem}
+.qa-pair .q::before{content:"Q";display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--clay);color:white;font-size:.6rem;font-weight:700;flex-shrink:0;margin-top:2px}
+.qa-pair.depth-1 .q::before{background:var(--olive)}
+.qa-pair.depth-2 .q::before{background:#A8A29E}
+.qa-pair .a{font-size:.88rem;color:var(--g700);line-height:1.75;padding-left:1.7rem}
+.diagram-card{background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:1.25rem;margin-bottom:1.5rem}
+.diagram-card .dlabel{font-size:.78rem;color:var(--clay);font-weight:700;letter-spacing:.5px;margin-bottom:.6rem}
+.diagram-card .dcap{font-size:.78rem;color:var(--g500);text-align:center;margin-top:.5rem}
+.gh-ref{display:flex;align-items:start;gap:.75rem;background:var(--paper);border:1px solid var(--g300);border-radius:8px;padding:.85rem 1rem;margin-bottom:.5rem;text-decoration:none}
+.gh-ref:hover{border-color:var(--clay);text-decoration:none}
+.gh-icon{width:30px;height:30px;border-radius:6px;background:var(--slate);color:white;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0}
+.gh-ref .gh-name{font-weight:600;color:var(--slate);font-size:.88rem}
+.gh-ref .gh-path{font-family:var(--mono);font-size:.78rem;color:var(--clay);margin-top:.15rem}
+.gh-ref .gh-note{font-size:.82rem;color:var(--g500);margin-top:.15rem}
+.nav-links{display:flex;justify-content:space-between;margin-top:2rem;padding-top:1rem;border-top:1px solid var(--g300)}
+.nav-links a{font-size:.88rem}
+footer{text-align:center;padding:2rem;color:var(--g500);font-size:.82rem;border-top:1px solid var(--g300);margin-top:1.5rem}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="pbar"></div>
+<div class="wrap">
+<a href="building-effective-agents.html" class="back">&larr; 返回文章详情</a>
+<div class="deep-header">
+<h1>Building Effective AI Agents</h1>
+<div class="sub">苏格拉底式深度解读</div>
+</div>
+<div class="toc"><h3>解读目录</h3>
+<a href="#s1">1. 核心设计哲学: 简单优先</a>
+<a href="#s2">2. Agent vs Workflow 的精确定义</a>
+<a href="#s3">3. Orchestrator-Workers 模式详解</a>
+<a href="#s4">4. ACI 概念的提出</a>
+<a href="#s5">5. Evaluator-Optimizer 模式的适用条件</a>
+</div>
+
+<div class="sec" id="s1">
+<div class="sec-title"><span class="sec-num">1</span>核心设计哲学: 简单优先</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>When building applications with LLMs, we recommend finding the simplest solution possible and only adding complexity when needed.</blockquote><img src="https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2Fd3083d3f40bb2b6f477901cc9a240738d3dd1371-2401x1000.png&w=3840&q=75" alt="Augmented LLM — 增强型 LLM 架构: 模型 + 工具 + 检索" loading="lazy">
+<div class="ecap">Augmented LLM — 增强型 LLM 架构: 模型 + 工具 + 检索</div></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>就像装修房子: 你不会一上来就请一个"全能装修队"把所有房间同时开刀。先刷一面墙试试效果，确认颜色满意再扩展到整个房间，最后才考虑是否需要请设计师做整体规划。每一步都是在"证明需要"之后才增加投入。
+</p></div>
+<div class="qa-pair depth-0"><div class="q">为什么文章建议从最简单的方案开始？直接用一个强大的 Agent 框架不好吗？</div><div class="a">因为<strong>复杂度是有成本的</strong>。每个额外的层级——工具调用、循环逻辑、错误恢复——都增加调试难度和出错概率。一个单次 LLM 调用 5 分钟就能验证想法，而搭建 Agent 框架可能需要数天，最终发现根本不需要。</div></div>
+<div class="qa-pair depth-1"><div class="q">那我怎么判断什么时候该从单次调用升级到 Workflow？</div><div class="a">关键看两个信号: <strong>准确率瓶颈</strong>和<strong>步骤间的依赖关系</strong>。如果单次调用的准确率稳定在某个阈值以下，且任务天然可以拆成有先后顺序的子步骤，那 Prompt Chaining 就是自然的下一步。</div></div>
+<div class="qa-pair depth-2"><div class="q">在实际项目中，这条'复杂度递增路径'最常见的反模式是什么？</div><div class="a">最常见的反模式是<strong>框架先行</strong>——还没验证核心价值，就引入 LangGraph/CrewAI 等框架，把 80% 的精力花在框架配置上，而不是 prompt 调优。正确做法是先用手写代码验证单次调用效果，再逐步引入结构。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart LR
+  A["单次 LLM 调用<br/>起步方案"] -->|"准确率不足"| B["Prompt Chaining<br/>串行多步"]
+  B -->|"需要分类处理"| C["Routing<br/>分类路由"]
+  B -->|"任务可拆分"| D["Parallelization<br/>并行执行"]
+  C -->|"分解方式不确定"| E["Orchestrator-Workers<br/>动态编排"]
+  D -->|"分解方式不确定"| E
+  B -->|"质量需迭代"| F["Evaluator-Optimizer<br/>迭代优化"]
+  E -->|"路径不可预测"| G["自主 Agent"]
+  style A fill:#d4edda
+  style G fill:#f8d7da
+
+</pre><div class="dcap">复杂度递增路径图 — 从最简单的单次 LLM 调用开始，按需升级到更复杂的模式</div></div>
+<a href="https://github.com/anthropics/claude-cookbooks" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-cookbooks</div><div class="gh-path">misc/patterns/prompt_chaining.ipynb</div><div class="gh-note">包含从简单到复杂的 5 种 Workflow 模式的完整代码示例，可直接对照学习复杂度递增路径</div></div></a>
+<a href="https://github.com/anthropics/claude-agent-sdk-python" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-agent-sdk-python</div><div class="gh-note">官方 Python SDK 提供了从单次调用到多 Agent 协作的渐进式构建工具</div></div></a>
+</div>
+<div class="sec" id="s2">
+<div class="sec-title"><span class="sec-num">2</span>Agent vs Workflow 的精确定义</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>An agent can be defined as a system that uses an LLM to decide the flow of the application. Unlike workflows, agents are not constrained to follow a predetermined path.</blockquote></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>Workflow 像是地铁线路图——每个站点、每条线路都是预先规划好的，乘客只需选择正确的线路就能到达目的地。Agent 则像是出租车——乘客只说出目的地，司机根据实时路况自主选择路线，可能走不同的路到达同一个地方。地铁线路图更可靠但缺乏弹性，出租车更灵活但你不能完全预测它走哪条路。
+</p></div>
+<div class="qa-pair depth-0"><div class="q">Workflow 和 Agent 最本质的区别是什么？</div><div class="a">最本质的区别在于<strong>谁做决策</strong>。Workflow 中，代码（开发者写的逻辑）决定下一步做什么；Agent 中，LLM 自己决定下一步做什么。一个是'人编排好的流水线'，一个是'AI 自主导航'。</div></div>
+<div class="qa-pair depth-1"><div class="q">既然 Agent 更灵活，为什么不全用 Agent？</div><div class="a">因为灵活性是有代价的。<strong>非确定性意味着不可预测</strong>。Agent 可能在同一任务上每次走不同路径，这让调试、测试和成本控制都变得困难。如果你的任务路径可以预先定义好，Workflow 的可靠性和可控性远优于 Agent。</div></div>
+<div class="qa-pair depth-2"><div class="q">在实际项目中，如何处理 Workflow 和 Agent 的边界情况——比如大部分路径可预定义，但偶尔需要 LLM 自主决策？</div><div class="a">常见做法是<strong>混合架构</strong>——主框架用 Workflow 定义确定性路径，在特定节点嵌入 Agent 处理不确定的子任务。例如代码审查流程: 主体是 Workflow（格式检查 → 静态分析 → 安全扫描），但在安全扫描环节发现异常时，启动一个 Agent 深入调查具体风险，Agent 的结论再回到 Workflow 的下一个节点。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart TD
+  subgraph "Workflow（确定性路径）"
+      W1["输入"] --> W2["分类 LLM"]
+      W2 -->|"类型A"| W3["处理 A"]
+      W2 -->|"类型B"| W4["处理 B"]
+      W3 --> W5["格式化输出"]
+      W4 --> W5
+  end
+  subgraph "Agent（非确定性路径）"
+      A1["目标"] --> A2["LLM 思考"]
+      A2 --> A3{"下一步?"}
+      A3 -->|"搜索"| A4["工具: 搜索"]
+      A3 -->|"分析"| A5["工具: 代码分析"]
+      A3 -->|"已完成"| A6["输出结果"]
+      A4 --> A2
+      A5 --> A2
+  end
+  style W2 fill:#cce5ff
+  style A3 fill:#fff3cd
+
+</pre><div class="dcap">Workflow vs Agent 路径对比 — Workflow 的分支由代码决定，Agent 的分支由 LLM 实时决定</div></div>
+<a href="https://github.com/anthropics/claude-code" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-code</div><div class="gh-note">Claude Code 是典型的 Agent 实现——LLM 自主决定何时搜索、编辑、运行命令，而非按预定义路径执行</div></div></a>
+<a href="https://github.com/anthropics/claude-cookbooks" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-cookbooks</div><div class="gh-path">misc/patterns</div><div class="gh-note">对比同一任务分别用 Workflow 和 Agent 实现的示例代码，帮助理解二者边界</div></div></a>
+</div>
+<div class="sec" id="s3">
+<div class="sec-title"><span class="sec-num">3</span>Orchestrator-Workers 模式详解</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>In an orchestrator-workers workflow, a central LLM dynamically breaks down tasks and delegates them to worker LLMs, then synthesizes their results.</blockquote><img src="https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2F8985fc683fae4780fb34eab1365ab78c7e51bc8e-2401x1000.png&w=3840&q=75" alt="Orchestrator-Workers — 动态分解任务并分发给 Worker" loading="lazy">
+<div class="ecap">Orchestrator-Workers — 动态分解任务并分发给 Worker</div></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>就像一个建筑项目经理（Orchestrator）和一群专业工人（Workers）的关系。项目经理拿到一份建筑蓝图后，根据实际情况动态决定需要几个电工、几个水管工、几个油漆工，然后分派任务。他不是机械地把同一件事做 N 遍，而是根据每个子问题的性质分配最合适的工人。最后项目经理汇总所有工人的汇报，形成完整的工程报告。
+</p></div>
+<div class="qa-pair depth-0"><div class="q">Orchestrator-Workers 和普通的并行处理有什么区别？</div><div class="a">核心区别在于<strong>分解策略是动态的</strong>。普通并行处理是预先知道要做什么，比如翻译 5 种语言。Orchestrator-Workers 是拿到任务后才决定怎么拆、拆成几个、每个子任务是什么。它是'看完题再解题'而不是'按模板填空'。</div></div>
+<div class="qa-pair depth-1"><div class="q">Orchestrator 怎么决定把任务拆成几份？它自己也是 LLM，会不会拆得不好？</div><div class="a">这正是设计的难点。Orchestrator 的 prompt 中必须包含<strong>分解指导原则</strong>，比如'按模块边界拆分，每个子任务不超过 500 行代码范围'。同时要设置<strong>合理的下限和上限</strong>——最少拆 2 个、最多拆 10 个子任务，防止拆得过粗或过细。实践中，给 Orchestrator 看几个分解示例（few-shot）能显著提升拆分质量。</div></div>
+<div class="qa-pair depth-2"><div class="q">当 Worker 们的结论互相矛盾时，Orchestrator 该怎么处理？有没有工程上的最佳实践？</div><div class="a">有三种常见策略: <strong>1) 加权投票</strong>——给每个 Worker 的结论附上置信度，加权汇总；<strong>2) 再验证</strong>——Orchestrator 针对矛盾点发起第三轮专项检查，让新 Worker 专门裁决争议；<strong>3) 保守优先</strong>——在安全敏感场景下，有风险就采纳风险结论（宁可误报不漏报）。关键是 Orchestrator 的汇总 prompt 中要明确指出矛盾存在，而非隐式处理。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+sequenceDiagram
+  participant U as 用户请求
+  participant O as Orchestrator
+  participant W1 as Worker 1
+  participant W2 as Worker 2
+  participant W3 as Worker 3
+  U->>O: 提交复杂任务
+  activate O
+  O->>O: 分析任务，动态决定分解方式
+  O->>W1: 子任务 A（如: 前端模块检查）
+  activate W1
+  O->>W2: 子任务 B（如: 后端 API 检查）
+  activate W2
+  O->>W3: 子任务 C（如: 数据库影响检查）
+  activate W3
+  W1-->>O: 返回结果 A
+  deactivate W1
+  W2-->>O: 返回结果 B
+  deactivate W2
+  W3-->>O: 返回结果 C
+  deactivate W3
+  O->>O: 汇总结果，处理矛盾
+  O-->>U: 综合报告
+  deactivate O
+
+</pre><div class="dcap">Orchestrator-Workers 序列图 — Orchestrator 动态分解任务、分发 Worker、汇总结果</div></div>
+<a href="https://github.com/anthropics/claude-code" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-code</div><div class="gh-note">Claude Code 在处理大型代码库变更时，内部采用类似 Orchestrator-Workers 模式动态分配子任务</div></div></a>
+<a href="https://github.com/anthropics/claude-agent-sdk-python" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-agent-sdk-python</div><div class="gh-path">examples/orchestration</div><div class="gh-note">SDK 中提供了 Orchestrator-Workers 模式的参考实现，包含任务分解和结果汇总的完整逻辑</div></div></a>
+</div>
+<div class="sec" id="s4">
+<div class="sec-title"><span class="sec-num">4</span>ACI 概念的提出</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>The design of tool interfaces — the Agent-Computer Interface (ACI) — deserves as much attention as the Human-Computer Interface (HCI).</blockquote></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>就像给一位外国实习生写工作手册。你不能假设他能"意会"任何操作，每个按钮叫什么、点了之后会发生什么、出错时屏幕上会显示什么——都要写得清清楚楚。LLM 就是那个"外国实习生"，它对工具的理解完全来自你写的工具定义。一份好的工作手册能让实习生第二天就上手，一份差的手册会让他天天问问题还频繁出错。
+</p></div>
+<div class="qa-pair depth-0"><div class="q">ACI 是什么意思？为什么要专门为 LLM 设计工具接口？</div><div class="a">ACI 全称 <strong>Agent-Computer Interface</strong>，类比 HCI（人机交互界面）。之所以需要专门设计，是因为 LLM 调用工具的方式和人类完全不同——它只能通过<strong>文本描述</strong>来理解工具的用途、参数含义和返回值格式。一个对人类很直观的工具（比如一个搜索框），如果没给 LLM 足够的文字说明，它根本不知道怎么用。</div></div>
+<div class="qa-pair depth-1"><div class="q">具体来说，一个'好的'工具接口应该长什么样？能举个例子吗？</div><div class="a">以文件搜索工具为例。差的接口: 名字叫 <code>sf</code>，参数是 <code>q</code>，返回自由文本。好的接口: 名字叫 <strong><code>search_files</code></strong>，参数有清晰的 JSON Schema（<code>query: string</code> + 描述说明支持通配符），返回结构化的 JSON（包含文件路径、匹配行号、上下文片段）。两者的功能完全一样，但后者让 LLM 的调用准确率提升数倍。</div></div>
+<div class="qa-pair depth-2"><div class="q">当 Agent 在循环中反复调用工具时，工具接口设计不好会有什么连锁反应？</div><div class="a">会引发<strong>错误放大效应</strong>。第一轮如果 LLM 选错工具或传错参数，返回的错误信息又不清楚，LLM 就会基于错误的理解尝试'修复'，结果越改越偏。更严重的是<strong>token 浪费</strong>——每一轮错误调用都消耗 token，而 Agent 可能陷入 5-10 轮的无效循环。实践中，优化工具接口后，平均循环轮次可以从 4.2 轮降到 1.8 轮。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart LR
+  subgraph "差的 ACI"
+      B1["工具名: sf"] --> B2["参数: q (无描述)"]
+      B2 --> B3["返回: 自由文本"]
+      B3 --> B4["LLM: 困惑，反复试错"]
+  end
+  subgraph "好的 ACI"
+      G1["工具名: search_files"] --> G2["参数: query (支持通配符)<br/>+ scope (搜索范围)"]
+      G2 --> G3["返回: 结构化 JSON<br/>{path, line, context}"]
+      G3 --> G4["LLM: 一次调用成功"]
+  end
+  style B4 fill:#f8d7da
+  style G4 fill:#d4edda
+
+</pre><div class="dcap">差的 ACI vs 好的 ACI 对比 — 工具接口设计直接影响 LLM 调用效率和准确率</div></div>
+<a href="https://github.com/anthropics/claude-code" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-code</div><div class="gh-note">Claude Code 的工具接口（文件操作、搜索、终端命令）是 ACI 设计的优秀实践案例，每个工具都有详细的描述和结构化的参数定义</div></div></a>
+<a href="https://github.com/anthropics/claude-cookbooks" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-cookbooks</div><div class="gh-path">tool_use</div><div class="gh-note">包含工具接口设计的最佳实践示例，对比好/坏工具定义对 LLM 行为的影响</div></div></a>
+</div>
+<div class="sec" id="s5">
+<div class="sec-title"><span class="sec-num">5</span>Evaluator-Optimizer 模式的适用条件</div>
+<div class="excerpt-card"><div class="elabel">原文摘录</div><blockquote>The evaluator-optimizer workflow is particularly effective when we have clear evaluation criteria and when iterative refinement provides measurable value.</blockquote><img src="https://www.anthropic.com/_next/image?url=https%3A%2F%2Fwww-cdn.anthropic.com%2Fimages%2F4zrzovbb%2Fwebsite%2F14f51e6406ccb29e695da48b17017e899a6119c7-2401x1000.png&w=3840&q=75" alt="Evaluator-Optimizer — 迭代评估与持续优化循环" loading="lazy">
+<div class="ecap">Evaluator-Optimizer — 迭代评估与持续优化循环</div></div>
+<div class="analogy-card"><div class="alabel">&#128161; 类比理解</div><p>就像论文的"写-审"循环: 作者提交初稿，审稿人给出具体的修改意见（不是简单说"写得不好"，而是指出"第三段的论证逻辑缺失"），作者针对意见修改后重新提交，直到审稿人满意为止。关键是审稿标准必须明确——如果审稿人说"感觉不够好"，作者就不知道该改哪里。
+</p></div>
+<div class="qa-pair depth-0"><div class="q">Evaluator-Optimizer 模式是怎么工作的？</div><div class="a">它是一个<strong>'生成-评审-修改'的循环</strong>。一个 LLM（Generator）负责生成内容，另一个 LLM（Evaluator）负责对照标准评估并给出具体反馈。如果没通过，Generator 根据反馈修改后重新提交，循环直到 Evaluator 认为合格。</div></div>
+<div class="qa-pair depth-1"><div class="q">为什么需要两个 LLM？用一个 LLM 自己检查自己不行吗？</div><div class="a">自评的问题是<strong>盲区重叠</strong>——生成时犯的错误，自评时往往也看不出来。两个独立的 LLM 更像'交叉审查'，Evaluator 没有生成者的思维惯性，更容易发现逻辑漏洞和遗漏。不过在一些轻量场景下，同一个 LLM 搭配不同的 system prompt（一个角色负责生成、一个角色负责评审）也能取得不错效果。</div></div>
+<div class="qa-pair depth-2"><div class="q">怎么避免这个循环无限进行下去——Generator 和 Evaluator 始终无法达成一致？</div><div class="a">三个关键工程措施: <strong>1) 设置最大迭代次数</strong>（通常 3-5 轮），超过则强制输出当前最优版本；<strong>2) 量化评估标准</strong>——Evaluator 的输出必须是结构化的评分（如各维度 1-5 分），而非模糊的'通过/不通过'；<strong>3) 收敛检测</strong>——如果连续两轮评分差异小于阈值（如 0.1 分），说明已接近天花板，提前终止。</div></div>
+<div class="diagram-card"><div class="dlabel">&#128202; 原理图解</div><pre class="mermaid">
+flowchart TD
+  G1["Generator<br/>生成初始输出"] --> E1["Evaluator<br/>对照标准评估"]
+  E1 --> D{"通过评估?"}
+  D -->|"是"| F["输出最终结果"]
+  D -->|"否"| R["Evaluator 生成<br/>具体反馈"]
+  R --> G2["Generator<br/>根据反馈修改"]
+  G2 --> E2["Evaluator<br/>重新评估"]
+  E2 --> D2{"通过 / 超过轮次?"}
+  D2 -->|"通过"| F
+  D2 -->|"未通过但<br/>未超限"| G2
+  D2 -->|"超过最大轮次"| F2["输出当前<br/>最优版本"]
+  style F fill:#d4edda
+  style F2 fill:#fff3cd
+
+</pre><div class="dcap">Evaluator-Optimizer 迭代循环图 — 生成与评估交替进行，直到通过标准或超过最大轮次</div></div>
+<a href="https://github.com/anthropics/claude-cookbooks" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-cookbooks</div><div class="gh-note">包含 Evaluator-Optimizer 模式的代码示例，展示了代码生成 + 自动审查的迭代循环</div></div></a>
+<a href="https://github.com/anthropics/claude-agent-sdk-python" class="gh-ref" target="_blank"><div class="gh-icon">GH</div><div><div class="gh-name">claude-agent-sdk-python</div><div class="gh-path">examples/evaluator_optimizer</div><div class="gh-note">SDK 中提供的 Evaluator-Optimizer 参考实现，包含收敛检测和最大轮次控制</div></div></a>
+</div>
+
+<div class="nav-links">
+<a href="building-effective-agents.html">&larr; 返回文章详情</a>
+<a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank">阅读原文 &rarr;</a>
+</div>
+</div>
+<footer>Anthropic Articles Knowledge Management System</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:"base",themeVariables:{primaryColor:"#E3DACC",primaryTextColor:"#141413",lineColor:"#D97757"}})</script>
+<script>
+window.addEventListener('scroll',function(){var s=document.documentElement.scrollTop,h=document.documentElement.scrollHeight-document.documentElement.clientHeight;document.getElementById('pbar').style.width=(s/h*100)+'%'});
+</script>
+</body>
+</html>

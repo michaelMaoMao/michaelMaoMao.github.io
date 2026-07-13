@@ -1,0 +1,221 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="grill-me 能给 agent 落地带来什么"><meta name="keywords" content="Claude Code,grill-me,Agent 落地,Context 工程"><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>grill-me 能给 agent 落地带来什么 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0-TL-DR"><span class="toc-number">1.</span> <span class="toc-text">0. TL;DR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-agent-%E8%90%BD%E5%9C%B0%E7%9A%84%E4%B8%89%E4%B8%AA%E7%97%9B%E7%82%B9"><span class="toc-number">2.</span> <span class="toc-text">1. agent 落地的三个痛点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-misalignment%EF%BC%9Aagent-%E8%B7%91%E5%81%8F"><span class="toc-number">2.1.</span> <span class="toc-text">1.1 misalignment：agent 跑偏</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-context-%E7%93%B6%E9%A2%88%EF%BC%9A%E4%B8%9A%E5%8A%A1%E7%9F%A5%E8%AF%86%E5%80%92%E4%B8%8D%E5%87%BA%E6%9D%A5"><span class="toc-number">2.2.</span> <span class="toc-text">1.2 context 瓶颈：业务知识倒不出来</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-context-%E4%B8%8D%E5%8F%AF%E5%A4%8D%E7%94%A8%EF%BC%9A%E6%AF%8F%E6%AC%A1%E4%BB%8E%E9%9B%B6"><span class="toc-number">2.3.</span> <span class="toc-text">1.3 context 不可复用：每次从零</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-grill-me-%E7%9A%84%E4%B8%89%E5%B1%82%E5%B8%AE%E5%8A%A9"><span class="toc-number">3.</span> <span class="toc-text">2. grill-me 的三层帮助</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%AF%B9%E9%BD%90%E5%89%8D%E7%BD%AE%E5%B1%82%EF%BC%9A%E6%8B%A6%E6%88%AA-misalignment"><span class="toc-number">3.1.</span> <span class="toc-text">2.1 对齐前置层：拦截 misalignment</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E7%9F%A5%E8%AF%86%E6%8F%90%E5%8F%96%E5%B1%82%EF%BC%9A%E6%89%93%E7%A0%B4-context-%E7%93%B6%E9%A2%88"><span class="toc-number">3.2.</span> <span class="toc-text">2.2 知识提取层：打破 context 瓶颈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E8%B5%84%E4%BA%A7%E6%B2%89%E6%B7%80%E5%B1%82%EF%BC%9A%E8%AE%A9%E5%AF%B9%E9%BD%90%E6%88%90%E6%9E%9C%E5%8F%AF%E5%A4%8D%E7%94%A8"><span class="toc-number">3.3.</span> <span class="toc-text">2.3 资产沉淀层：让对齐成果可复用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%AE%A9%E6%8F%90%E9%97%AE%E5%8F%AF%E6%8C%81%E7%BB%AD%E7%9A%84%E4%B8%89%E4%B8%AA%E5%B7%A5%E7%A8%8B%E8%8C%83%E5%BC%8F"><span class="toc-number">4.</span> <span class="toc-text">3. 让提问可持续的三个工程范式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%B7%A5%E7%A8%8B%E5%8C%96%E6%A1%86%E6%9E%B6%EF%BC%9A%E4%BB%8E-skill-%E5%88%B0%E6%9C%BA%E5%88%B6"><span class="toc-number">5.</span> <span class="toc-text">4. 工程化框架：从 skill 到机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E4%B8%89%E5%B5%8C%E5%85%A5%EF%BC%9A%E5%B5%8C%E8%BF%9B-agent-%E8%90%BD%E5%9C%B0%E7%9A%84%E4%B8%89%E4%B8%AA%E7%8E%AF%E8%8A%82"><span class="toc-number">5.1.</span> <span class="toc-text">4.1 三嵌入：嵌进 agent 落地的三个环节</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E4%B8%89%E4%BF%9D%E9%9A%9C%EF%BC%9A%E8%AE%A9%E6%9C%BA%E5%88%B6%E4%B8%8D%E8%B7%91%E5%81%8F"><span class="toc-number">5.2.</span> <span class="toc-text">4.2 三保障：让机制不跑偏</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E4%B8%80%E9%97%AD%E7%8E%AF%EF%BC%9Abuild-%E5%90%8E%E5%9B%9E%E5%86%99%EF%BC%8C%E7%BB%8F%E9%AA%8C%E7%B4%AF%E7%A7%AF"><span class="toc-number">5.3.</span> <span class="toc-text">4.3 一闭环：build 后回写，经验累积</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%AF%B9%E9%BD%90%E6%A1%A3%E6%A1%88%E6%A8%A1%E6%9D%BF%EF%BC%88agent-%E5%8F%AF%E6%B6%88%E8%B4%B9%E7%89%88%EF%BC%89"><span class="toc-number">6.</span> <span class="toc-text">5. 对齐档案模板（agent 可消费版）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E8%90%BD%E5%9C%B0%E5%9C%BA%E6%99%AF%E7%9F%A9%E9%98%B5"><span class="toc-number">7.</span> <span class="toc-text">6. 落地场景矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E7%BB%93%E8%AE%BA"><span class="toc-number">8.</span> <span class="toc-text">7. 结论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%9D%A5%E6%BA%90"><span class="toc-number">9.</span> <span class="toc-text">参考来源</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">55</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">36</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="post-info"><div id="post-title">grill-me 能给 agent 落地带来什么</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2026-07-13</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/AI-%E5%B7%A5%E7%A8%8B/">AI 工程</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><blockquote>
+<p>日期：2026-07-13<br>作者：mike（由 Claude 协助）<br>基础：《grill-me 调研文档》（2026-07-07）<br>视角：本文不讨论”个人怎么用 grill-me”，而是讨论 grill-me 这种”无情追问 + 收敛式提取”的交互范式，在 AI agent 落地工程中能带来什么实质帮助、如何工程化内化。</p>
+</blockquote>
+<h2 id="0-TL-DR"><a href="#0-TL-DR" class="headerlink" title="0. TL;DR"></a>0. TL;DR</h2><ul>
+<li>grill-me 对 agent 落地的帮助，不在于”多了一个好用的 skill”，而在于它示范了一种可工程化的机制：<strong>主动对齐 + 知识提取 + 资产沉淀</strong>。</li>
+<li>三层帮助：①对齐前置层（拦截 misalignment）②知识提取层（打破 context 瓶颈）③资产沉淀层（对齐成果可复用、可审计）。</li>
+<li>工程化框架：三嵌入（任务级对齐 &#x2F; 点级提问 &#x2F; 产出沉淀）+ 三保障（推荐答案控打扰 &#x2F; 对齐质量校验防引导 &#x2F; 档案 schema 对齐下游）+ 一闭环（build 后回写，经验累积）。</li>
+<li>一句话：把 grill-me 从”一次性对话工具”升级为”agent 落地的 context 资产生产线”。</li>
+</ul>
+<span id="more"></span>
+
+<hr>
+<h2 id="1-agent-落地的三个痛点"><a href="#1-agent-落地的三个痛点" class="headerlink" title="1. agent 落地的三个痛点"></a>1. agent 落地的三个痛点</h2><p>agent 落地（把 AI agent 真正用进业务&#x2F;工作流）有三个高频痛点，它们恰好是 grill-me 能切入的地方。</p>
+<h3 id="1-1-misalignment：agent-跑偏"><a href="#1-1-misalignment：agent-跑偏" class="headerlink" title="1.1 misalignment：agent 跑偏"></a>1.1 misalignment：agent 跑偏</h3><p>agent 落地头号失败模式不是模型不够强，而是”你以为 agent 懂了，build 出来才发现完全跑偏”。这个痛在传统软件开发里就有，agent 时代更隐蔽——LLM 会用自信的语气给错误方案，掩盖未澄清的假设。调研里的数据很直接：不前置对齐，首次迭代从 ~10% 理解度起步，要 10-30 轮才接近可用。</p>
+<h3 id="1-2-context-瓶颈：业务知识倒不出来"><a href="#1-2-context-瓶颈：业务知识倒不出来" class="headerlink" title="1.2 context 瓶颈：业务知识倒不出来"></a>1.2 context 瓶颈：业务知识倒不出来</h3><p>模型大家都用一样的，差异在 context。但业务专家脑子里的知识是隐性的——他们”会做”但”说不清楚”。让专家写文档写不出来，让 agent 自己猜猜不准。这是 agent 落地最普遍的卡点，没有它，agent 落地只能停在 demo。</p>
+<h3 id="1-3-context-不可复用：每次从零"><a href="#1-3-context-不可复用：每次从零" class="headerlink" title="1.3 context 不可复用：每次从零"></a>1.3 context 不可复用：每次从零</h3><p>每次任务都从零喂 context，对齐成果无法沉淀。专家花时间对齐过一次的东西，下次类似任务又要重新问一遍，既浪费专家时间，也让 agent 无法累积经验。</p>
+<hr>
+<h2 id="2-grill-me-的三层帮助"><a href="#2-grill-me-的三层帮助" class="headerlink" title="2. grill-me 的三层帮助"></a>2. grill-me 的三层帮助</h2><p>grill-me 作为一个”无情追问 + 收敛式提取”的交互范式，对上述三个痛点分别提供一层帮助。</p>
+<h3 id="2-1-对齐前置层：拦截-misalignment"><a href="#2-1-对齐前置层：拦截-misalignment" class="headerlink" title="2.1 对齐前置层：拦截 misalignment"></a>2.1 对齐前置层：拦截 misalignment</h3><p>grill-me 在 agent 动手前加一道对齐前置层——用 relentless 提问把含糊处逼出来。这比传统的”写 PRD → review → 改”高效，因为提问是实时交互的，能当场澄清，不用等文档来回。</p>
+<p><strong>核心观点</strong>：grill-me 的价值不在它是个 skill，而在于它示范了一种”agent 落地必须前置对齐”的工程纪律——把对齐成本从 build 后挪到 build 前，且用最低成本的交互方式（提问）完成。前置对齐后，首次迭代理解度从 ~10% 跳到 ~90%。</p>
+<h3 id="2-2-知识提取层：打破-context-瓶颈"><a href="#2-2-知识提取层：打破-context-瓶颈" class="headerlink" title="2.2 知识提取层：打破 context 瓶颈"></a>2.2 知识提取层：打破 context 瓶颈</h3><p>grill-me 本质上是一个业务知识提取器——用提问把专家的隐性知识挤出来，变成显性 context。它解决的不是”agent 能不能做”，而是”agent 做的事是不是业务真正想要的”。</p>
+<p><strong>核心观点</strong>：agent 落地的真正瓶颈不是模型能力，是 context 怎么喂进去。grill-me 用提问替代”让专家写文档”，把提取成本降到专家能承受的范围。没有这个提取层，业务知识进不了 agent。</p>
+<h3 id="2-3-资产沉淀层：让对齐成果可复用"><a href="#2-3-资产沉淀层：让对齐成果可复用" class="headerlink" title="2.3 资产沉淀层：让对齐成果可复用"></a>2.3 资产沉淀层：让对齐成果可复用</h3><p>grill-me 结束时产出一份 shared understanding（共享理解）。这不只是对齐过程的副产物，是可沉淀复用的 context 资产——一次对齐的成果能被后续多次复用。</p>
+<p><strong>核心观点</strong>：grill-me 揭示了”agent 提问、人回答”的协作方向反转——agent 不只是执行器，它可以是主动的探针，用提问缩小自己的不确定性。一个”会主动问问题的 agent”比”闷头干的 agent”落地可靠性高得多。且对齐成果结构化后，从”一次性对话”变成”可复用的 context 资产”。</p>
+<hr>
+<h2 id="3-让提问可持续的三个工程范式"><a href="#3-让提问可持续的三个工程范式" class="headerlink" title="3. 让提问可持续的三个工程范式"></a>3. 让提问可持续的三个工程范式</h2><p>grill-me 不只给理念，还给了让”agent 主动提问”可持续的工程范式——没有这些，主动提问会变成骚扰，落地推不动：</p>
+<table>
+<thead>
+<tr>
+<th>范式</th>
+<th>机制</th>
+<th>为什么可持续</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>一次一问</td>
+<td>每次只问一个问题</td>
+<td>降低打断感，专家不烦</td>
+</tr>
+<tr>
+<td>推荐答案</td>
+<td>agent 给推荐，专家说 yes&#x2F;no</td>
+<td>把每次交互成本压到最低，这是落地能持续运转的前提</td>
+</tr>
+<tr>
+<td>深度优先</td>
+<td>A 分支不敲定不进 B</td>
+<td>问得有结构，不会东一榔头西一棒子</td>
+</tr>
+</tbody></table>
+<p><strong>核心观点</strong>：推荐答案不是小功能，是让知识提取可持续的工程关键。业务专家的时间是 agent 落地最贵的资源——如果每次对齐都要专家写半小时代释，落地就推不动。</p>
+<hr>
+<h2 id="4-工程化框架：从-skill-到机制"><a href="#4-工程化框架：从-skill-到机制" class="headerlink" title="4. 工程化框架：从 skill 到机制"></a>4. 工程化框架：从 skill 到机制</h2><p>要把 grill-me 从”手动调用一个 skill”升级成”agent 落地流程的内置机制”，需要三嵌入 + 三保障 + 一闭环。</p>
+<h3 id="4-1-三嵌入：嵌进-agent-落地的三个环节"><a href="#4-1-三嵌入：嵌进-agent-落地的三个环节" class="headerlink" title="4.1 三嵌入：嵌进 agent 落地的三个环节"></a>4.1 三嵌入：嵌进 agent 落地的三个环节</h3><pre class="mermaid">flowchart TD
+    T["agent 接到任务"] --&gt; E1["嵌入1:任务级对齐&lt;br/&gt;启动协议,先问透再动手"]
+    E1 --&gt; AR["产出:结构化对齐档案"]
+    AR --&gt; E2["嵌入2:点级提问&lt;br/&gt;运行时遇模糊触发"]
+    E2 --&gt; BUILD["agent build"]
+    BUILD --&gt; E3["嵌入3:产出沉淀+反馈&lt;br/&gt;build后回写验证结果"]
+    E3 --&gt; REUSE["context 资产&lt;br/&gt;可复用/可审计/可累积"]
+    REUSE -.下次类似任务.-&gt; E1</pre>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">agent 接到任务</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">嵌入1: 任务级对齐 (启动协议) ── 先问透再动手</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">产出: 结构化对齐档案 (决策|理由|排除项)</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">嵌入2: 点级提问 (运行时能力) ── 执行中遇模糊触发</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">agent build</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">嵌入3: 产出沉淀 + 反馈 ── 档案对齐下游 + build后回写</span><br><span class="line">    │</span><br><span class="line">    ▼</span><br><span class="line">context 资产 (可复用/可审计/可累积)</span><br><span class="line">    │</span><br><span class="line">    └──── 下次类似任务复用 ────&gt; 回到嵌入1</span><br></pre></td></tr></table></figure>
+
+<p><strong>任务级 vs 点级必须区分</strong>：</p>
+<ul>
+<li><strong>任务级对齐</strong>（嵌入1）：agent 接到新任务，先 grill 一轮把任务问透。工程上是 agent 的<strong>启动协议</strong>（类似 onTaskReceive hook），不问透不动手。</li>
+<li><strong>点级提问</strong>（嵌入2）：执行到某个决策点发现模糊，临时问一下。工程上是 agent 的<strong>运行时能力</strong>（类似 askUser 工具调用），随时触发。</li>
+</ul>
+<p>两者混在一起设计会两头不讨好——任务级没做透就动手，点级又太频繁。</p>
+<h3 id="4-2-三保障：让机制不跑偏"><a href="#4-2-三保障：让机制不跑偏" class="headerlink" title="4.2 三保障：让机制不跑偏"></a>4.2 三保障：让机制不跑偏</h3><table>
+<thead>
+<tr>
+<th>保障</th>
+<th>机制</th>
+<th>为什么必要</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>推荐答案控打扰</td>
+<td>一次一问 + 深度优先 + 推荐项</td>
+<td>不控制打扰，专家不理你</td>
+</tr>
+<tr>
+<td>对齐质量校验</td>
+<td>必须支持”说不+理由”</td>
+<td>防 choice architecture，否则假共识</td>
+</tr>
+<tr>
+<td>档案 schema 对齐下游</td>
+<td>和 PRD&#x2F;issues 模板字段映射</td>
+<td>不对齐就要人肉搬运，”后续流程轻”优势没了</td>
+</tr>
+</tbody></table>
+<p><strong>核心观点（防引导）</strong>：choice architecture 是 grill-me 的已知风险——agent 给推荐、人只说 yes，业务专家可能被带着走，对齐出”假共识”。落地时如果不防，agent 拿到的是被引导过的 context，后面 build 出来还是跑偏，只是跑偏得更隐蔽（因为对齐档案看着很完整）。所以必须让专家能对推荐说”不”并给理由，且理由被记录——没有它，”对齐前置层”变成”误导前置层”。</p>
+<h3 id="4-3-一闭环：build-后回写，经验累积"><a href="#4-3-一闭环：build-后回写，经验累积" class="headerlink" title="4.3 一闭环：build 后回写，经验累积"></a>4.3 一闭环：build 后回写，经验累积</h3><p>对齐档案不能只进不出，要反馈。agent 用档案 build 出东西后，把”哪些对齐点被验证有效、哪些对齐时漏了”回写进档案。这样下一次类似任务，agent 能复用上次的对齐结论，甚至跳过已确认的分支。</p>
+<p><strong>核心观点</strong>：没有这个反馈闭环，grill-me 的”资产沉淀”只是静态存档；有了它，对齐档案是活的、越用越准的 context 资产。这是 agent 落地从”每次从零”走向”经验累积”的关键。</p>
+<hr>
+<h2 id="5-对齐档案模板（agent-可消费版）"><a href="#5-对齐档案模板（agent-可消费版）" class="headerlink" title="5. 对齐档案模板（agent 可消费版）"></a>5. 对齐档案模板（agent 可消费版）</h2><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## 对齐档案 - &lt;任务名&gt;</span></span><br><span class="line">日期: 2026-07-13 | 专家: &lt;业务方&gt; | agent: &lt;型号版本&gt;</span><br><span class="line"></span><br><span class="line">| 决策 | 理由 | 排除项 | 下游映射 |</span><br><span class="line">|------|------|--------|---------|</span><br><span class="line">| 存储用 Postgres | 需事务+关系查询 | MongoDB/SQLite | → PRD.数据层 |</span><br><span class="line">| API 用 REST | 团队熟悉 | GraphQL/gRPC | → PRD.接口层 |</span><br><span class="line"></span><br><span class="line"><span class="section">## 专家否决记录（防引导审计）</span></span><br><span class="line">| agent 推荐 | 专家决定 | 否决理由 |</span><br><span class="line">|-----------|---------|---------|</span><br><span class="line">| 用 GraphQL | 改用 REST | 团队无 GraphQL 经验，维护成本高 |</span><br><span class="line"></span><br><span class="line"><span class="section">## build 后回写（反馈闭环）</span></span><br><span class="line"><span class="bullet">-</span> [x] 存储决策验证有效</span><br><span class="line"><span class="bullet">-</span> [ ] 缓存策略对齐时漏了，补问</span><br></pre></td></tr></table></figure>
+
+<p>档案相比普通决策日志多了两列：<strong>下游映射</strong>（让档案可直接被 PRD&#x2F;issues 消费）和<strong>专家否决记录</strong>（防 choice architecture 的审计材料）。档案不是写给人看的文档，是写给下游 agent 消费的结构化输入。</p>
+<hr>
+<h2 id="6-落地场景矩阵"><a href="#6-落地场景矩阵" class="headerlink" title="6. 落地场景矩阵"></a>6. 落地场景矩阵</h2><table>
+<thead>
+<tr>
+<th>agent 落地场景</th>
+<th>grill-me 机制的价值</th>
+<th>工程化重点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>新业务 agent 首次接入</td>
+<td>对齐前置 + 知识提取</td>
+<td>任务级对齐做透，档案建档</td>
+</tr>
+<tr>
+<td>已有业务的 agent 迭代</td>
+<td>资产复用 + 反馈闭环</td>
+<td>复用历史档案，回写验证</td>
+</tr>
+<tr>
+<td>多 agent 协作系统</td>
+<td>对齐档案作为 agent 间共享 context</td>
+<td>档案 schema 跨 agent 统一</td>
+</tr>
+<tr>
+<td>高风险决策 agent</td>
+<td>对齐质量校验 + 审计</td>
+<td>强制否决记录，防引导</td>
+</tr>
+<tr>
+<td>探索性 agent 任务</td>
+<td>点级提问能力</td>
+<td>运行时 askUser，控制打扰</td>
+</tr>
+<tr>
+<td>纯执行型 agent（需求已明确）</td>
+<td>跳过任务级对齐</td>
+<td>只保留点级提问 + 档案</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="7-结论"><a href="#7-结论" class="headerlink" title="7. 结论"></a>7. 结论</h2><ol>
+<li><p><strong>grill-me 对 agent 落地的帮助是结构性的，不是锦上添花</strong>。它示范的”主动对齐 + 知识提取 + 资产沉淀”机制，正好对应 agent 落地三个高频痛点：misalignment、context 瓶颈、context 不可复用。</p>
+</li>
+<li><p><strong>它的价值不在是个 skill，而在是个可工程化的范式</strong>。”一次一问 &#x2F; 推荐答案 &#x2F; 深度优先 &#x2F; shared understanding”这套机制，让”agent 主动提问”从骚扰变成可持续的对齐手段——这是它能落地而非停留在 demo 的关键。</p>
+</li>
+<li><p><strong>工程化的核心是把 grill-me 从”一次性对话”升级为”context 资产生产线”</strong>。三嵌入（任务级 &#x2F; 点级 &#x2F; 沉淀）+ 三保障（控打扰 &#x2F; 防引导 &#x2F; 对齐下游）+ 一闭环（build 后回写），让对齐成果可复用、可审计、可累积。</p>
+</li>
+<li><p><strong>必须防 choice architecture，否则对齐前置层变误导前置层</strong>。对齐档案里的”专家否决记录”不是可选项——没有它，agent 拿到的是被引导过的假共识，跑偏更隐蔽。</p>
+</li>
+<li><p><strong>一句话</strong>：把 grill-me 当 skill 用，是给开发者省事；把 grill-me 当机制做进 agent 落地，是给整个 agent 系统装上”主动对齐 + context 累积”的能力——前者优化一次任务，后者优化整个落地体系。</p>
+</li>
+</ol>
+<hr>
+<h2 id="参考来源"><a href="#参考来源" class="headerlink" title="参考来源"></a>参考来源</h2><table>
+<thead>
+<tr>
+<th>#</th>
+<th>来源</th>
+<th>用于本文的论据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><a href="https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md">grill-me SKILL.md（GitHub 原文）</a></td>
+<td>五齿轮机制（一次一问&#x2F;推荐答案&#x2F;深度优先&#x2F;shared understanding）</td>
+</tr>
+<tr>
+<td>2</td>
+<td><a href="https://github.com/mattpocock/skills">mattpocock&#x2F;skills README</a></td>
+<td>misalignment 是头号失败模式</td>
+</tr>
+<tr>
+<td>3</td>
+<td><a href="https://youmind.com/landing/x-viral-articles/claude-code-grill-me-skill">The Skill That 10x’d My Claude Code Projects（@nateherk）</a></td>
+<td>10%→90% 起步数据、提取瓶颈</td>
+</tr>
+<tr>
+<td>4</td>
+<td><a href="https://blog.dominicwild.com/blogs/grill-me-brain-cooking">Grill Me, the Skill That Cooks Your Brain（Dominic Wild）</a></td>
+<td>choice architecture 陷阱（防引导依据）</td>
+</tr>
+<tr>
+<td>5</td>
+<td><a href="https://www.aihero.dev/grill-with-docs">grill-with-docs: Align Before You Build</a></td>
+<td>CONTEXT.md 持久化（资产沉淀依据）</td>
+</tr>
+<tr>
+<td>6</td>
+<td><a href="https://adityakumarpuri.medium.com/matt-pococks-5-claude-code-skills-made-me-rewrite-how-i-work-with-ai-agents-d71853c3056c">Matt Pocock’s 5 Claude Code skills</a></td>
+<td>5 阶段闭环（档案对齐下游依据）</td>
+</tr>
+<tr>
+<td>7</td>
+<td>《grill-me 调研文档》（mike，2026-07-07）</td>
+<td>本文全部论据的基础</td>
+</tr>
+</tbody></table>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">MichaelMao</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://michaelmaomao.github.io/2026/07/13/grill-me%E8%83%BD%E7%BB%99agent%E8%90%BD%E5%9C%B0%E5%B8%A6%E6%9D%A5%E4%BB%80%E4%B9%88/">http://michaelmaomao.github.io/2026/07/13/grill-me%E8%83%BD%E7%BB%99agent%E8%90%BD%E5%9C%B0%E5%B8%A6%E6%9D%A5%E4%BB%80%E4%B9%88/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://michaelMaoMao.github.io">MMao</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Claude-Code/">Claude Code</a><a class="post-meta__tags" href="/tags/grill-me/">grill-me</a><a class="post-meta__tags" href="/tags/Agent-%E8%90%BD%E5%9C%B0/">Agent 落地</a><a class="post-meta__tags" href="/tags/Context-%E5%B7%A5%E7%A8%8B/">Context 工程</a></div><div class="post-qr-code"><div class="post-qr-code-item"><img class="post-qr-code__img" src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"><div class="post-qr-code__desc">我要吐槽下</div></div></div><nav id="pagination"><div class="next-post pull-right"><a href="/2026/06/10/web-access%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-Agent-Skill%E7%9A%84%E8%81%94%E7%BD%91%E4%B8%8E%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BE%B9%E7%95%8C/"><span>web-access 深度拆解：一个 Agent Skill 如何定义 Claude Code 的联网与浏览器边界</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
