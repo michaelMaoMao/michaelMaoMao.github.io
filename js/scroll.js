@@ -71,11 +71,30 @@ $(function () {
   }
 
   // scroll to a head(anchor)
+  // hexo toc 生成的 href 是百分号编码（如 #目录 -> #%E7%9B%AE%E5%BD%95），
+  // 直接拼 jQuery 选择器会因 % 非法抛异常，导致中文标题的目录点击失效。
+  // 统一解码后用 getElementById 定位（字面量匹配，不受编码/特殊字符影响）
+  function decodeHash (s) {
+    if (!s) return s
+    try {
+      return decodeURIComponent(s)
+    } catch (e) {
+      return s
+    }
+  }
+
   function scrollToHead (anchor) {
-    $(anchor).velocity('stop').velocity('scroll', {
-      duration: 500,
-      easing: 'easeInOutQuart'
-    })
+    var id = decodeHash(anchor).replace(/^#/, '')
+    var $target = $(document.getElementById(id))
+    if ($target.length === 0) {
+      $target = $(anchor) // 兜底：非纯 id 形式的选择器
+    }
+    if ($target.length > 0) {
+      $target.velocity('stop').velocity('scroll', {
+        duration: 500,
+        easing: 'easeInOutQuart'
+      })
+    }
   }
 
   // expand toc-item
@@ -138,11 +157,15 @@ $(function () {
     }
 
     var currentActive = $('.toc-link.active')
-    if (currentId && currentActive.attr('href') !== currentId) {
+    // href 属性值是编码后的（%E7...），currentId 是原始中文 id，
+    // 两侧统一解码后再比较，否则中文标题的高亮永远匹配不上
+    if (currentId && decodeHash(currentActive.attr('href')) !== decodeHash(currentId)) {
       updateAnchor(currentId)
 
       $('.toc-link').removeClass('active')
-      var _this = $('.toc-link[href="' + currentId + '"]')
+      var _this = $('.toc-link').filter(function () {
+        return decodeHash($(this).attr('href')) === decodeHash(currentId)
+      })
       _this.addClass('active')
 
       var parents = _this.parents('.toc-child')
