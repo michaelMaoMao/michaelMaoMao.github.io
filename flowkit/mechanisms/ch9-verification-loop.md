@@ -1,14 +1,25 @@
 # 第 9 章 · 验证与迭代：不达证据不罢休
 
-> **一句话机制**: 「完成」不是一个形容词，是一张三列表——每条成功标准、一份新鲜证据、一个状态; 拿不出证据就沿三条路回退，回退修不完就进有纪律的 keep/revert 迭代，迭代用尽还有一层「不让你停」的强制持续——整套机制把「宣布完成」从 LLM 的口头禅变成可审计的工程动作。
+> **机制篇 · 第 9 章** · G · 验证与迭代
 
-## 怎么用（30 秒上手）
+*No Evidence, No Done*
 
-- flow-deep 里你什么都不用做: Stage 5 不可跳过，验证自动逐条核对 Goal Contract 的 Success Criteria（`skills/flow-deep/SKILL.md:613`）
-- flow 侧有逃生阀: `--no-verify` 可跳过（`skills/flow/references/stage5-verification.md:29-32`）——但跳过的代价由你自负
-- 想让它自己修到达标: `--iterate N` 启用 Stage 5.5; 即使不用参数，Stage 5 出现未达标项也会自动触发（默认 3 轮）
-- 迭代用完仍未达标: **双引擎在这里分叉**——flow-deep 自动进入 Stage 5.7（只要装了 ralph-loop 插件且未设 `--no-ralph`）; flow 侧需要 `--ralph` 显式启用（`skills/flow/SKILL.md:170`; `skills/flow-deep/SKILL.md:632`）——轻量管道把强制持续的开关交还给你，全量管道默认替你摁下
-- 执行中发现 Plan 走不通: Fallback 协议是半自动的——Claude 分析并建议退回，**你确认后才退**（`skills/flow-deep/references/fallback-protocol.md:143-148`）
+`29 anchors` · `234` · 组件 `replay`×2（redflags 10 / track 9）· 约 30 分钟
+
+**本章位置**: 机制篇第 5 站 · Stage 5 验证闸门 · 上接[第 8 章 · 上下文工程](ch8-context-engineering.md) · 下一站[第 10 章 · 跨会话记忆](ch10-cross-session-memory.md)
+
+<div class="fs-callout">
+
+**一句话机制**: 「完成」不是一个形容词，是一张三列表——每条成功标准、一份新鲜证据、一个状态; 拿不出证据就沿三条路回退，回退修不完就进有纪律的 keep/revert 迭代，迭代用尽还有一层「不让你停」的强制持续——整套机制把「宣布完成」从 LLM 的口头禅变成可审计的工程动作。
+
+**机制定位**: 验证区的完整操作闭环——Stage 5 证据表三态收口，Fail 后回退三路分诊，修不完进 Stage 5.5 keep/revert 迭代，迭代用尽还有 Stage 5.7 Ralph 强制持续兜底。
+
+
+**快用**: flow-deep 零操作——Stage 5 不可跳过; flow 侧 `--no-verify` 可跳（代价自负）; `--iterate N` 启用 5.5 迭代; 迭代用尽 flow-deep 自动进 5.7 / flow 需 `--ralph` 显式启用; Fallback 半自动——你确认才退。
+
+</div>
+
+<div class="fs-tabsep" data-label="机制"></div>
 
 ## 为什么：从「应该可以」到证据表
 
@@ -28,6 +39,14 @@ FlowKit 的 README 开篇就给出了这个项目存在的问题定义: **「Age
 这些话术的共性是: **把「推理」冒充成「运行」**。LLM 对代码的理解是符号层面的——它「看到」逻辑自洽，但这与「程序在真实环境里跑出了预期输出」是两件事。Iron Laws 的 IL-2（验证铁律）用一句话封死这条路: **No completion claims without fresh verification evidence**——没有新鲜的验证证据就不宣布完成，禁止 "should work"、"probably"、"seems to"（`skills/flow-deep/SKILL.md:593`; `skills/flow-deep/references/iron-laws.md:40-48`）。
 
 有一个细节值得玩味: flowkit 的 evals 把「无 should work 式表述」本身写成了 eval 任务的验收条件（`evals/flow-deep/workspace/iteration-2/eval-1-research/cwd/.plan/task_plan.md:189`）——验证纪律不是只用来验证产出的，**验证纪律自己也被验证**。
+
+这些话术在文字里读是修辞课，放进流水线里看才是纪律。下面这条泳道动画演示同一批话术走到 Stage 5 闸门口的下场——先放两张合规产出过闸，再看红旗话术逐一进闸被拦:
+
+<div class="fs-replay" data-script="assets/scripts/ch9-redflags.json"></div>
+
+注意被拦下的四句话术没有一句是谎言——它们甚至可能都是真的。闸门不放行的不是话术，是「无证据的完成宣称」: 证据表三列里 Evidence 栏空着的行，Status 就到不了 Pass。这正是下一节要把「完成」变成一张表的原因。
+
+**步 ↔ 机制对照**: 步 2-3 合规产出进闸放行（SC3 带新鲜证据 → 绿灯）; 步 5-9 四句红旗话术（rf1-rf4）逐一进闸被拦 ↔ Rationalization Table 的「把推理冒充成运行」; 步 10 对照收尾 ↔ Evidence 空着的行 Status 到不了 Pass。
 
 ### Stage 5: 把「完成」变成一张表
 
@@ -88,14 +107,14 @@ FlowKit 的 README 开篇就给出了这个项目存在的问题定义: **「Age
 
 参数不用手填，从 Stage 5 的失败项自动构造（`stage55-iteration.md:14-25`）:
 
-```yaml
+<pre data-filename="iterate.gap 声明样例">
 scope: 未达标 Phase 涉及的文件 glob（从 task_plan.md 提取）
 metric_name: Stage 5 中失败的验证指标名
 verify_cmd: Stage 5 中使用的验证命令
 baseline_value: Stage 5 验证输出的当前值
 target_value: Stage 5 验证输出的目标值
 direction: higher 或 lower（根据指标语义推断）
-```
+</pre>
 
 验证之外还有 **Guard 双检查**: Verify 问「目标指标改进了吗」，Guard 问「其他东西坏了吗」（`skills/flow-deep/SKILL.md:624`）——只看 Verify 会修好一处弄坏三处而不自知。
 
@@ -112,6 +131,14 @@ direction: higher 或 lower（根据指标语义推断）
 配套的铁律是那句最反直觉的话: **反复失败说明 plan 假设有误，不是意志力问题**（`stage55-iteration.md:60`）。机械续跑和机械放弃都是错的——趋势才是判断依据。
 
 顺带一提，迭代运行中你随时可以插话纠正（「vendor 目录别动」「上次这类改动会导致 flaky」）——纠正写入 `.plan/loop-memory.md`，不打断当前轮，从下一轮开始生效。这条 on-the-loop 异步通道区别于全站其他阻断式确认点: in-the-loop 改变当前轮（停下等你），on-the-loop 改变未来轮（异步生效）; 且 durable-vs-oneoff 判别同样适用——只对本次任务有效的纠正不写 loop-memory（`stage55-iteration.md:64-74`）。
+
+这条纪律画成一条曲线最好懂——轨道赌注: 每次迭代是一枚有界尝试——冲多高由你, 落在哪由机械验证说了算:
+
+<div class="fs-replay" data-script="assets/scripts/ch9-track.json"></div>
+
+**绿线只进不退: revert 的意义不是失败, 是失败不付费。**
+
+**步 ↔ 机制对照**: 步 2-4 keep（验证绿）→ revert（验证红）→ 再 keep ↔ 结构化试错与「绿线只进不退」; 步 5-7 Guard 渐进 ↔ 冒烟 → 轻量集成 → 全量三档; 步 8 冲线 88 = target ↔ 参数从 Stage 5 失败项自动构造; 步 9 收尾 ↔ 轨道赌注的算术——落在哪由机械验证说了算。
 
 ### Stage 5.7: 不让你停（Ralph Loop）
 
@@ -158,14 +185,13 @@ Ralph 插件本身不可用时走降级: 方案 A 提示用户手动启用（给
   退出循环（达标 / 诚实部分完成）
 ```
 
-## 批判小节（局限与成本）
+### 学完自测
 
-- **强制持续是双刃剑**: Ralph 防住了「过早放弃」（下界），但无人值守时还有反向风险——「产出失控」（上界缺失）。参考文档为此补了一道**产出闸门**: 挂机跑 Ralph 前确认「产出速率 ≤ 评审速率」，自动产生的变更堆积快于人工 review 速度时应主动降速分段（`ralph-integration.md:266`）——但这是自觉级约束，非 Hook 强制
-- **「新鲜」本身无法机械判定**: 时间戳可查，「证据是否覆盖了本轮变更的全部新面」仍需判断——铁律约束的是遵循 skill 的会话，与全站其他关卡一样是约定级而非沙箱级
-- **Needs Review 的兜底是人**: 证据类型里「人工检查点」自动化不了，Stage 5 把它显式标出来是诚实，但也意味着 DONE 的成本里包含你的注意力
-- **强制循环烧的是真金**: Ralph 默认上限 10 轮（`--ralph-max`，`skills/flow-deep/SKILL.md:647`），加上 `/cancel-ralph` 手动中断与诚实部分完成出口，三道泄压阀都在——但每轮都是完整的 auto-iterate + Stage 5 验证，token 账单不会说谎
+形成性自测——三题对照本章主干（答错可换选重试，两次不对可看解析；作答记录存本地）——
 
-## 本章源码锚点表
+<div class="fs-quiz" data-quiz="assets/quiz/ch9.json"></div>
+
+<div class="fs-tabsep" data-label="本章源码锚点表"></div>
 
 | 断言 | 锚点 |
 |---|---|
@@ -199,4 +225,16 @@ Ralph 插件本身不可用时走降级: 方案 A 提示用户手动启用（给
 | 「应该可以」问题定义（第一手） | `README.md:21`（Iron Laws ASCII 图 :51-76） |
 | 验证纪律自身被 eval 验证 | `evals/flow-deep/workspace/iteration-2/eval-1-research/cwd/.plan/task_plan.md:189` |
 
-> 下一章: [跨会话记忆](ch10-cross-session-memory.md)——验证通过不是终点，是沉淀的准入证: Stage 5.8 只在 Goal Verification 为 DONE 后触发，把这次任务的可复用经验写回记忆库，喂给下一次任务的 Stage -1。
+<div class="fs-tabsep" data-label="批判小节（深挖: 局限与成本）"></div>
+
+- **强制持续是双刃剑**: Ralph 防住了「过早放弃」（下界），但无人值守时还有反向风险——「产出失控」（上界缺失）。参考文档为此补了一道**产出闸门**: 挂机跑 Ralph 前确认「产出速率 ≤ 评审速率」，自动产生的变更堆积快于人工 review 速度时应主动降速分段（`ralph-integration.md:266`）——但这是自觉级约束，非 Hook 强制
+- **「新鲜」本身无法机械判定**: 时间戳可查，「证据是否覆盖了本轮变更的全部新面」仍需判断——铁律约束的是遵循 skill 的会话，与全站其他关卡一样是约定级而非沙箱级
+- **Needs Review 的兜底是人**: 证据类型里「人工检查点」自动化不了，Stage 5 把它显式标出来是诚实，但也意味着 DONE 的成本里包含你的注意力
+- **强制循环烧的是真金**: Ralph 默认上限 10 轮（`--ralph-max`，`skills/flow-deep/SKILL.md:647`），加上 `/cancel-ralph` 手动中断与诚实部分完成出口，三道泄压阀都在——但每轮都是完整的 auto-iterate + Stage 5 验证，token 账单不会说谎
+
+<div class="fs-tabsep" data-end="1"></div>
+
+<nav class="fs-prevnext">
+<a class="fs-nav-prev" href="#/mechanisms/ch8-context-engineering"><span class="fs-arrow">←</span> 上一章 · 上下文工程</a>
+<a class="fs-nav-next" href="#/ch10-cross-session-memory">下一章 · 跨会话记忆 <span class="fs-arrow">→</span><br><small>验证通过不是终点，是沉淀的准入证: Stage 5.8 把可复用经验写回记忆库，喂给下一次任务的 Stage -1。</small></a>
+</nav>

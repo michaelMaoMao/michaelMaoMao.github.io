@@ -1,6 +1,15 @@
 # 第 1 章 · Agent Loop 与管道形态
 
-> **一句话机制**: Agent 的本体是一个循环——感知→思考→行动→观察，直到任务完成; FlowKit 做的事，是把这个裸循环升级成一条**带关卡的流水线**。
+> **原理篇 · 第 1 章** · A · 编排与治理
+
+*One Pipeline, Two Trims*
+
+`~6 anchors` · `78` · 组件 switch + replay ch1-gate（5 步）` · 组件 `switch` · 约 5 分钟
+
+<blockquote class="fs-callout">
+<p><strong>一句话机制</strong>: Agent 的本体是一个循环——感知→思考→行动→观察，直到任务完成; FlowKit 做的事，是把这个裸循环升级成一条<strong>带关卡的流水线</strong>。</p>
+<p>Harness Layer · 编排与治理（A 域）· Stage -1 → 5.8 关卡管道，flow / flow-deep 是同一管道的两种裁剪</p>
+</blockquote>
 
 <div class="fs-switch"></div>
 
@@ -26,11 +35,9 @@ hello-agents 把 Agent 定义为「循环中自主调用工具的 LLM」——�
 
 FlowKit 不改循环本身（智能来自模型，编排只是 harness——这是 learn-claude-code「Bash is all you need」的同款认知），而是在循环的**关键节点插入强制关卡**:
 
-```
-Stage -1 经验召回 ─→ Stage 0.5 目标契约 ─→ Stage 3 计划+确认 ─→ Stage 5 目标验证
+<pre data-filename="示意图">Stage -1 经验召回 ─→ Stage 0.5 目标契约 ─→ Stage 3 计划+确认 ─→ Stage 5 目标验证
        ↑                                                              │
-       └──────────── Stage 5.8 经验沉淀（喂给下一次任务）←─────────────┘
-```
+       └──────────── Stage 5.8 经验沉淀（喂给下一次任务）←─────────────┘</pre>
 
 每个关卡对应一种漂移的解药:
 
@@ -47,6 +54,10 @@ Stage -1 经验召回 ─→ Stage 0.5 目标契约 ─→ Stage 3 计划+确认
 
 选择逻辑一句话: **做错了多难恢复，就上多重的关卡**。可回滚的小改动用 flow 是效率; 不可逆的大工程用 flow-deep 是保险。
 
+这条选择逻辑，演示出来是一条分岔路（点击播放，5 步自动演示）——
+
+<div class="fs-replay" data-script="assets/scripts/ch1-gate.json"></div>
+
 ## 批判小节（局限与成本）
 
 - **关卡不是免费的**: flow-deep 全程的规划/审查/验证本身消耗上下文与时间——小任务上重管道是纯开销（这就是 Complexity Gate 存在的原因: flow-deep 自己也会劝退不适配的任务）
@@ -62,4 +73,6 @@ Stage -1 经验召回 ─→ Stage 0.5 目标契约 ─→ Stage 3 计划+确认
 | 依赖矩阵（哪些 Stage 用哪些 skill） | `skills/flow/SKILL.md:65-75`; `skills/flow-deep/SKILL.md:54-55, :99` |
 | 「缺乏纪律性」问题定义 | `README.md`「为什么造这个轮子」节 |
 
-> 下一章: [长时程三板斧](ch2-context-three-axes.md)——长任务为什么会断线，以及三个上下文工程机制怎么接住它。
+<nav class="fs-prevnext">
+<span></span><a class="fs-nav-next" href="#/principles/ch2-context-three-axes">下一章 · 长时程三板斧 <span class="fs-arrow">→</span><br><small>长任务为什么会断线，以及三个上下文工程机制怎么接住它。</small></a>
+</nav>

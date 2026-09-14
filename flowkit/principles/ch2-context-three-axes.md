@@ -1,6 +1,15 @@
 # 第 2 章 · 长时程三板斧——概念与工程的三对映
 
-> **一句话机制**: 长任务会撞上 context rot——上下文越满质量越差; hello-agents 把解法归纳为「三板斧」（Compaction / 结构化笔记 / 子代理），而 flowkit 仓里早有三个机制在跑同样的活——本章给工程穿上概念的鞋，也用工程细节反过来检验概念。
+> **原理篇 · 第 2 章** · F · 上下文工程
+
+*Three Pairings, One Enemy: Context Rot*
+
+`~25 anchors` · `219` · 组件 `replay` · 约 25 分钟
+
+<blockquote class="fs-callout">
+<p><strong>一句话机制</strong>: 长任务会撞上 context rot——上下文越满质量越差; hello-agents 把解法归纳为「三板斧」（Compaction / 结构化笔记 / 子代理），而 flowkit 仓里早有三个机制在跑同样的活——本章给工程穿上概念的鞋，也用工程细节反过来检验概念。</p>
+<p>Context Layer · 上下文工程（F 域）· 对映 hello-agents 长时程三板斧 · 机制操作细节见第 8 章</p>
+</blockquote>
 
 ## 怎么用（30 秒上手）
 
@@ -8,7 +17,7 @@
 
 <div class="fs-replay" data-script="assets/scripts/ch2-subagent.json"></div>
 
-注意 len 对比: 子代理的中间消息永远不进入父上下文。
+**注意 len 对比: 子代理的中间消息永远不进入父上下文。**
 
 
 本章是原理篇，无可跑命令——用一张速查表代替体验。任务出现下列症状时，对号入座:
@@ -176,6 +185,10 @@ Auto Handoff: [enabled / disabled]  # 交接偏好，跨代继承
 
 三个机制在同一个任务里前后咬合: 子代理的结论落进笔记，笔记成为交接的信物，交接让分发得以继续。这就是「长时程上下文工程」作为统一上位词的含义——三板斧不是三个孤立技巧，是同一条预算管理链上的三段。
 
+这条法则在真实长任务里怎么转？演练一遍——案例就是本站的搭建过程（点击播放，6 步自动演示）——
+
+<div class="fs-replay" data-script="assets/scripts/ch2-rules.json"></div>
+
 ## 批判小节（局限与成本）
 
 - **名分是事后赋予的**: 三个机制落地时并没有参照这套理论命名——对映是解释工具，不是设计依据。对映也不严丝合缝: Auto Handoff 不做对话摘要（狭义 Compaction 对应的是压缩矩阵），它更像「结构化笔记 + 接力」的组合拳; 把它硬套进 Compaction 格子，是教学方便而非架构事实。
@@ -204,4 +217,7 @@ Auto Handoff: [enabled / disabled]  # 交接偏好，跨代继承
 | tmux 分屏 named-only 与静默降级 | `skills/multi-agent/SKILL.md:258-284`; frontmatter（:5） |
 | Auto Handoff 通俗图解与四设计点 | `README.md`「Auto Handoff」节（:142-163） |
 
-> 下一章: [记忆与召回闭环](ch3-memory-loop.md)——三板斧管的是单次长任务; 跨会话的经验怎么存、怎么召回，是 auto-skill 的闭环故事。
+<nav class="fs-prevnext">
+<a class="fs-nav-prev" href="#/principles/ch1-agent-loop-and-pipeline"><span class="fs-arrow">←</span> 上一章 · Agent Loop 与管道形态</a>
+<a class="fs-nav-next" href="#/principles/ch3-memory-loop">下一章 · 记忆与召回闭环 <span class="fs-arrow">→</span><br><small>三板斧管的是单次长任务; 跨会话的经验怎么存、怎么召回，是 auto-skill 的闭环故事。</small></a>
+</nav>

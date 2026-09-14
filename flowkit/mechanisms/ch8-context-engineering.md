@@ -1,28 +1,33 @@
 # 第 8 章 · 上下文工程：从容量检测到断点恢复的操作闭环
 
-> **一句话机制**: 上下文工程在 flow-deep 里是一套五层操作闭环——锚定（STATE.md 活记忆）、检测（脚本实测容量）、决策（四选项弹窗）、处置（压缩续命或交接换窗）、恢复（新会话直达断点）; 整套体系的出发点是一个物理事实: **模型感知不到自己的上下文占了多少**。
+> **机制篇 · 第 8 章** · F · 上下文工程
 
-<div class="fs-replay" data-script="assets/scripts/ch8-autohandoff.json"></div>
+*Hand Off Before You Rot*
 
-**情景剧: 一次真实的断点与接手——**
+`20 anchors` · `252` · 组件 `replay`×3（threelines 9 / autohandoff 10 / recovery 7）· 约 30 分钟
 
-<div class="fs-replay" data-script="assets/scripts/ch8-recovery.json"></div>
+**本章位置**: 横切层 · 上下文工程（贯穿全程）· 承[第 7 章 · 并发执行](ch7-concurrent-execution.md)的并发现场 · 启[第 9 章 · 验证与迭代](ch9-verification-loop.md)
 
-**看两面板 len: 新会话从 0 开始却无损继续——交接的是『状态』不是『历史』。**
+<div class="fs-callout">
+
+**一句话机制**: 上下文工程在 flow-deep 里是一套五层操作闭环——锚定（STATE.md 活记忆）、检测（脚本实测容量）、决策（四选项弹窗）、处置（压缩续命或交接换窗）、恢复（新会话直达断点）; 整套体系的出发点是一个物理事实: **模型感知不到自己的上下文占了多少**。
+
+**机制定位**: 上下文工程的工程细节层——理论坐标系见[原理篇第 2 章](../principles/ch2-context-three-axes.md)，本章每个操作都能对回主源 context-management.md。
+
+
+**快用**: 默认自动运行——每 Stage/Phase 边界容量检测，超 70% 弹窗四选项; `--no-context-guard` 关检测（不推荐）; `--handoff-max N` 接力上限（默认 3 代）; `--no-auto-handoff` 退自动交接; 1M 窗口加 `--window 1000000`。
+
+</div>
+
+### 三线分岔: 三条曲线同一个任务
+
+<div class="fs-replay" data-script="assets/scripts/ch8-threelines.json"></div>
+
+**三线分岔的那一刻, 就是 flowkit 存在的理由。**
 
 [原理篇第 2 章](../principles/ch2-context-three-axes.md)已经给了这套机制理论名分——Compaction、结构化笔记、子代理的「三板斧」坐标系，讲清了「为什么是这三个」。本章进入工程细节: 检测脚本怎么拿到真值、压缩矩阵何时压什么、交接的五件套逐项怎么落盘、新会话怎么从断点直达。主源是 `skills/flow-deep/references/context-management.md`（flow-deep 的「Stage X: 上下文管理详细指令」），本章每个操作都能在其中逐条对到。
 
-## 怎么用（30 秒上手）
-
-这套机制默认自动运行，用户日常能碰到的是四个参数与一个弹窗:
-
-- 什么都不做 → 每个 Stage/Phase 边界自动跑容量检测，实测超 70% 弹窗问你（四选项见下文）
-- `--no-context-guard` → 关闭整套检测（长任务等于对 context rot 裸奔，不推荐）
-- `--handoff-max N` → 交接接力上限，默认 3 代
-- `--no-auto-handoff` → 退出自动交接状态（会话中口头关闭等效）
-- 1M 窗口模型 → 检测命令加 `--window 1000000`（默认按 200K 窗口算百分比）
-
-顶部回放器演了一条完整链路: 边界告警 → 选「交接并记住自动」→ 五件套保存 → HANDOFF 交接 → 新会话从 Next Action 恢复（10 步），下文逐层拆解每步为什么。
+<div class="fs-tabsep" data-label="机制"></div>
 
 ## 为什么：五层操作体系逐层拆解
 
@@ -127,14 +132,14 @@ exit code 三态，各对应一条操作分支:
 
 其中 agent_hint 摘要是压缩后仍可直接派发的形态——文件清单、TDD 标志、依赖关系全保留:
 
-```yaml
+<pre data-filename="code-planning.agent_hint 样例">
 agent_hints:
   phase-2:
     type: code-implementation
     files: { create: [gateway.py], test: [test_gateway.py] }
     tdd: true
     depends_on: [phase-1]
-```
+</pre>
 
 配套一套符号系统加速书写（引用 context-optimization skill）: 依赖写 `A → B`、结论写 `∴`/`∵`，状态与风险用固定缩写——压缩后的文本仍保持机器可读的结构。
 
@@ -171,6 +176,10 @@ agent_hints:
 
 **HANDOFF.md 本身**是一份刻意做薄的指引文件，设计原则写在模板注释里: 「**不复制五件套内容，只引导新 agent 按序去读——重复内容会随进度过期，路径引用不会**」。骨架四段: 任务一句话（详见 spec.md Goal Contract）/ 当前进度（已完成·进行中·未开始）/ 必读文件按序（STATE.md → task_plan.md → findings.md）/ 建议（技能匹配与未决 blocker）。模板尾行还有一句安全警告: 敏感信息勿写入——**本文件会成为新会话的 prompt**。
 
+### 接力细节: 一次 Auto Handoff 的完整链路
+
+<div class="fs-replay" data-script="assets/scripts/ch8-autohandoff.json"></div>
+
 ### 恢复协议: 闭环的另一半
 
 新会话侧（无论 spawn 而来还是用户手动开的），flow-deep 启动时做恢复检查: 检测 `--plan-dir` 下是否存在 STATE.md，存在则读取并向用户展示上次中断位置，询问「恢复上次进度」还是「重新开始」（重新开始会把旧文件备份为 `STATE.md.bak`，不销毁）。若用户以 HANDOFF.md 开场，按其必读清单进入同一流程。
@@ -188,19 +197,21 @@ agent_hints:
 
 两个收尾细节: HANDOFF.md 是一次性文件，恢复完成后可删除（STATE.md 才是持久锚点）; STATE.md 里的 `Auto Handoff: enabled` 随恢复带入续接会话——偏好跨代继承，防每代重复弹窗，用户随时可口头关闭。多会话串扰的最后一道防线: spawn 后旧会话不再做 Guard 检测，check_context.py 的 mtime 竞争由 first_msg 核对 + `--session` 纠偏兜底。
 
-### 回放对照: 10 步 ↔ 协议
+### 情景剧: 一次真实的断点与接手
 
-顶部回放器 10 步与本章各层的对应: 步 1-2 检测层（边界实测 + first_msg 核对）/ 步 3-4 决策层（四选项 + 选 d 的 opt-in 语义）/ 步 5 锚定层（五件套保存，Next Action 写法）/ 步 6-8 交接（HANDOFF 薄指引 + spawn + 移交报告）/ 步 9-10 恢复协议（按序读三件套 + 从 Next Action 直达断点 + 偏好继承）。剧本里的百分比、代数、命令均可对照上文协议逐项核对。
+<div class="fs-replay" data-script="assets/scripts/ch8-recovery.json"></div>
 
-## 批判小节（局限与成本）
+**看两面板 len: 新会话从 0 开始却无损继续——交接的是『状态』不是『历史』。**
 
-- **检测是采样式的**: 边界点之外的 context 暴涨抓不到，P1 系统警告兜底时「通常已晚」; PreCompact hook 这条兜底路又被官方语义封死（stdout 不进上下文），目前防护依赖 75% 前置余量
-- **约定级约束**: 协议写在 references 里，约束的是「遵循 skill 的会话」——执行者不更新 STATE.md，锚点就是旧的，恢复协议救不回来
-- **交接有真实损耗**: `--handoff-max` 默认 3 代的上限本身就说明交接不能无限续; 每代新会话要重读三件套，固定成本客观存在
-- **压缩率是约定不是实测**: 矩阵里的 70%/90% 是设计约定（文档示例里的 ~73% 是单例），没有系统性 evals 度量「压缩后质量损失了多少」——这是改进空间
-- **改进输入（承接第 2 章）**: 五件套是手工定义的交接物，尚无 ContextPacket 式统一抽象（带 relevance/timestamp/token_count 元数据的信息包）与 GSSC 选择评分——理论侧的未吸收物是这套机制下一步演进的候选方向
+### 回放对照: 三部剧本 ↔ 协议
 
-## 本章源码锚点表
+autohandoff 的 10 步（接力细节）与本章各层的对应: 步 1-2 检测层（边界实测 + first_msg 核对）/ 步 3-4 决策层（四选项 + 选 d 的 opt-in 语义）/ 步 5 锚定层（五件套保存，Next Action 写法）/ 步 6-8 交接（HANDOFF 薄指引 + spawn + 移交报告）/ 步 9-10 恢复协议（按序读三件套 + 从 Next Action 直达断点 + 偏好继承）。剧本里的百分比、代数、命令均可对照上文协议逐项核对。
+
+threelines 9 步对照: 步 1-3 三线同起点与 context rot（模型感知不到占用，质量随液位下滑）/ 步 4-5 断崖 413 自救与压缩台阶 ↔ auto-compact 的窗口边界触发与压缩矩阵「每次压缩都丢一块」/ 步 6-8 Context Guard 告警 → 交接旗 → 新会话质量回高位 ↔ 70/75 阈值分工、跑在 auto-compact 前面 / 步 9 三种结局即三条处置路线（不做 / 只压缩 / 主动交接）的分野。
+
+recovery 7 步对照: 步 2 容量告警 ↔ 边界实测 75%（armed 动作链阈值）/ 步 3 主动 Checkpoint ↔ 保存动作清单的五件套落盘 / 步 5-6 新会话 B 从 HANDOFF 进入、按续接清单零重复劳动 ↔ 必读文件按序（STATE.md → task_plan.md → findings.md）/ 步 7 交接的是状态不是历史 ↔ Next Action 具体可执行、不依赖读其他文件。
+
+<div class="fs-tabsep" data-label="本章源码锚点表"></div>
 
 | 断言 | 锚点 |
 |---|---|
@@ -225,4 +236,17 @@ agent_hints:
 | check_context.py 真值原理（transcript 最后一条 usage 四项之和） | `skills/flow-deep/scripts/check_context.py:2-16`（头注释） |
 | Auto Handoff 通俗图解与四设计点 | `README.md:140-163` |
 
-> 下一章: [验证与迭代](ch9-verification-loop.md)——上下文工程保证任务「不断线」; 任务「没做完就宣告完成」的问题，交给 Stage 5 的证据表与 auto-iterate 的 keep/revert 循环。
+<div class="fs-tabsep" data-label="批判小节（深挖: 局限与成本）"></div>
+
+- **检测是采样式的**: 边界点之外的 context 暴涨抓不到，P1 系统警告兜底时「通常已晚」; PreCompact hook 这条兜底路又被官方语义封死（stdout 不进上下文），目前防护依赖 75% 前置余量
+- **约定级约束**: 协议写在 references 里，约束的是「遵循 skill 的会话」——执行者不更新 STATE.md，锚点就是旧的，恢复协议救不回来
+- **交接有真实损耗**: `--handoff-max` 默认 3 代的上限本身就说明交接不能无限续; 每代新会话要重读三件套，固定成本客观存在
+- **压缩率是约定不是实测**: 矩阵里的 70%/90% 是设计约定（文档示例里的 ~73% 是单例），没有系统性 evals 度量「压缩后质量损失了多少」——这是改进空间
+- **改进输入（承接第 2 章）**: 五件套是手工定义的交接物，尚无 ContextPacket 式统一抽象（带 relevance/timestamp/token_count 元数据的信息包）与 GSSC 选择评分——理论侧的未吸收物是这套机制下一步演进的候选方向
+
+<div class="fs-tabsep" data-end="1"></div>
+
+<nav class="fs-prevnext">
+<a class="fs-nav-prev" href="#/mechanisms/ch7-concurrent-execution"><span class="fs-arrow">←</span> 上一章 · 并发执行</a>
+<a class="fs-nav-next" href="#/ch9-verification-loop">下一章 · 验证与迭代 <span class="fs-arrow">→</span><br><small>上下文工程保证任务「不断线」; 「没做完就宣告完成」的问题，交给 Stage 5 的证据表与 keep/revert 循环。</small></a>
+</nav>

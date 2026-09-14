@@ -6,8 +6,8 @@
 - 教程叙述与 skills 源码逐一锚定（SC5 纪律）
 - 参考体系: hello-agents / learn-claude-code
 
-<a href="#/principles/ch1-agent-loop-and-pipeline">开始阅读</a>
-<a href="#/mechanisms/ch4-pipeline-overview">30 秒导览</a>
+<a class="fs-cta" href="#/principles/ch1-agent-loop-and-pipeline">开始阅读</a>
+<a class="fs-cta-ghost" href="#/mechanisms/ch4-pipeline-overview">30 秒导览</a>
 
 <div class="fs-hero"></div>
 
