@@ -1,0 +1,10 @@
+/* nav-star — ⭐ FlowKit 导航项闪烁动效（2026-09-14） */
+@keyframes fs-star-twinkle {
+  0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 0 rgba(255, 200, 0, 0)); }
+  50%      { transform: scale(1.25) rotate(12deg); filter: drop-shadow(0 0 6px rgba(255, 200, 0, .9)); }
+}
+nav a.nav-star, #page-header a.nav-star {
+  display: inline-flex; align-items: center;
+  animation: fs-star-twinkle 1.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) { nav a.nav-star, #page-header a.nav-star { animation: none; } }
