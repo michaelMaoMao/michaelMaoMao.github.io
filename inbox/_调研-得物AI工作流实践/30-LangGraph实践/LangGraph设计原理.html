@@ -1,0 +1,225 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Building LangGraph: Designing an Agent Runtime from first principles（设计原理精读）"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>Building LangGraph: Designing an Agent Runtime from first principles（设计原理精读） | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>Building LangGraph: Designing an Agent Runtime from first principles（设计原理精读）</h1><div class="article-container"><blockquote>
+<p>本文是 LangChain 官方对 LangGraph 设计哲学的”自述”，是理解为何得物等企业选择 LangGraph 作为生产级 agent 编排引擎的一手资料。原文作者 Nuno Campos，发布于 2025-09-04，同步 LangGraph 1.0 alpha。</p>
+</blockquote>
+<h2 id="一、为什么需要再造一个框架"><a href="#一、为什么需要再造一个框架" class="headerlink" title="一、为什么需要再造一个框架"></a>一、为什么需要再造一个框架</h2><p>LangChain 团队从原 <code>langchain</code> 库（2022 发布）收到的核心反馈是：<strong>“上手容易，但难以定制和扩展到生产”</strong>。两年多前重启 LangGraph 时，团队把目标定死在一条：<strong>“这就是你用来在生产环境跑 agent 的框架”</strong>，凡有 tradeoff 一律优先生产可用性而非”入门体验”。</p>
+<h3 id="1-1-Agent-与传统软件的三个关键差异"><a href="#1-1-Agent-与传统软件的三个关键差异" class="headerlink" title="1.1 Agent 与传统软件的三个关键差异"></a>1.1 Agent 与传统软件的三个关键差异</h3><p>团队通过自建 agent、并与 Uber &#x2F; LinkedIn &#x2F; Klarna &#x2F; Elastic 等公司合作，把 agent 的特殊性收敛为三条：</p>
+<ol>
+<li><strong>更高的延迟，更难留住用户</strong>——backend 接口过去以毫秒计，现在 agent 一次运行要数秒、数分钟、未来甚至数小时。LLM 本身慢、且越来越慢（test-time compute）；多步循环与链式 prompt 进一步放大；非 LLM 步骤（取数、guardrails、verifiers）也叠加在前后。</li>
+<li><strong>长任务失败重试代价高昂</strong>——传统软件 bug 直接 retry；agent 在第 9 分钟失败、回到起点重跑，既费时又烧钱。</li>
+<li><strong>LLM 的非确定性</strong>——输入和输出都是开放的，开发期测试无法覆盖用户和 LLM 的所有”惊喜”组合。</li>
+</ol>
+<h3 id="1-2-从差异到六大必备特性"><a href="#1-2-从差异到六大必备特性" class="headerlink" title="1.2 从差异到六大必备特性"></a>1.2 从差异到六大必备特性</h3><table>
+<thead>
+<tr>
+<th>差异</th>
+<th>衍生需求</th>
+<th>LangGraph 提供的特性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>延迟</td>
+<td>缩短实际延迟</td>
+<td><strong>Parallelization</strong>（并行化，且无数据竞争）</td>
+</tr>
+<tr>
+<td>延迟</td>
+<td>缩短感知延迟</td>
+<td><strong>Streaming</strong>（流式，token 级 &#x2F; step 级 &#x2F; 进度条）</td>
+</tr>
+<tr>
+<td>可靠性</td>
+<td>减少重试次数</td>
+<td><strong>Task queue</strong>（任务队列，解耦请求与执行）</td>
+</tr>
+<tr>
+<td>可靠性</td>
+<td>降低单次重试成本</td>
+<td><strong>Checkpointing</strong>（检查点，保存中间快照）</td>
+</tr>
+<tr>
+<td>非确定性</td>
+<td>与用户协作</td>
+<td><strong>Human-in-the-loop</strong>（中断&#x2F;恢复&#x2F;审批&#x2F;time travel）</td>
+</tr>
+<tr>
+<td>非确定性</td>
+<td>观测与调优</td>
+<td><strong>Tracing</strong>（轨迹、输入、输出全程可观测）</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>作者明确说：如果你的 agent 不需要这 6 个特性中的大多数（例如单 prompt、无工具、很短），那你可能既不需要 LangGraph 也不需要任何框架。</p>
+</blockquote>
+<p>此外，团队意识到开发者不会为这 6 项特性付出<strong>额外延迟</strong>（尤其 chatbot 场景），因此 <strong>“低延迟”成为贯穿性约束</strong>。</p>
+<h2 id="二、为什么不复用已有框架"><a href="#二、为什么不复用已有框架" class="headerlink" title="二、为什么不复用已有框架"></a>二、为什么不复用已有框架</h2><table>
+<thead>
+<tr>
+<th>候选</th>
+<th>否决理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>DAG 框架</strong>（Airflow 等）</td>
+<td>名字即问题——LLM agent <strong>需要循环（cycles）</strong>，DAG 算法天然不支持</td>
+</tr>
+<tr>
+<td><strong>Durable execution engines</strong>（Temporal 等）</td>
+<td>设计早于 LLM agent，<strong>缺 streaming</strong>；步骤间引入 chatbot 可感的延迟；<strong>历史越长性能越退化</strong>——这对越来越长、越来越复杂的 agent 是个糟糕的赌注</td>
+</tr>
+</tbody></table>
+<p>结论：LLM 足够不同，需要给既有生产基础设施注入新思想，于是开建 LangGraph。</p>
+<h2 id="三、核心设计哲学（两大原则）"><a href="#三、核心设计哲学（两大原则）" class="headerlink" title="三、核心设计哲学（两大原则）"></a>三、核心设计哲学（两大原则）</h2><p>LangGraph 全部设计决策由两条原则驱动，这也是它区别于”抽象当道”的同类框架的根本：</p>
+<h3 id="原则一：我们不知道-AI-的未来"><a href="#原则一：我们不知道-AI-的未来" class="headerlink" title="原则一：我们不知道 AI 的未来"></a>原则一：我们不知道 AI 的未来</h3><p><strong>对未来做的假设越少越好。</strong> 唯一愿意固化的假设只有那三条本质认知：<strong>LLM 是 slow、flaky、open-ended 的</strong>。除此之外一律不假设，以保证框架在 1&#x2F;2&#x2F;3 年后仍然 relevant。</p>
+<h3 id="原则二：用起来应该像在写普通代码"><a href="#原则二：用起来应该像在写普通代码" class="headerlink" title="原则二：用起来应该像在写普通代码"></a>原则二：用起来应该像在写普通代码</h3><p>公开 API 尽量贴近”无框架代码”。<strong>对开发者代码施加的每一个要求，都必须由一个足够高价值的特性来证明其合理性</strong>，否则”跳过框架、直接裸写”的吸引力太大——任何框架最大的对手永远是”不用框架”。</p>
+<h3 id="这两条原则落地的两个关键决策"><a href="#这两条原则落地的两个关键决策" class="headerlink" title="这两条原则落地的两个关键决策"></a>这两条原则落地的两个关键决策</h3><ol>
+<li><p><strong>Runtime 与 Developer SDK 解耦</strong></p>
+<ul>
+<li><strong>Runtime（PregelLoop）</strong>：实现 6 大特性、规划计算图、执行。可独立演进、做性能优化、试验激进改动（如分布式执行）而不影响上层 API。</li>
+<li><strong>SDK</strong>：目前两套——<code>StateGraph</code> 与 imperative&#x2F;functional API。已成功引入 imperative SDK、废弃最早的”无共享状态的 Graph 接口”。</li>
+</ul>
+</li>
+<li><p><strong>6 大特性都是 opt-in 的积木</strong><br>开发者按需取用。例如 <code>interrupt()</code> 函数——human-in-the-loop 能力在你调用它之前完全不挡路。这让 LangGraph 成为<strong>低层级框架</strong>，在一片鼓吹”高级抽象”的同行中独树一帜。</p>
+</li>
+</ol>
+<h2 id="四、执行模型：Channels-Nodes-Execution-Loop"><a href="#四、执行模型：Channels-Nodes-Execution-Loop" class="headerlink" title="四、执行模型：Channels &#x2F; Nodes &#x2F; Execution Loop"></a>四、执行模型：Channels &#x2F; Nodes &#x2F; Execution Loop</h2><blockquote>
+<p>这是 LangGraph 最底层、最关键的架构设计——<strong>结构化、离散步骤（structured agents with discrete steps）</strong> 是其他一切（checkpointing、HITL）的基石。</p>
+</blockquote>
+<h3 id="4-1-为什么必须”结构化”"><a href="#4-1-为什么必须”结构化”" class="headerlink" title="4.1 为什么必须”结构化”"></a>4.1 为什么必须”结构化”</h3><p>单函数 + 一个大 while 循环固然可以写 agent，但你会<strong>失去 checkpointing 和 human-in-the-loop 的能力</strong>——因为（Python 生成器等）子例程的执行状态<strong>无法以可移植格式序列化、跨机器跨时间恢复</strong>。一旦把 agent 拆成多个离散步骤，就为持久化、中断、恢复打开了大门。</p>
+<h3 id="4-2-执行算法：基于-BSP-Pregel"><a href="#4-2-执行算法：基于-BSP-Pregel" class="headerlink" title="4.2 执行算法：基于 BSP&#x2F;Pregel"></a>4.2 执行算法：基于 BSP&#x2F;Pregel</h3><p>团队否决了”无算法”（早期 precursor 出现并发节点非确定性 bug），也否决了 DAG 算法（不支持循环），最终选中 <strong>BSP &#x2F; Pregel 算法</strong>，因为它提供<strong>确定性并发 + 完整支持循环</strong>。</p>
+<h3 id="4-3-三个核心抽象"><a href="#4-3-三个核心抽象" class="headerlink" title="4.3 三个核心抽象"></a>4.3 三个核心抽象</h3><table>
+<thead>
+<tr>
+<th>抽象</th>
+<th>定义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Channel（通道）</strong></td>
+<td>持有数据（任意 Python&#x2F;JS 类型），有 name 和当前 version（单调递增字符串）</td>
+</tr>
+<tr>
+<td><strong>Node（节点）</strong></td>
+<td>待执行的函数，<strong>订阅一个或多个 channel</strong>，channel 变化时触发执行</td>
+</tr>
+<tr>
+<td><strong>Input &#x2F; Output channel</strong></td>
+<td>若干 channel 映射为输入（写入起始值即触发订阅节点）和输出（执行停止时这些 channel 的值即返回值）</td>
+</tr>
+</tbody></table>
+<h3 id="4-4-执行循环（每个-iteration）"><a href="#4-4-执行循环（每个-iteration）" class="headerlink" title="4.4 执行循环（每个 iteration）"></a>4.4 执行循环（每个 iteration）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 选择本轮要跑的 node：比较当前 channel version 与各订阅者上次看到的 version</span><br><span class="line">2. 并行执行这些 node，每个拿到 state 的独立副本（互不影响）</span><br><span class="line">3. node 在本地副本上修改 state</span><br><span class="line">4. 所有 node 结束后，按确定性顺序把各副本的更新应用回对应 channel（保证无数据竞争），并 bump channel version</span><br></pre></td></tr></table></figure>
+
+<p><strong>停止条件</strong>：没有更多 node 可跑（所有 node 都已看到订阅 channel 的最新 version），或达到开发者设置的最大迭代步数。</p>
+<h2 id="五、六大特性如何在执行模型上落地"><a href="#五、六大特性如何在执行模型上落地" class="headerlink" title="五、六大特性如何在执行模型上落地"></a>五、六大特性如何在执行模型上落地</h2><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>实现要点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Parallelization</strong></td>
+<td>算法天生为”无数据竞争的并行”而设计；依赖允许时自动并行；各节点独立 state 副本；更新应用顺序<strong>不依赖谁先开始&#x2F;结束</strong>——保证执行顺序与延迟波动不影响最终输出（这对非确定性 LLM 尤其重要，使输出变异永不归咎于框架）</td>
+</tr>
+<tr>
+<td><strong>Streaming</strong></td>
+<td>结构化执行天然提供更多中间输出点；执行引擎<strong>无需开发者写额外代码</strong>即可在 node 内部与 step 边界收集流式输出；共 6 种 stream mode：<code>values</code> &#x2F; <code>updates</code> &#x2F; <code>messages</code> &#x2F; <code>tasks</code> &#x2F; <code>checkpoints</code> &#x2F; <code>custom</code>（chatbot 用 messages，长跑 agent 用 updates）</td>
+</tr>
+<tr>
+<td><strong>Checkpointing</strong></td>
+<td>保存的是<strong>序列化的 channel values</strong>（默认 MsgPack，可选加密）+ version strings + 每个 node 最近看到的 channel version 记录；可<strong>跨机器、跨任意时间恢复</strong>，不依赖某台机器上进程还活着</td>
+</tr>
+<tr>
+<td><strong>Human-in-the-loop</strong></td>
+<td>复用同一套 checkpointing 实现”预期中断”；比”保持 agent 运行等输入”强——后者在时间（等几个月）和规模（大量并发中断）上都无法 scale</td>
+</tr>
+<tr>
+<td><strong>Tracing</strong></td>
+<td>结构化步骤让 agent 进度清晰可查；原生集成 <strong>LangSmith</strong>（首代 LLM 观测平台）、<strong>LangGraph Studio</strong>（运行时调试），并可发 <strong>OTEL traces</strong></td>
+</tr>
+<tr>
+<td><strong>Task queue</strong></td>
+<td>超出 Python 库范畴，由 <strong>LangGraph Platform</strong> 提供</td>
+</tr>
+</tbody></table>
+<h2 id="六、性能画像（Linear-Constant-Scaling）"><a href="#六、性能画像（Linear-Constant-Scaling）" class="headerlink" title="六、性能画像（Linear &#x2F; Constant Scaling）"></a>六、性能画像（Linear &#x2F; Constant Scaling）</h2><p>作者强调：可靠性不能以延迟为代价。LangGraph 在 agent 的所有”尺寸变量”上<strong>扩展得非常优雅</strong>——这对”agent 越来越长、步数越来越多、状态越来越大”的未来是极好的位置。</p>
+<h3 id="6-1-关键尺寸变量"><a href="#6-1-关键尺寸变量" class="headerlink" title="6.1 关键尺寸变量"></a>6.1 关键尺寸变量</h3><ul>
+<li>node 数、edge 数、channel 数</li>
+<li>单步活跃 node 数</li>
+<li>调用历史长度（本次调用已执行的 step 数）</li>
+<li>thread 数（不同输入&#x2F;上下文的独立调用）</li>
+</ul>
+<h3 id="6-2-一次调用的四个动作及其复杂度"><a href="#6-2-一次调用的四个动作及其复杂度" class="headerlink" title="6.2 一次调用的四个动作及其复杂度"></a>6.2 一次调用的四个动作及其复杂度</h3><table>
+<thead>
+<tr>
+<th>动作</th>
+<th>含义</th>
+<th>关键结论</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Starting invocation</strong></td>
+<td>从存储拉最新 checkpoint 并反序列化</td>
+<td>对 node&#x2F;channel 是 <strong>O(n)</strong>，对 <strong>history 长度是 O(1)</strong>（只取最新 checkpoint，不重放历史），对 thread 数 O(1)</td>
+</tr>
+<tr>
+<td><strong>Planning a step</strong></td>
+<td>决定下一步跑哪些 node、准备输入</td>
+<td>对 <strong>node 数 O(1)</strong>（上一步存了 updated channels 列表，无需遍历所有 node），对 history O(1)</td>
+</tr>
+<tr>
+<td><strong>Running a step</strong></td>
+<td>执行各 node 代码</td>
+<td>对 <strong>node 总数 O(1)</strong>（只影响本步活跃 node），对 active nodes 线性</td>
+</tr>
+<tr>
+<td><strong>Finishing a step</strong></td>
+<td>应用 channel 更新、bump version、存 checkpoint</td>
+<td>对 node&#x2F;channel 线性，<strong>对 history 长度 O(1)</strong></td>
+</tr>
+</tbody></table>
+<p><strong>最关键的一点</strong>：<strong>所有动作对”调用历史长度”都是 O(1)</strong>。这与 durable execution engines（性能随历史退化）形成鲜明对比，是作者押注的核心赌注之一。</p>
+<h2 id="七、核心设计目标总结"><a href="#七、核心设计目标总结" class="headerlink" title="七、核心设计目标总结"></a>七、核心设计目标总结</h2><blockquote>
+<p><strong>Control（控制）</strong>：agent 严格按你的意图执行——通过结构化、确定性并发的执行模型保证输出变异不归咎于框架，并让你能在任意点插入审批&#x2F;中断&#x2F;time travel。</p>
+<p><strong>Durability（持久化&#x2F;可靠）</strong>：长跑、慢、flaky 的 LLM agent 也能在生产中可靠运行——通过 checkpointing（跨机器跨时间恢复）、task queue（可靠重试）、tracing（全程可观测）实现。</p>
+</blockquote>
+<hr>
+<h2 id="调研笔记"><a href="#调研笔记" class="headerlink" title="调研笔记"></a>调研笔记</h2><h3 id="这篇文章如何解释得物的技术选型"><a href="#这篇文章如何解释得物的技术选型" class="headerlink" title="这篇文章如何解释得物的技术选型"></a>这篇文章如何解释得物的技术选型</h3><p>得物 AI 工作流实践中选择 LangGraph 作为编排引擎，本文给出了一手的设计依据，关键对应点如下：</p>
+<ol>
+<li><p><strong>interrupt &#x2F; resume 的底层支撑</strong><br>得物方案中强调的”中断&#x2F;恢复”能力，本文揭示它<strong>不是临时实现的特性，而是 LangGraph 执行模型（structured + checkpointing）的自然产物</strong>——checkpoint 序列化了 channel values + version，可以跨机器、跨任意时间恢复。这解释了为什么得物可以放心地基于 LangGraph 做长流程审批、人工介入。</p>
+</li>
+<li><p><strong>为什么是 LangGraph 而非自研编排</strong><br>本文第 2 节明确否决了 DAG 框架（不支持循环）和 Temporal 类 durable engine（无 streaming、历史越长越慢）。得物的工作流天然有循环（重试、迭代），且对延迟敏感（用户体验），LangGraph 的 <strong>BSP&#x2F;Pregel + 对 history O(1)</strong> 正好命中痛点。</p>
+</li>
+<li><p><strong>“编排引擎”定位而非”agent 框架”</strong><br>得物把 LangGraph 当编排层，自己在上层做业务节点——这正好踩中 LangGraph 的”低层级框架”哲学（原则二：像写普通代码，6 大特性 opt-in）。作者原话：”<strong>LangGraph remaining relevant, so we’re happy with our approach</strong>“——低抽象换来了长期适用性。</p>
+</li>
+<li><p><strong>生产级 agent 的关键考量清单</strong><br>本文的 6 大特性（Parallelization &#x2F; Streaming &#x2F; Task queue &#x2F; Checkpointing &#x2F; HITL &#x2F; Tracing）可以直接作为得物方案”为什么需要 LangGraph”的论证矩阵——每一条都对应生产中的真实痛点。</p>
+</li>
+<li><p><strong>Control + Durability 作为选型口号</strong><br>得物对外讲”可靠、可控”时，可以直接引用本文的定义：control &#x3D; 结构化执行保证意图不跑偏；durability &#x3D; checkpoint + queue + tracing 让慢&#x2F;flaky 的 agent 也能稳定上线。</p>
+</li>
+</ol>
+<h3 id="延伸阅读线索（原文末尾相关内容）"><a href="#延伸阅读线索（原文末尾相关内容）" class="headerlink" title="延伸阅读线索（原文末尾相关内容）"></a>延伸阅读线索（原文末尾相关内容）</h3><ul>
+<li>Fault Tolerance in LangGraph: Retries, Timeouts, and Error Handlers</li>
+<li>How Lyft Built a Self-Serve AI Agent Platform for Customer Support with LangGraph and LangSmith</li>
+<li>From Token Streams to Agent Streams</li>
+</ul>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

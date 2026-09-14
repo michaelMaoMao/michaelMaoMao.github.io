@@ -1,0 +1,504 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="得物 AI 编程能力边界探索：基于 Claude Code 的 Spec Coding 项目实战（id=212）"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>得物 AI 编程能力边界探索：基于 Claude Code 的 Spec Coding 项目实战（id=212） | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>得物 AI 编程能力边界探索：基于 Claude Code 的 Spec Coding 项目实战（id=212）</h1><div class="article-container"><h1 id="得物-Spec-Coding-项目实战：用三层规范消除-AI-不确定性"><a href="#得物-Spec-Coding-项目实战：用三层规范消除-AI-不确定性" class="headerlink" title="得物 Spec Coding 项目实战：用三层规范消除 AI 不确定性"></a>得物 Spec Coding 项目实战：用三层规范消除 AI 不确定性</h1><blockquote>
+<p>一个工程师 + Claude Code，10 天从 0 到 1 搭建企业级中后台，2.5 万行净增代码、2,754 次工具调用、提效 36%。本文是 Spec 驱动三件套的<strong>项目实战层</strong>——把 id&#x3D;216 的工程化理论与 id&#x3D;213 的 SDD 工程落地，落到一个真实可量化的项目上,并给出 AI 编程的能力边界框架与三种失效模式。</p>
+</blockquote>
+<h2 id="元信息与一句话定位"><a href="#元信息与一句话定位" class="headerlink" title="元信息与一句话定位"></a>元信息与一句话定位</h2><ul>
+<li><strong>项目</strong>：企业级知识问答平台（中后台搭建），涵盖表格、表单、卡片列表、数据看板等核心场景，从零搭建全程 Claude Code 辅助。</li>
+<li><strong>核心命题</strong>：AI Coding 的本质不是”让 AI 写代码”，而是<strong>用结构化的规范和工作流把不确定性消除在执行之前</strong>——AI 在确定性空间高速执行,人维护那个确定性空间的边界。</li>
+<li><strong>一句话总结（原文）</strong>：规范是杠杆，AI 是力，Spec 工作流是支点。</li>
+<li><strong>在本系列的位置</strong>：Spec 驱动三件套的<strong>项目实战</strong>层——id&#x3D;216&#x3D;理论总论（为什么工程化），id&#x3D;213&#x3D;工程落地（怎么干），本文&#x3D;干成什么样（量化收益 + 能力边界 + 失效模式）。</li>
+</ul>
+<h2 id="一、核心问题与动机：为什么用-Spec-Coding"><a href="#一、核心问题与动机：为什么用-Spec-Coding" class="headerlink" title="一、核心问题与动机：为什么用 Spec Coding"></a>一、核心问题与动机：为什么用 Spec Coding</h2><h3 id="1-1-重新理解”AI-辅助编程”是什么"><a href="#1-1-重新理解”AI-辅助编程”是什么" class="headerlink" title="1.1 重新理解”AI 辅助编程”是什么"></a>1.1 重新理解”AI 辅助编程”是什么</h3><p>作者反对流行的”AI 是你的 Copilot”比喻，提出更精确的模型：</p>
+<blockquote>
+<p>AI 是一个<strong>极度服从、无限耐心、但没有内部业务知识常识</strong>的”顶级执行者”。</p>
+</blockquote>
+<p>三个关键特征：</p>
+<table>
+<thead>
+<tr>
+<th>特征</th>
+<th>含义</th>
+<th>双刃剑</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>极度服从</strong></td>
+<td>一字不差地执行规范，不会主动质疑”这样合理吗”</td>
+<td>规范越准确越可靠；规范有歧义，AI 会选”看起来合理”的解释而不是停下来问</td>
+</tr>
+<tr>
+<td><strong>无限耐心</strong></td>
+<td>34 个任务重构、9 组联调、跨会话恢复——AI 无摩擦成本</td>
+<td>208 次 TodoWrite 调用背后是 AI 持续更新进度、从不嫌烦</td>
+</tr>
+<tr>
+<td><strong>没有内部业务常识</strong></td>
+<td>不知道部署环境、不知道接口上周刚换版本、不知道交互做成这样用户会抱怨</td>
+<td>这是构建排障花费大量时间的根本原因</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-为什么需要-Spec-Coding"><a href="#1-2-为什么需要-Spec-Coding" class="headerlink" title="1.2 为什么需要 Spec Coding"></a>1.2 为什么需要 Spec Coding</h3><p>Spec Coding（规格驱动编码）核心思想：<strong>在写代码之前，先写规格文档</strong>。通过 openspec 工具，每个功能变更经历 <code>proposal → design → specs → tasks</code> 四阶段。</p>
+<p>三个实际价值：</p>
+<ol>
+<li><strong>减少返工</strong>：proposal 阶段明确为什么&#x2F;怎么做，避免实现完才发现方向不对</li>
+<li><strong>适合复杂功能</strong>：对跨多文件多层级的功能，tasks 分组让 AI 聚焦当前步骤</li>
+<li><strong>可审计</strong>：每个 Change 的完整决策链都留有记录，方便回溯</li>
+</ol>
+<h2 id="二、量化数据：2-754-次工具调用揭示了什么"><a href="#二、量化数据：2-754-次工具调用揭示了什么" class="headerlink" title="二、量化数据：2,754 次工具调用揭示了什么"></a>二、量化数据：2,754 次工具调用揭示了什么</h2><h3 id="2-1-总览数据（来自-109-个-jsonl-会话文件统计）"><a href="#2-1-总览数据（来自-109-个-jsonl-会话文件统计）" class="headerlink" title="2.1 总览数据（来自 109 个 .jsonl 会话文件统计）"></a>2.1 总览数据（来自 109 个 .jsonl 会话文件统计）</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>数据</th>
+<th>口径</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>开发周期</td>
+<td>10 天 &#x2F; 4 个工作阶段</td>
+<td>项目从 0 到 1 全程 Claude Code 辅助</td>
+</tr>
+<tr>
+<td>人工指令</td>
+<td>217 条</td>
+<td>跨 109 个会话</td>
+</tr>
+<tr>
+<td>净增代码</td>
+<td>25,546 行（约 2.5 万）</td>
+<td>项目最终代码量</td>
+</tr>
+<tr>
+<td>工具调用</td>
+<td>2,754 次</td>
+<td>AI 自主发起</td>
+</tr>
+<tr>
+<td>提效</td>
+<td>36%</td>
+<td>原文给出的整体提效口径</td>
+</tr>
+<tr>
+<td>覆盖文件</td>
+<td>205 个</td>
+<td>接口&#x2F;类型&#x2F;页面&#x2F;组件</td>
+</tr>
+<tr>
+<td>联调接口</td>
+<td>39 个（其中案例二单日 6 个零返工）</td>
+<td>MCP 直连文档场景</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-工具调用分布（揭示-AI-的工作方式）"><a href="#2-2-工具调用分布（揭示-AI-的工作方式）" class="headerlink" title="2.2 工具调用分布（揭示 AI 的工作方式）"></a>2.2 工具调用分布（揭示 AI 的工作方式）</h3><ul>
+<li>文件读取：738 次</li>
+<li>代码编辑：550 次</li>
+<li>终端命令：662 次</li>
+<li>任务进度标记（TodoWrite）：208 次</li>
+<li>合计：2,754 次，覆盖研发日常全部动作类型</li>
+</ul>
+<h3 id="2-3-开发时间线（4-个阶段）"><a href="#2-3-开发时间线（4-个阶段）" class="headerlink" title="2.3 开发时间线（4 个阶段）"></a>2.3 开发时间线（4 个阶段）</h3><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>工作日</th>
+<th>指令数</th>
+<th>重点</th>
+<th>AI 介入程度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>设计</strong></td>
+<td>前置</td>
+<td>—</td>
+<td>Cursor + 设计规范 Rules，从概念沟通→高保真 HTML 设计稿→标准 PRD</td>
+<td>AI 扮演 PM&#x2F;UI&#x2F;文档三种角色</td>
+</tr>
+<tr>
+<td><strong>项目搭建</strong></td>
+<td>2 天</td>
+<td>20 条</td>
+<td>问答式交互，搭建基础设施、配置环境、打通前后端数据链路</td>
+<td>中（AI 给方案，人决策）</td>
+</tr>
+<tr>
+<td><strong>功能开发</strong></td>
+<td>4 天</td>
+<td>89 条</td>
+<td>引入 Spec Coding，约 <strong>80% 功能代码</strong>在此阶段完成</td>
+<td>高（spec 共同定义 → AI 自主编码）</td>
+</tr>
+<tr>
+<td><strong>打磨部署</strong></td>
+<td>4 天</td>
+<td>108 条</td>
+<td>功能迭代、首页重构、生产部署排障</td>
+<td>高（含 AI 最受限的一天）</td>
+</tr>
+</tbody></table>
+<h2 id="三、关键设计：三层规范体系（约束-示范-视觉）"><a href="#三、关键设计：三层规范体系（约束-示范-视觉）" class="headerlink" title="三、关键设计：三层规范体系（约束 + 示范 + 视觉）"></a>三、关键设计：三层规范体系（约束 + 示范 + 视觉）</h2><h3 id="3-1-三层结构的设计思想"><a href="#3-1-三层结构的设计思想" class="headerlink" title="3.1 三层结构的设计思想"></a>3.1 三层结构的设计思想</h3><p>本项目规范体系是<strong>三个层次的协同约束</strong>，每层解决不同的问题：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">第一层：约束层（.claude/rules/）       ← 告诉 AI「禁止什么、必须怎样」</span><br><span class="line">第二层：示范层（.claude/code-design/） ← 告诉 AI「标准产出长什么样」</span><br><span class="line">第三层：视觉层（.claude/ui-design/）   ← 告诉 AI「页面应该长什么样」</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么需要三层</strong>：只有”约束层”时，AI 知道规则但缺乏参考实现，容易在复杂场景下产生<strong>符合规则但不符合团队风格</strong>的代码。加入”示范层”和”视觉层”后，AI 可以直接对齐团队的标准产出，减少”虽然合法但不地道”的代码。</p>
+<h3 id="3-2-第一层：约束层（-claude-rules-）——-7-个规范文件"><a href="#3-2-第一层：约束层（-claude-rules-）——-7-个规范文件" class="headerlink" title="3.2 第一层：约束层（.claude&#x2F;rules&#x2F;）—— 7 个规范文件"></a>3.2 第一层：约束层（.claude&#x2F;rules&#x2F;）—— 7 个规范文件</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.claude/rules/</span><br><span class="line">├── ts.md          # TypeScript 规范（禁止 any、使用可选链等）</span><br><span class="line">├── code-names.md  # 命名规范（kebab-case/camelCase/PascalCase）</span><br><span class="line">├── comment.md     # 注释规范（JSDoc、@ai-context/@ai-rules 文件头）</span><br><span class="line">├── lint.md        # 代码风格（单引号、文件末尾换行）</span><br><span class="line">├── style.md       # 样式规范（Tailwind CSS、less 文件）</span><br><span class="line">├── pages.md       # 页面目录结构规范（constants/services/hooks/components 分层）</span><br><span class="line">└── service.md     # API 接口生成规范（fetch&#123;Name&#125;Api 命名、UniversalResp 泛型）</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-第二层：示范层（-claude-code-design-）——-标准模板代码"><a href="#3-3-第二层：示范层（-claude-code-design-）——-标准模板代码" class="headerlink" title="3.3 第二层：示范层（.claude&#x2F;code-design&#x2F;）—— 标准模板代码"></a>3.3 第二层：示范层（.claude&#x2F;code-design&#x2F;）—— 标准模板代码</h3><p>预置项目常见场景的<strong>完整标准模板</strong>，AI 生成新页面时可直接参照（后续可切换为 skills）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">.claude/code-design/</span><br><span class="line">├── pro-table/          # 通用列表页（搜索/分页/批量操作/行操作）</span><br><span class="line">├── pro-form/           # 通用表单页（创建/编辑双模式/字段验证）</span><br><span class="line">├── editable-pro-table/ # 可编辑表格（行内编辑/添加/保存/删除）</span><br><span class="line">├── drawer/             # 抽屉组件（标准打开/关闭逻辑）</span><br><span class="line">├── compontent/         # 通用组件（README/Props 定义/使用示例）</span><br><span class="line">└── utils/              # 工具函数模板</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>示范代码不只是”看个格式”。例：开发者说”参考 .claude&#x2F;code-design&#x2F;pro-table 生成知识治理列表页”，AI 直接继承这套模式，一次就能生成符合团队风格的代码，无需多轮调整。</p>
+</blockquote>
+<h3 id="3-4-第三层：视觉层（-claude-ui-design-）——-HTML-设计稿"><a href="#3-4-第三层：视觉层（-claude-ui-design-）——-HTML-设计稿" class="headerlink" title="3.4 第三层：视觉层（.claude&#x2F;ui-design&#x2F;）—— HTML 设计稿"></a>3.4 第三层：视觉层（.claude&#x2F;ui-design&#x2F;）—— HTML 设计稿</h3><p>存放 HTML 设计稿，覆盖主要页面视觉参考：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.claude/ui-design/</span><br><span class="line">├── knowledge-spaces.html  # 知识空间列表页</span><br><span class="line">├── search-strategy.html   # 检索配置页</span><br><span class="line">├── space-detail.html      # 空间详情页</span><br><span class="line">└── ...其他设计稿</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>实践结论：提供 HTML 设计稿后，AI 生成的 UI 与设计意图的吻合度明显高于纯文字描述，尤其是布局结构、颜色方案、间距配置等细节。</p>
+</blockquote>
+<h3 id="3-5-三层规范的实际效果"><a href="#3-5-三层规范的实际效果" class="headerlink" title="3.5 三层规范的实际效果"></a>3.5 三层规范的实际效果</h3><p><strong>正面效果（规范被遵循的案例）</strong>：</p>
+<ul>
+<li><strong>接口命名一致性</strong>：所有接口函数均以 <code>fetch&#123;Name&#125;Api</code> 命名，类型以 <code>I&#123;Name&#125;Req/Res</code> 格式，205 个文件保持高度一致</li>
+<li><strong>目录分层被遵守</strong>：<code>constants/</code>、<code>services/</code>、<code>hooks/</code>、<code>components/</code> 分层在每个新页面中都被正确创建</li>
+<li><strong>代码模板被继承</strong>：CRUD 页面均参照了 pro-table 模板的 hooks 分离方式</li>
+<li><strong>使用可选链</strong>：几乎所有数据访问都使用了 <code>?.</code> 和 <code>??</code>，有效避免运行时报错</li>
+</ul>
+<p><strong>需要人工干预的案例</strong>：</p>
+<ul>
+<li>2&#x2F;24，AI 将知识空间列表所有代码写在单文件中，未按规范分层 → 一条追问后重构为正确结构</li>
+<li>2&#x2F;27，AI 错误地使用了 <code>.less</code> 后缀（项目实际配置 SCSS） → 收到错误提示后立即修正</li>
+<li>出现 antd v5 废弃 API（<code>destroyOnClose</code>、<code>dropdownStyle</code>），AI 习惯使用训练数据中更常见的旧 API → 需通过报警信息触发修正</li>
+</ul>
+<p><strong>核心结论</strong>：规范体系对 AI 的约束是有效的，但<strong>规范文件只是”约束”而非”能力”</strong>——只有约束层时，AI 知道不能做什么但复杂场景仍可能不够地道；加入示范层和视觉层后，AI 有了对齐锚点，输出质量和一致性明显提升。</p>
+<h2 id="四、典型案例（四个，覆盖-AI-全部能力面）"><a href="#四、典型案例（四个，覆盖-AI-全部能力面）" class="headerlink" title="四、典型案例（四个，覆盖 AI 全部能力面）"></a>四、典型案例（四个，覆盖 AI 全部能力面）</h2><h3 id="4-1-案例一：AI-驱动产品设计（一人分饰三角）"><a href="#4-1-案例一：AI-驱动产品设计（一人分饰三角）" class="headerlink" title="4.1 案例一：AI 驱动产品设计（一人分饰三角）"></a>4.1 案例一：AI 驱动产品设计（一人分饰三角）</h3><p><strong>背景</strong>：传统 0→1 企业级知识问答平台需要 PM（需求+PRD）+ UI 设计师（交互+高保真稿）+ 工程师（编码）三个角色。本案例让 AI 在不同阶段扮演不同角色，一个工程师覆盖全部职责。</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>AI 扮演</th>
+<th>实现机制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>产品经理</td>
+<td>「首席产品专家」Persona 提示词植入 Rules</td>
+<td>把 AI 从工程师的”急于执行”模式切换为 PM 的”先想清楚”模式</td>
+</tr>
+<tr>
+<td>UI 设计师</td>
+<td>在 Rules 中定义设计规范</td>
+<td>对话式生成逐页产出<strong>高保真 HTML 文件</strong>（不是源码）</td>
+</tr>
+<tr>
+<td>文档生成</td>
+<td>基于 PM 角色</td>
+<td>将 HTML 设计稿作为上下文，生成精确到组件行为级别的 PRD</td>
+</tr>
+</tbody></table>
+<p><strong>关键产出</strong>：一套可直接用于开发对齐的视觉参考 + 研发可读的 PRD，也是后续 AI 生成代码时的重要上下文来源。</p>
+<h3 id="4-2-案例二：SDD-驱动前端功能研发（SDD-MCP-联调提效）"><a href="#4-2-案例二：SDD-驱动前端功能研发（SDD-MCP-联调提效）" class="headerlink" title="4.2 案例二：SDD 驱动前端功能研发（SDD + MCP 联调提效）"></a>4.2 案例二：SDD 驱动前端功能研发（SDD + MCP 联调提效）</h3><p><strong>场景</strong>：在已有系统上增量交付「定时任务管理」完整模块，对接 6 个后端接口。这是 <strong>SDD 工作流第一次被完整运用于新功能模块开发</strong>，也是验证「SDD + MCP」前后端联调提效的关键场景。</p>
+<p><strong>三个维度的执行结果</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>页面功能开发</td>
+<td><code>opsx:new</code> 到 <code>archive</code> 全流程，人工指令 &lt; 10 条，<strong>AI 代码占比 100%</strong>，交付完整任务管理模块（独立路由 + 完整 CRUD + 执行记录 + 检索结果）</td>
+</tr>
+<tr>
+<td>前后端联调</td>
+<td>SDD + MCP 路径：接口 URL → MCP 直连文档 → 一次性获取字段&#x2F;枚举&#x2F;必填项 → 接口文件一次生成 → 联调一次通过，<strong>6 个接口零联调返工</strong></td>
+</tr>
+<tr>
+<td>研发效率</td>
+<td>同日额外交付两个完整模块，<strong>3 个独立完整模块单日全部开发完成，按纯人工开发当天人效提升 3 倍</strong></td>
+</tr>
+</tbody></table>
+<h3 id="4-3-案例三：SDD-驱动系统重构（在活体系统上动手术）"><a href="#4-3-案例三：SDD-驱动系统重构（在活体系统上动手术）" class="headerlink" title="4.3 案例三：SDD 驱动系统重构（在活体系统上动手术）"></a>4.3 案例三：SDD 驱动系统重构（在活体系统上动手术）</h3><p><strong>重构与新功能的根本差异</strong>：</p>
+<blockquote>
+<ul>
+<li>新功能开发是”从无到有”：AI 可以大胆生成，错了删掉重来。</li>
+<li>重构是”在活体系统上动手术”：高风险对 AI 提出截然不同的要求——不仅要知道<strong>改什么</strong>，更要知道<strong>不能改什么</strong>，以及<strong>按什么顺序改</strong>。</li>
+</ul>
+<p>SDD 的价值正在于此：在动代码之前，把这三件事全部写清楚。</p>
+</blockquote>
+<p><strong>知识问答首页重构案例</strong>：</p>
+<ul>
+<li><strong>架构债务</strong>：大量首页业务组件与公共组件混放、<code>useChat</code> 导出 20+ 方法（4 种无关职责混合）、<code>ChatInterface</code> 接收 17 个 props（参数 3 层传递）</li>
+<li><strong>执行 TASKS</strong>：9 组 34 个子任务，从「grep 确认组件当前归属」→「按新分层迁移」→「更新所有 import 路径」→「tsc 类型检查」→「冒烟验证」，每一步有明确输入和验收标准</li>
+<li><strong>执行结果</strong>：34 个任务全部完成（含 4 个验证任务），AI 全程独立执行，人工干预 &lt; 5 条指令；7 个业务组件与公共组件完成解耦，<code>useChat</code> 拆为 3 个单职责 hook，<code>ChatInterface</code> 从 17 个 props 缩减至 6-8 个</li>
+</ul>
+<h3 id="4-4-案例四：复杂问题排障（AI-的能力边界）"><a href="#4-4-案例四：复杂问题排障（AI-的能力边界）" class="headerlink" title="4.4 案例四：复杂问题排障（AI 的能力边界）"></a>4.4 案例四：复杂问题排障（AI 的能力边界）</h3><p><strong>场景</strong>：测试环境构建失败，过程约 <strong>4 小时、7 个会话、15+ 次方案尝试、59 条指令</strong>——整个项目单日指令最多的一天，也是 <strong>AI 独立解决能力最受限的一天</strong>。</p>
+<p><strong>关键特征：AI 每次分析都是正确的，但问题仍无法解决</strong>——问题不在 AI 分析能力，而在问题的结构性特征超出 AI 的信息范围：</p>
+<table>
+<thead>
+<tr>
+<th>结构性障碍</th>
+<th>具体表现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>云服务器构建时发生，本地无法复现</strong></td>
+<td>每次验证必须提交代码等待 CI（一轮约 10 分钟），AI 分析的是日志截图，无法感知”现在的 CI 环境还有哪些隐性配置”</td>
+</tr>
+<tr>
+<td><strong>多根因互相掩盖</strong></td>
+<td>解决一层才暴露下一层；AI 每次分析都正确，但只分析了当前暴露的那一层，问题全貌无法被单次分析覆盖</td>
+</tr>
+<tr>
+<td><strong>隐性行为无文档，根因藏在依赖源码内部</strong></td>
+<td>Prisma <code>postinstall</code> 境外下载没有任何显式错误，AI 不得不深入阅读 <code>node_modules</code> 源码<strong>第 2319 行</strong>才能发现根因</td>
+</tr>
+</tbody></table>
+<p><strong>最终确认的三个根因</strong>：</p>
+<ol>
+<li><strong><code>.npmrc</code> 历史副作用</strong>：早期为跳过 <code>@next/swc-darwin-arm64</code> 在 Linux 下载而加入的 <code>omit=optional</code>，无意间也跳过了 <code>@tailwindcss/oxide-linux-x64-gnu</code>（Tailwind v4 的 native binding），<code>postinstall</code> 陷入循环等待</li>
+<li><strong>Prisma v6 境外下载沉默卡死</strong>：AI 需阅读 <code>node_modules/@prisma/fetch-engine/dist/index.js</code> 第 2319 行才能发现——<code>postinstall</code> 不报错、不超时，只是无限等待</li>
+<li><strong>pnpm 跨平台 lockfile 不一致</strong>：macOS arm64 生成的 lockfile 不含 Linux x64 的 native package；切回 npm 则 lockfile 被忽略，安装结果每次不同</li>
+</ol>
+<p><strong>最终解法（4 小时探索后）</strong>：</p>
+<ul>
+<li>锁定 <code>tailwindcss@4.1.11</code>，配置 <code>PRISMA_ENGINES_MIRROR=https://registry.npmmirror.com/-/binary/prisma</code></li>
+<li>统一使用 pnpm，CI 命令同步更新，删除 <code>.npmrc</code> 中的 <code>omit=optional</code></li>
+</ul>
+<h2 id="五、MCP-工具：消除信息断层"><a href="#五、MCP-工具：消除信息断层" class="headerlink" title="五、MCP 工具：消除信息断层"></a>五、MCP 工具：消除信息断层</h2><p>AI 辅助前端开发中，有两类<strong>高频信息断层</strong>：</p>
+<h3 id="5-1-MCP-一：接口文档直连"><a href="#5-1-MCP-一：接口文档直连" class="headerlink" title="5.1 MCP 一：接口文档直连"></a>5.1 MCP 一：接口文档直连</h3><ul>
+<li><strong>断层</strong>：接口文档在 API 平台，AI 无法直接访问，只能靠用户手工复制字段，易遗漏、版本不一致</li>
+<li><strong>能力</strong>：AI 根据接口 URL 自动拉取完整接口文档——入参字段、出参结构、枚举值、必填项；服务端接口未生效之前支持同步生成 mock 数据</li>
+<li><strong>数据</strong>：累计被调用 21 次，完成 39 个接口联调，覆盖几乎所有接口的初次接入和更新迭代</li>
+<li><strong>质量</strong>：<code>interface.ts</code> 类型定义质量非常高，字段注释完整，无需人工校对</li>
+</ul>
+<h3 id="5-2-MCP-二：飞书云文档直读"><a href="#5-2-MCP-二：飞书云文档直读" class="headerlink" title="5.2 MCP 二：飞书云文档直读"></a>5.2 MCP 二：飞书云文档直读</h3><ul>
+<li><strong>断层</strong>：PRD、设计文档存在飞书云文档中，每次引用都需要用户打开→复制→粘贴到对话框，打断思路</li>
+<li><strong>能力</strong>：AI 直接读取飞书云文档内容（PRD、设计说明、技术文档等），无需用户手工打开→复制→粘贴</li>
+</ul>
+<blockquote>
+<p>与 id&#x3D;217 Galaxy MCP 同源——都是用 MCP 消除”AI 看不到外部系统”的信息孤岛。</p>
+</blockquote>
+<h2 id="六、AI-编程的能力边界框架（核心洞察）"><a href="#六、AI-编程的能力边界框架（核心洞察）" class="headerlink" title="六、AI 编程的能力边界框架（核心洞察）"></a>六、AI 编程的能力边界框架（核心洞察）</h2><h3 id="6-1-按需求颗粒度选择协作模式"><a href="#6-1-按需求颗粒度选择协作模式" class="headerlink" title="6.1 按需求颗粒度选择协作模式"></a>6.1 按需求颗粒度选择协作模式</h3><blockquote>
+<p>真实项目中并不是所有需求都值得写一份 Spec。需根据需求颗粒度选择协作模式：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>颗粒度</th>
+<th>场景</th>
+<th>策略</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>小颗粒</strong></td>
+<td>改文案、修显隐、调 CSS 间距</td>
+<td>对话框即扫即改（Cursor Chat）</td>
+<td>沟通成本低于编写规范的成本，AI 即时反馈效率最高</td>
+</tr>
+<tr>
+<td><strong>中颗粒标准化</strong></td>
+<td>标准 CRUD 页面、简单业务组件</td>
+<td>基于预设 Rules&#x2F;Skills 生成（如 <code>pro-table.mdc</code>）</td>
+<td>需求有强烈”模式感”，规则定义清晰 AI 即可基于模板高质量输出</td>
+</tr>
+<tr>
+<td><strong>中大颗粒复杂</strong></td>
+<td>重构核心逻辑、新增复杂业务逻辑模块、无参考代码的新功能</td>
+<td><strong>OpenSpec 标准流（SDD）</strong></td>
+<td>业务逻辑复杂时 AI 极易幻觉或需求偏移，Spec 强制”先设计后编码”保证每步在既定轨道上</td>
+</tr>
+</tbody></table>
+<h3 id="6-2-AI-失效的三种模式（可归类，不是随机的）"><a href="#6-2-AI-失效的三种模式（可归类，不是随机的）" class="headerlink" title="6.2 AI 失效的三种模式（可归类，不是随机的）"></a>6.2 AI 失效的三种模式（可归类，不是随机的）</h3><table>
+<thead>
+<tr>
+<th>失效模式</th>
+<th>表现</th>
+<th>发生频率</th>
+<th>应对</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>模式一：规范真空</strong></td>
+<td>任务涉及领域没有规范约束，AI 自行填充”合理默认值”；代码功能正确但风格&#x2F;结构偏离团队约定</td>
+<td>高（尤其新功能开发初期）</td>
+<td>在 <code>CLAUDE.md</code> 或 <code>code-design</code> 中补充对应规范，<strong>一次修复全局生效</strong></td>
+</tr>
+<tr>
+<td><strong>模式二：信息孤岛</strong></td>
+<td>AI 掌握的信息是当前会话快照，看不到系统外状态；本地正常 CI 失败；AI 分析每次都对但解的都是当前暴露的问题</td>
+<td>低，但代价高</td>
+<td>跨平台&#x2F;跨环境的依赖要在架构设计阶段提前锁定；环境差异要写成规范前置处理</td>
+</tr>
+<tr>
+<td><strong>模式三：任务目标模糊</strong></td>
+<td>AI 把”该问人的问题”当成”执行问题”来解决；用户说”优化一下首页”，AI 悄悄改了组件结构而不是先澄清目标</td>
+<td>中</td>
+<td>Spec 工作流的 proposal 阶段强制要求先描述「Why」，避免 AI 自行填充目标</td>
+</tr>
+</tbody></table>
+<h2 id="七、开发者角色的重构"><a href="#七、开发者角色的重构" class="headerlink" title="七、开发者角色的重构"></a>七、开发者角色的重构</h2><p>AI Coding 不是让开发者”消失”，而是让开发者的工作<strong>向上迁移</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>新核心竞争力</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>规范设计能力</strong></td>
+<td>能写出让 AI 可靠执行的规范，价值比能写出同等功能代码更高</td>
+</tr>
+<tr>
+<td><strong>系统性思维</strong></td>
+<td>生产构建排障经历说明，AI 可以帮你解决每个局部问题，但<strong>无法帮你看到真实业务全局</strong></td>
+</tr>
+<tr>
+<td><strong>质量意识前移</strong></td>
+<td>过去 Code Review 在代码写完后进行，现在需要在<strong>方案设计&#x2F;任务执行阶段</strong>就介入，而不是等 AI 执行完再纠错</td>
+</tr>
+</tbody></table>
+<h2 id="八、可借鉴点"><a href="#八、可借鉴点" class="headerlink" title="八、可借鉴点"></a>八、可借鉴点</h2><ol>
+<li><strong>三层规范体系（约束+示范+视觉）是 CLAUDE.md&#x2F;Rules 的进阶版</strong>——光有约束不够，必须给”标准产出长什么样”的锚点。可直接用于评估任何 AI Coding 规范体系的完备度。</li>
+<li><strong>Spec 不是银弹，按颗粒度选择</strong>——小颗粒对话、中颗粒 Rules、中大颗粒 SDD。避免”所有需求都写 Spec”的过度工程化。</li>
+<li><strong>AI 失效三模式可直接套用</strong>——规范真空&#x2F;信息孤岛&#x2F;目标模糊，是任何 AI Coding 实践都会遇到的三类失效，应对策略可复用。</li>
+<li><strong>MCP 是消除信息孤岛的关键基础设施</strong>——接口文档、飞书文档直连，与 id&#x3D;217 Galaxy MCP 同源，是”AI 看到外部系统”的统一机制。</li>
+<li><strong>SDD + MCP 组合拳</strong>——案例二验证了”SDD 定义任务 + MCP 直连外部信息”的组合，可实现 6 个接口零联调返工。</li>
+<li><strong>重构 vs 新功能差异化策略</strong>——重构是”在活体系统上动手术”，SDD 的价值在于事先把”改什么&#x2F;不改什么&#x2F;按什么顺序改”三件事写清楚。</li>
+<li><strong>质量意识前移</strong>——Code Review 从代码后移到方案设计&#x2F;任务执行阶段，这是 AI 时代工程师的新工作方式。</li>
+</ol>
+<h2 id="九、与已挖研究的关系（Spec-驱动三件套）"><a href="#九、与已挖研究的关系（Spec-驱动三件套）" class="headerlink" title="九、与已挖研究的关系（Spec 驱动三件套）"></a>九、与已挖研究的关系（Spec 驱动三件套）</h2><p>本文与 id&#x3D;216 OpenSpec 理论总论、id&#x3D;213 Claude Code 工作流工程落地，构成完整的 Spec 驱动知识三角：</p>
+<table>
+<thead>
+<tr>
+<th>文档</th>
+<th>侧重</th>
+<th>角色</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>id&#x3D;216</strong></td>
+<td><strong>理论总论 + 工具解构</strong></td>
+<td>为什么必须工程化（上下文工程 + SDD 范式论证 + DORA&#x2F;GPT-4o 数据）</td>
+</tr>
+<tr>
+<td><strong>id&#x3D;213</strong></td>
+<td><strong>工程落地</strong></td>
+<td>怎么干（模型插拔 + 多 Agent 主从 + SDD 三阶段）</td>
+</tr>
+<tr>
+<td><strong>id&#x3D;212（本文）</strong></td>
+<td><strong>项目实战</strong></td>
+<td>干成什么样（量化收益 + 能力边界 + 失效模式）</td>
+</tr>
+</tbody></table>
+<p><strong>三者的统一内核</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">规格（Spec/Intent）— 锁定意图，消除模糊</span><br><span class="line">   ↓</span><br><span class="line">代理（Agent/CC）— 受控执行 + 自动验证</span><br><span class="line">   ↓</span><br><span class="line">沉淀（Archive/Memory）— 规格回写，组织资产化</span><br></pre></td></tr></table></figure>
+
+<p><strong>具体呼应点</strong>：</p>
+<ul>
+<li>本文的「三层规范（约束+示范+视觉）」&#x3D; id&#x3D;216 的「CLAUDE.md 持久约束 + Skill&#x2F;MCP 组织资产」的具体落地——示范层对应 id&#x3D;216 的 Skill，视觉层是 id&#x3D;216 未覆盖的补充</li>
+<li>本文的「AI 失效三模式」&#x3D; id&#x3D;216 的「上下文中毒 + 意图模糊」失效机制的<strong>项目级实证</strong>——规范真空≈上下文不足，信息孤岛≈上下文中毒，目标模糊≈意图模糊</li>
+<li>本文案例四「构建排障 4 小时」&#x3D; id&#x3D;216「跨平台跨环境依赖要在架构设计阶段提前锁定」的血泪教训——.npmrc 跨平台副作用、pnpm lockfile 不一致正是典型的环境差异问题</li>
+<li>本文「SDD + MCP 零联调返工」&#x3D; id&#x3D;217「Galaxy MCP 直连数仓」的同源机制——都是用 MCP 消除信息断层</li>
+<li>本文「按颗粒度选协作模式」与 id&#x3D;213「按场景选型&#x2F;模型插拔」思路一致——都是反对一刀切，按需求特征匹配工具</li>
+<li>本文的「proposal → design → specs → tasks」四阶段 &#x3D; id&#x3D;213 的「proposal → apply → archive」三阶段 &#x3D; id&#x3D;216 的 OpenSpec 工件体系——同一 SDD 内核的不同切片</li>
+</ul>
+<p><strong>对得物选型主线的印证</strong>：本文进一步坐实”按场景选型（Spec&#x2F;Rules&#x2F;对话）+ 确定性机制锁定（三层规范 + Spec 强制 + 验证任务）+ 模型只做语义感知”——三层规范是”意图层”的确定性锁定，SDD 的 tasks.md 是”执行层”的确定性锁定，二者合力把模型框在”只做语义感知”的安全区。</p>
+<p><strong>与你的 flow-deep&#x2F;planning-with-files 同源</strong>：</p>
+<ul>
+<li>本文的「proposal → tasks」对应 flow-deep Stage 3 规划 &#x2F; planning-with-files 的 task_plan.md</li>
+<li>本文的「tasks 执行 + 验证任务」对应 flow-deep Stage 4 执行 + Stage 5 验证</li>
+<li>本文的「proposal 阶段强制描述 Why」对应你 CLAUDE.md 的「thinking 分析 + 需求拆分步骤」</li>
+<li>本文的「质量意识前移到方案设计阶段」对应 flow-deep 的「先优化 Prompt → 深度思考 → 规划 → 执行」管道顺序</li>
+</ul>
+<h2 id="十、局限与待验证"><a href="#十、局限与待验证" class="headerlink" title="十、局限与待验证"></a>十、局限与待验证</h2><ol>
+<li><strong>单项目样本</strong>：所有数据来自一个 0→1 项目，增量改造&#x2F;大型遗留系统的适用性未验证——案例三的重构虽有验证但只覆盖首页一个场景</li>
+<li><strong>提效 36% 口径未拆解</strong>：未说明对比基线（同等功能纯人工开发预估工时？历史同类项目？），36% 是整体还是某阶段，难以直接复用为预测模型</li>
+<li><strong>三层规范的维护成本未量化</strong>：7 个规范文件 + 6 类示范模板 + N 个 HTML 设计稿是手动维护的，长期演进成本（规范过期、模板失同步）未讨论</li>
+<li><strong>“AI 代码占比 100%”需谨慎解读</strong>：占比按代码行计还是按决策权计？spec 是人写的，决策是人审的，AI 只做执行——严格说”100% AI 代码”是指”AI 敲键盘”而非”AI 决定做什么”</li>
+<li><strong>构建排障案例的普适性</strong>：4 小时排障解出的是具体的 Prisma&#x2F;Tailwind v4&#x2F;pnpm 组合问题，方法论（多根因互相掩盖&#x2F;隐性行为无文档）可复用，但具体技术根因不具普适性</li>
+<li><strong>MCP 工具的实现细节缺失</strong>：接口文档直连 MCP、飞书文档 MCP 的具体实现（是通用 MCP 还是自研）未说明，复用需自行实现</li>
+<li><strong>能力边界框架的颗粒度</strong>：三颗粒度（小&#x2F;中&#x2F;中大）+ 三失效模式（真空&#x2F;孤岛&#x2F;模糊）是经验归纳而非严格分类，边界存在灰色地带（如”中等颗粒但有复杂业务逻辑”该用 Rules 还是 SDD？）</li>
+</ol>
+<h2 id="十一、未来方向（原文展望）"><a href="#十一、未来方向（原文展望）" class="headerlink" title="十一、未来方向（原文展望）"></a>十一、未来方向（原文展望）</h2><ul>
+<li><strong>规范体系的结构化积累</strong>：建立”踩坑→提炼规范→自动追加”的闭环，目前 7 条规范手动维护</li>
+<li><strong>MCP 工具链的纵向延伸</strong>：从接口文档&#x2F;飞书文档扩展到设计稿、测试用例、发布平台、日志平台，形成完整 AI Coding 链路</li>
+<li><strong>多 Agent 并行开发</strong>：大型任务执行等待时间较长，可尝试多 Agent 并发，同时开发不同功能模块（呼应 id&#x3D;213 的多 Agent 主从架构）</li>
+</ul>
+<hr>
+<h2 id="附：关键数据速查表"><a href="#附：关键数据速查表" class="headerlink" title="附：关键数据速查表"></a>附：关键数据速查表</h2><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>开发周期</td>
+<td>10 天（4 阶段：设计&#x2F;搭建 2 天&#x2F;开发 4 天&#x2F;打磨部署 4 天）</td>
+</tr>
+<tr>
+<td>人工指令</td>
+<td>217 条</td>
+</tr>
+<tr>
+<td>净增代码</td>
+<td>25,546 行</td>
+</tr>
+<tr>
+<td>工具调用</td>
+<td>2,754 次（读 738 &#x2F; 编辑 550 &#x2F; 终端 662 &#x2F; TodoWrite 208）</td>
+</tr>
+<tr>
+<td>会话文件</td>
+<td>109 个 .jsonl</td>
+</tr>
+<tr>
+<td>覆盖文件</td>
+<td>205 个</td>
+</tr>
+<tr>
+<td>联调接口</td>
+<td>39 个</td>
+</tr>
+<tr>
+<td>整体提效</td>
+<td>36%</td>
+</tr>
+<tr>
+<td>案例二单日</td>
+<td>3 模块 &#x2F; 人效提升 3 倍 &#x2F; 6 接口零返工</td>
+</tr>
+<tr>
+<td>案例三重构</td>
+<td>9 组 34 子任务 &#x2F; 人工干预 &lt; 5 条 &#x2F; props 17→6-8</td>
+</tr>
+<tr>
+<td>案例四排障</td>
+<td>4 小时 &#x2F; 7 会话 &#x2F; 15+ 方案 &#x2F; 59 指令</td>
+</tr>
+</tbody></table>
+<h2 id="参考来源"><a href="#参考来源" class="headerlink" title="参考来源"></a>参考来源</h2><ul>
+<li>原文：<a href="https://tech.dewu.com/article?id=212">https://tech.dewu.com/article?id=212</a></li>
+<li>数据来源：<code>~/.claude/projects/-Users-admin-Desktop-code-knowledge-qa/</code> 109 个真实历史会话</li>
+<li>关联文档：id&#x3D;216 OpenSpec 理论总论、id&#x3D;213 Claude Code 工作流工程落地、id&#x3D;217 Galaxy MCP 数仓深度集成</li>
+</ul>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

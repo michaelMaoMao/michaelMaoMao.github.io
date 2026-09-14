@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Hermes 框架机制（Nous Research）"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>Hermes 框架机制（Nous Research） | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>Hermes 框架机制（Nous Research）</h1><div class="article-container"><h1 id="Hermes-Agent-框架机制"><a href="#Hermes-Agent-框架机制" class="headerlink" title="Hermes Agent 框架机制"></a>Hermes Agent 框架机制</h1><blockquote>
+<p>本文讲 Hermes <strong>框架本身</strong>（Nous Research 开源）。得物如何用它见同目录 <code>得物Hermes数仓Agent实践.md</code>。</p>
+</blockquote>
+<h2 id="一、Hermes-是什么"><a href="#一、Hermes-是什么" class="headerlink" title="一、Hermes 是什么"></a>一、Hermes 是什么</h2><p>Nous Research 构建的<strong>自我改进 AI 智能体</strong>（self-improving agent）。核心卖点：<strong>唯一内置学习循环的智能体</strong>——从经验中创建技能，使用中持续改进，跨会话保持记忆。与 Claude Code &#x2F; Codex &#x2F; OpenClaw 同属”自主编码&#x2F;任务执行 agent”。</p>
+<p>不是 IDE 副驾驶，不是聊天机器人封装，是<strong>自主智能体</strong>——运行越久能力越强。可部署在任何地方（5 美元 VPS &#x2F; GPU 集群 &#x2F; serverless），<strong>不依赖本地电脑</strong>（可在 Telegram 对话同时让它在云端干活）。</p>
+<h2 id="二、核心架构"><a href="#二、核心架构" class="headerlink" title="二、核心架构"></a>二、核心架构</h2><p><strong>轻量后端 + 重 Agent 循环</strong>。与 LangGraph 的”图编排”不同，Hermes 是”agent 运行时”——不预定义流程图，让 agent 自主规划。</p>
+<h2 id="三、Skill-系统（关键，区别于静态框架）"><a href="#三、Skill-系统（关键，区别于静态框架）" class="headerlink" title="三、Skill 系统（关键，区别于静态框架）"></a>三、Skill 系统（关键，区别于静态框架）</h2><p>Skill 是<strong>程序性记忆</strong>——智能体创建并复用。</p>
+<ul>
+<li>Skills 由 Agent <strong>自主创建、自优化</strong>（Learning Loop）——这是 Hermes 最核心的差异化</li>
+<li>对比：OpenClaw 等是<strong>人工编写静态 Skill 文件</strong></li>
+<li>兼容 agentskills.io 开放标准，可移植、可共享，Skills Hub 接受社区贡献</li>
+<li><strong>Curator</strong>：skill 生命周期管理（跟踪使用情况、闲置 skill 标记过时、归档、保留备份）</li>
+</ul>
+<h2 id="四、记忆系统"><a href="#四、记忆系统" class="headerlink" title="四、记忆系统"></a>四、记忆系统</h2><p><strong>跨会话持久记忆</strong>——持续增长。</p>
+<ul>
+<li>智能体管理的记忆 + 定期提示 + 自主技能创建</li>
+<li>基于 <strong>FTS5</strong> 的跨会话召回 + <strong>LLM 摘要</strong></li>
+<li><strong>Honcho 辩证式用户建模</strong>（对用户持续深化建模）</li>
+</ul>
+<h2 id="五、工具集（70-内置工具，按工具集分组）"><a href="#五、工具集（70-内置工具，按工具集分组）" class="headerlink" title="五、工具集（70+ 内置工具，按工具集分组）"></a>五、工具集（70+ 内置工具，按工具集分组）</h2><p><code>web</code> &#x2F; <code>search</code> &#x2F; <code>browser</code> &#x2F; <code>terminal</code> &#x2F; <code>file</code> &#x2F; <code>code_execution</code> &#x2F; <code>vision</code> &#x2F; <code>image_gen</code> &#x2F; <code>video</code> &#x2F; <code>tts</code> &#x2F; <code>skills</code> &#x2F; <code>memory</code> &#x2F; <code>session_search</code> &#x2F; <code>delegation</code> &#x2F; <code>cronjob</code> &#x2F; <code>clarify</code> &#x2F; <code>messaging</code> &#x2F; <code>todo</code> &#x2F; <code>kanban</code> &#x2F; <code>feishu_doc</code> 等。</p>
+<h2 id="六、定时-委托（与-loop-教程呼应）"><a href="#六、定时-委托（与-loop-教程呼应）" class="headerlink" title="六、定时 + 委托（与 loop 教程呼应）"></a>六、定时 + 委托（与 loop 教程呼应）</h2><ul>
+<li><strong>cron 定时任务</strong>：内置 cron，可向任意平台投递（对应 Datawhale loop 教程的 scheduled loop 形态）</li>
+<li><strong>delegation 委托</strong>：派生隔离子智能体并行处理多工作流；<code>execute_code</code> 程序化工具调用，把多步骤流水线压缩为单次推理</li>
+</ul>
+<h2 id="七、部署与平台"><a href="#七、部署与平台" class="headerlink" title="七、部署与平台"></a>七、部署与平台</h2><ul>
+<li><strong>6 种终端后端</strong>：本地 &#x2F; Docker &#x2F; SSH &#x2F; Daytona &#x2F; Singularity &#x2F; Modal（后两者 serverless 持久化，闲置休眠几乎零成本）</li>
+<li><strong>20+ 平台</strong>：CLI &#x2F; Telegram &#x2F; Discord &#x2F; Slack &#x2F; WhatsApp &#x2F; Feishu &#x2F; WeCom &#x2F; DingTalk &#x2F; …</li>
+</ul>
+<h2 id="八、Hermes-vs-LangGraph（核心区别）"><a href="#八、Hermes-vs-LangGraph（核心区别）" class="headerlink" title="八、Hermes vs LangGraph（核心区别）"></a>八、Hermes vs LangGraph（核心区别）</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th><strong>Hermes</strong></th>
+<th><strong>LangGraph</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>定位</td>
+<td>自学习 agent <strong>运行时</strong></td>
+<td>可控<strong>编排框架</strong></td>
+</tr>
+<tr>
+<td>流程定义</td>
+<td>Agent 自主（越用越长）</td>
+<td>人写图（确定）</td>
+</tr>
+<tr>
+<td>学习能力</td>
+<td>内置 Learning Loop，自创建自优化 Skill</td>
+<td>无（靠人写图）</td>
+</tr>
+<tr>
+<td>记忆</td>
+<td>跨会话持久 + 用户建模</td>
+<td>Checkpointer（状态持久化）</td>
+</tr>
+<tr>
+<td>控制方式</td>
+<td><strong>自主性强</strong></td>
+<td><strong>可控性强</strong>（interrupt&#x2F;HITL）</td>
+</tr>
+<tr>
+<td>适合</td>
+<td>经验沉淀&#x2F;自进化的长周期任务</td>
+<td>可控状态机&#x2F;人机中断的流程</td>
+</tr>
+</tbody></table>
+<p><strong>一句话</strong>：Hermes 是”会自己变强的智能体”，LangGraph 是”你画好图它严格走”的编排引擎。</p>
+<h2 id="九、为何得物数仓选-Hermes（非-LangGraph）"><a href="#九、为何得物数仓选-Hermes（非-LangGraph）" class="headerlink" title="九、为何得物数仓选 Hermes（非 LangGraph）"></a>九、为何得物数仓选 Hermes（非 LangGraph）</h2><p>得物数仓工作流（埋点需求 → 规则资产）的核心诉求是<strong>规则资产化 + 经验自学习沉淀</strong>：</p>
+<ul>
+<li>每次埋点需求的处理经验要沉淀成<strong>可复用规则</strong></li>
+<li>Hermes 的 Skill 自主创建 + 持久记忆正好匹配——经验越积越多，Skill 越来越丰富</li>
+<li>LangGraph 的图是人写的、固定的，不会自学习；数仓的”规则”是<strong>动态生长</strong>的，不适合固定图</li>
+</ul>
+<p>对应得物数仓实践的设计：「单 Agent 编排 + 多能力模块 + 看板确认点」—— Hermes 做编排和自学习，看板做人确认。这正是”按场景选型”的范例：<strong>需要自学习沉淀 → Hermes；需要可控中断 → LangGraph</strong>。</p>
+<h2 id="十、研究就绪（特色）"><a href="#十、研究就绪（特色）" class="headerlink" title="十、研究就绪（特色）"></a>十、研究就绪（特色）</h2><p>支持批处理、轨迹导出、基于 <strong>Atropos</strong> 的 RL 训练。由 Nous Research（Hermes &#x2F; Nomos &#x2F; Psyche 模型背后的团队）构建，本身就是研究导向——这也是它能做”自我改进”的底气。</p>
+<h2 id="十一、与-Claude-Code-自进化（第-3-篇）的呼应"><a href="#十一、与-Claude-Code-自进化（第-3-篇）的呼应" class="headerlink" title="十一、与 Claude Code 自进化（第 3 篇）的呼应"></a>十一、与 Claude Code 自进化（第 3 篇）的呼应</h2><p>得物自建 Claude Code 记忆系统（Hook 采集 + 置信度演化 + 记忆注入）本质是<strong>手工实现 Hermes 的 Learning Loop</strong>。Hermes 把这套做成了框架级能力（Skill 自创建 + Curator 生命周期 + FTS5 召回）。可对比：自建 vs 用 Hermes 的取舍。</p>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

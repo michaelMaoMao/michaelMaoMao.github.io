@@ -1,0 +1,193 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="解读：高德扫街榜配图全链路 —— 从 Workflow 到 HermesAgent"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>解读：高德扫街榜配图全链路 —— 从 Workflow 到 HermesAgent | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>解读：高德扫街榜配图全链路 —— 从 Workflow 到 HermesAgent</h1><div class="article-container"><h1 id="解读：从-Workflow-到-HermesAgent"><a href="#解读：从-Workflow-到-HermesAgent" class="headerlink" title="解读：从 Workflow 到 HermesAgent"></a>解读：从 Workflow 到 HermesAgent</h1><blockquote>
+<p>本文是对高德技术《高德扫街榜配图全链路演进：从 Workflow 到 HermesAgent 的语言驱动实践》的解读笔记。<br>本系列三篇文章（得物活动搭建 &#x2F; 高德配图 &#x2F; Claude Code 自进化）出自同一技术脉络，解读时会做交叉呼应。</p>
+</blockquote>
+<hr>
+<h2 id="一、TL-DR"><a href="#一、TL-DR" class="headerlink" title="一、TL;DR"></a>一、TL;DR</h2><p>高德扫街榜的配图，表面是”给榜单挑几张图”，实际是一条六段式生产链路（召回→粗排→精排→兜底→质检→准出）。旧链路用 Workflow 串 50+ SQL 和脚本，维护难、迭代慢。重构后用 <strong>“确定性 Pipeline 扛重活 + Agent 做巧活”</strong> 的混合架构，单榜单生产从 24 小时缩短到 30 分钟（提效 48 倍），并支持产运用自然语言发起重配。</p>
+<p><strong>一句话精华</strong>：把 LLM&#x2F;VLM 当作”会看图的感知器”，而不是”会算数的决策器”——感知交给模型，计算和校验死死握在代码手里。</p>
+<hr>
+<h2 id="二、为什么值得读"><a href="#二、为什么值得读" class="headerlink" title="二、为什么值得读"></a>二、为什么值得读</h2><p>如果说第 1 篇（得物活动搭建）讲的是”如何让 Agent 驱动一个人机交互流程”，这一篇讲的是**”如何让 Agent&#x2F;VLM 跑在高并发、高成本、高风险的在线生产链路里”**。它的稀缺价值在工程密度：</p>
+<ol>
+<li><strong>生产级容错清单</strong>：集中重试的故障放大、结构化输出逃逸、多机会话一致性——这些坑大部分讲 Agent 的文章根本不提，而它们才是 Agent 上生产的真问题。</li>
+<li><strong>黑盒评分的拆解方法</strong>：把”图好不好”拆成三域十五维度，是 prompt 工程的典范案例。</li>
+<li><strong>“少补但补准”的质量哲学</strong>：兜底不强行凑数，体现对线上体验的克制。</li>
+</ol>
+<hr>
+<h2 id="三、架构全景：重活与巧活的分工"><a href="#三、架构全景：重活与巧活的分工" class="headerlink" title="三、架构全景：重活与巧活的分工"></a>三、架构全景：重活与巧活的分工</h2><pre class="mermaid">flowchart TB
+    subgraph 重活["确定性 Pipeline（重活：高并发/批量/同构）"]
+        R1[CLIP 召回] --&gt; R2[美学过滤] --&gt; R3[图片分类] --&gt; R4[基础质检] --&gt; R5[重复度检测]
+    end
+    subgraph 巧活["Agent 推理（巧活：开放/组合/理解规则）"]
+        A1[理解挑图规则] --&gt; A2[组合最优 3 张] --&gt; A3[理解自然语言重配]
+    end
+    重活 --&gt;|结构化候选| 巧活
+    巧活 --&gt;|决策结果| 重活
+
+    style 重活 fill:#d4edda
+    style 巧活 fill:#d1ecf1</pre>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">字符画版本:</span><br><span class="line"></span><br><span class="line">┌──── 确定性 Pipeline (重活) ────┐    ┌──── Agent 推理 (巧活) ────┐</span><br><span class="line">│ CLIP召回→美学过滤→分类→质检  │ →→→│ 理解规则/组合选图/理解NL  │</span><br><span class="line">│ (高并发/批量/同构/可并行)     │ 结构化候选 │ (开放/组合/需理解规则)   │</span><br><span class="line">└───────────────────────────────┘ ←← └──────────────────────────┘</span><br><span class="line">                              决策结果</span><br></pre></td></tr></table></figure>
+
+<p>这条分工线和第 1 篇的”有限状态机法则”是<strong>同一个判断的两种表述</strong>：第 1 篇问”能不能画成状态机”，第 2 篇问”是不是同构批量任务”。结论一致——<strong>能确定的部分用代码，需要理解的部分用 Agent</strong>。</p>
+<hr>
+<h2 id="四、核心拆解：七个值得记住的决策"><a href="#四、核心拆解：七个值得记住的决策" class="headerlink" title="四、核心拆解：七个值得记住的决策"></a>四、核心拆解：七个值得记住的决策</h2><h3 id="决策-1：模型负责感知，代码负责计算（铁律）"><a href="#决策-1：模型负责感知，代码负责计算（铁律）" class="headerlink" title="决策 1：模型负责感知，代码负责计算（铁律）"></a>决策 1：模型负责感知，代码负责计算（铁律）</h3><p>这是全文最重要的一句话，也是本系列三篇共同的工程哲学：</p>
+<blockquote>
+<p>“VLM 的计算不可靠。各维度分数可能都合理，但加权求和会算错。我们的做法：模型只输出各维度原始分，最终总分由代码计算。”</p>
+</blockquote>
+<p>第 1 篇说的是”LLM 不参与流程路由”，这一篇说的是”VLM 不碰聚合逻辑”——<strong>本质都是：把模型当作有偏差的感知器，把确定性逻辑留给代码</strong>。生产系统不能把正确性寄托在模型”自觉遵守格式”上。</p>
+<h3 id="决策-2：黑盒评分-→-三域十五维度"><a href="#决策-2：黑盒评分-→-三域十五维度" class="headerlink" title="决策 2：黑盒评分 → 三域十五维度"></a>决策 2：黑盒评分 → 三域十五维度</h3><p>传统美学评分把”好不好”压成一个数。高德拆成三个域十五个维度：</p>
+<table>
+<thead>
+<tr>
+<th>域</th>
+<th>关注</th>
+<th>维度示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>通用美学</td>
+<td>基础质量</td>
+<td>清晰度&#x2F;曝光&#x2F;构图&#x2F;色彩&#x2F;完整性</td>
+</tr>
+<tr>
+<td>高级美学</td>
+<td>视觉品质</td>
+<td>光影&#x2F;冲击力&#x2F;层次&#x2F;专业感&#x2F;情绪</td>
+</tr>
+<tr>
+<td>领域美学</td>
+<td>主题契合</td>
+<td>餐饮看菜品诱人度，景点看地标识别</td>
+</tr>
+</tbody></table>
+<p>且每个维度”先过门控（压低硬伤），再做补偿（奖励亮点）”——<strong>门控保底线，补偿拉上限</strong>。</p>
+<p>这是一个可迁移的 prompt 工程智慧：<strong>问题越具体，LLM 输出越稳定</strong>。把模糊的”好不好”拆成十五个具体问题，模型回答每个具体问题都更可靠，最后由代码聚合。</p>
+<h3 id="决策-3：RAG-配置驱动-——-规则外置"><a href="#决策-3：RAG-配置驱动-——-规则外置" class="headerlink" title="决策 3：RAG 配置驱动 —— 规则外置"></a>决策 3：RAG 配置驱动 —— 规则外置</h3><p>挑图规则不写死在代码里，而是外置成三级配置表（定制 &gt; 通用 &gt; 默认），运行时用 RAG 动态注入。新增主题只改配置表，不发布代码。</p>
+<p>这和第 1 篇的”组件模块协议（开闭原则）”是同一思路的不同落地：<strong>对扩展开放，对修改关闭</strong>。</p>
+<h3 id="决策-4：多阶梯兜底-——-复用而非重算"><a href="#决策-4：多阶梯兜底-——-复用而非重算" class="headerlink" title="决策 4：多阶梯兜底 —— 复用而非重算"></a>决策 4：多阶梯兜底 —— 复用而非重算</h3><p>兜底候选直接从上游各层结果复用（精排 &gt; 粗排 &gt; 召回 &gt; 准入 &gt; 图库 &gt; 在线图），不从原始图库重新判断。越上层经过的验证越多，复用既省算力又拿更好候选。</p>
+<p>配合 <strong>ARAD 标准</strong>（Aesthetics 美观 &#x2F; Relevance 相关 &#x2F; Authenticity 真实 &#x2F; Diversity 多样），且”少补但补准”——弱候选里只选一张，不强行凑数。这是对线上质量底线的克制。</p>
+<h3 id="决策-5：多模态知识库-——-图文相互校验"><a href="#决策-5：多模态知识库-——-图文相互校验" class="headerlink" title="决策 5：多模态知识库 —— 图文相互校验"></a>决策 5：多模态知识库 —— 图文相互校验</h3><p>通用 VLM 不掌握地方特色&#x2F;节令&#x2F;城市语境，会”看起来合理但实际不对”。知识库给每个对象建立”文字描述 + 图片样例 + 来源证据”的多模态表示，且用 <strong>聚类取最大簇 + VLM 图文一致性确认</strong> 来去噪。</p>
+<p>价值分两层：”错中选对”（语义相似但主题不同时判断哪类符合）和”对中选优”（都相关时判断哪张更出彩）。</p>
+<h3 id="决策-6：语言驱动生产的四个工程前提"><a href="#决策-6：语言驱动生产的四个工程前提" class="headerlink" title="决策 6：语言驱动生产的四个工程前提"></a>决策 6：语言驱动生产的四个工程前提</h3><p>这是全文最实用的”checklist”。要支持自然语言驱动生产，不是外包一层聊天界面，而是底层必须满足四点：</p>
+<ol>
+<li><strong>功能 Skill 化</strong>——能力有清晰工具边界，Agent 才能稳定调用</li>
+<li><strong>规则配置化</strong>——规则还硬编码在 SQL 里，语言入口提不了效</li>
+<li><strong>执行可观测</strong>——每次重配都记进监控表，否则是黑盒</li>
+<li><strong>结果可回滚</strong>——大范围重配需灰度回退，单点替换留历史</li>
+</ol>
+<blockquote>
+<p>“语言驱动真正改变的是生产接口：过去系统要求人理解机器（表&#x2F;脚本&#x2F;调度），现在系统开始理解人。”</p>
+</blockquote>
+<h3 id="决策-7：生产级容错（最被低估的部分）"><a href="#决策-7：生产级容错（最被低估的部分）" class="headerlink" title="决策 7：生产级容错（最被低估的部分）"></a>决策 7：生产级容错（最被低估的部分）</h3><p>五个真实的工程坑及解法，这是大部分 Agent 文章不会写的：</p>
+<table>
+<thead>
+<tr>
+<th>坑</th>
+<th>解法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>集中重试导致故障放大</td>
+<td>指数退避 + 随机等待</td>
+</tr>
+<tr>
+<td>VLM 数理逻辑不可靠</td>
+<td>模型出原始分，代码算总分</td>
+</tr>
+<tr>
+<td>结构化输出逃逸（非法枚举）</td>
+<td>运行时白名单校验 + 重试</td>
+</tr>
+<tr>
+<td>算力容量瓶颈</td>
+<td>优化 Prompt token &#x2F; 并发 &#x2F; 模型切换</td>
+</tr>
+<tr>
+<td>多机部署会话不一致</td>
+<td>一致性哈希 + 分布式 DB</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>“Agent 和 VLM 进入生产系统后，真正的挑战不是能不能跑通 demo，而是如何在高并发、高成本、高风险下持续稳定地跑。”</p>
+</blockquote>
+<hr>
+<h2 id="五、可迁移的模式"><a href="#五、可迁移的模式" class="headerlink" title="五、可迁移的模式"></a>五、可迁移的模式</h2><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>一句话</th>
+<th>与第 1 篇的呼应</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>重活&#x2F;巧活分工</td>
+<td>同构批量交 Pipeline，开放组合交 Agent</td>
+<td>≈ 有限状态机法则</td>
+</tr>
+<tr>
+<td>模型感知 + 代码计算</td>
+<td>模型只出原始判断，聚合&#x2F;校验由代码做</td>
+<td>≈ LLM 不参与路由</td>
+</tr>
+<tr>
+<td>黑盒→多维具体问题</td>
+<td>把”好不好”拆成多个具体子问题</td>
+<td>（第 2 篇独有）</td>
+</tr>
+<tr>
+<td>门控保底 + 补偿拉上限</td>
+<td>每个维度先压硬伤再奖亮点</td>
+<td>（第 2 篇独有）</td>
+</tr>
+<tr>
+<td>多阶梯兜底复用</td>
+<td>兜底复用上游结果，不重算</td>
+<td>（第 2 篇独有）</td>
+</tr>
+<tr>
+<td>语言驱动四前提</td>
+<td>Skill化&#x2F;配置化&#x2F;可观测&#x2F;可回滚</td>
+<td>≈ 组件模块协议</td>
+</tr>
+<tr>
+<td>生产级容错</td>
+<td>退避&#x2F;白名单&#x2F;一致性哈希</td>
+<td>（第 2 篇独有，精华）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六、批判性思考"><a href="#六、批判性思考" class="headerlink" title="六、批判性思考"></a>六、批判性思考</h2><ol>
+<li><p><strong>48 倍提效归因不清</strong>。24h→30min 很亮眼，但多少来自 Agent 化、多少来自”实时化”（bash + Python + 并发调度的工程重构）？文章把两者绑在一起说。直觉上，<strong>速度提升主要来自工程实时化，Agent 化主要提升的是效果质量和灵活性</strong>。把这两件事的功劳分开讲，对读者更有指导意义。</p>
+</li>
+<li><p><strong>知识库的校验悖论</strong>。图文一致性靠 VLM 判断，但 VLM 本身有偏差——用”有偏差的模型”去校验”可能有偏差的知识”，如何避免误差累积？文章只说了”不匹配就重新判断”，没给出置信度或人工兜底机制。</p>
+</li>
+<li><p><strong>AIGC 造图与 Authenticity 的张力</strong>。未来方向提到 AIGC 补图，但其 ARAD 标准里 <strong>Authenticity（真实性）</strong> 与生成图天然冲突——生成的图可能美观（Aesthetics 高）但失真（Authenticity 低）。这个张力文章没展开，会是 AIGC 落地时的一道硬题。</p>
+</li>
+<li><p><strong>“全链路自进化”被推到未来</strong>，但本系列第 3 篇（Claude Code 自进化与记忆系统）已经展示了自进化的工程实践。可对比：高德的”自进化”是系统级（根据反馈自动优化链路），第 3 篇是工具级（Claude Code 自我进化）——两者是”自进化”的不同维度。</p>
+</li>
+</ol>
+<hr>
+<h2 id="七、一句话收获"><a href="#七、一句话收获" class="headerlink" title="七、一句话收获"></a>七、一句话收获</h2><blockquote>
+<p>把 LLM&#x2F;VLM 当作”有偏差的感知器”而非”可靠的计算器”——让它回答具体的、语义的、感知的问题（这张图清不清晰、这道菜是不是地方做法），把聚合、校验、路由、兜底全部留给代码。这条”模型感知、代码计算”的铁律，是把 Agent 真正塞进生产线的第一道门槛。</p>
+</blockquote>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

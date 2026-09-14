@@ -1,0 +1,274 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="技术选型论证：AI 工作流引擎选哪个"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>技术选型论证：AI 工作流引擎选哪个 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>技术选型论证：AI 工作流引擎选哪个</h1><div class="article-container"><h1 id="技术选型论证"><a href="#技术选型论证" class="headerlink" title="技术选型论证"></a>技术选型论证</h1><blockquote>
+<p>核心问题：得物用了 LangGraph + Dify，我要落地类似实践，该选哪个？答案不是”选一个”，而是”按场景选”。</p>
+</blockquote>
+<h2 id="一、四引擎横评（得物实践-官方资料）"><a href="#一、四引擎横评（得物实践-官方资料）" class="headerlink" title="一、四引擎横评（得物实践 + 官方资料）"></a>一、四引擎横评（得物实践 + 官方资料）</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th><strong>LangGraph</strong></th>
+<th><strong>Dify</strong></th>
+<th><strong>Nous Hermes</strong></th>
+<th><strong>Spring AI ReactAgent</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>定位</td>
+<td>低级编排框架 + runtime</td>
+<td>开源 LLM 应用平台 (BaaS+LLMOps)</td>
+<td>开源 AI agent 框架</td>
+<td>Spring 生态 ReAct 封装</td>
+</tr>
+<tr>
+<td>编排方式</td>
+<td>代码定义图</td>
+<td>可视化拖拽节点</td>
+<td>轻量后端 + 重 Agent 循环</td>
+<td>经典 ReAct 循环</td>
+</tr>
+<tr>
+<td>上手成本</td>
+<td>中高（写代码）</td>
+<td>低（可视化，非技术可参与）</td>
+<td>中</td>
+<td>低（”省事”）</td>
+</tr>
+<tr>
+<td>灵活度</td>
+<td><strong>最高</strong>（代码级）</td>
+<td>受节点能力限制</td>
+<td>高（Skill 自学习）</td>
+<td>中</td>
+</tr>
+<tr>
+<td>状态持久化</td>
+<td>Checkpointer（可控）</td>
+<td>平台内置</td>
+<td>持久记忆系统</td>
+<td>较弱</td>
+</tr>
+<tr>
+<td>HITL 中断恢复</td>
+<td><strong>interrupt&#x2F;resume 原生</strong></td>
+<td>较弱</td>
+<td>看板确认点</td>
+<td>较弱</td>
+</tr>
+<tr>
+<td>自学习</td>
+<td>无（靠人写图）</td>
+<td>无</td>
+<td><strong>Skills 自主创建自优化</strong></td>
+<td>无</td>
+</tr>
+<tr>
+<td>适合阶段</td>
+<td><strong>生产级可控编排</strong></td>
+<td>快速验证 &#x2F; 原型</td>
+<td>需 Skill 资产化</td>
+<td>快速搭 ReAct</td>
+</tr>
+<tr>
+<td>得物用在哪</td>
+<td>活动搭建（第二版）</td>
+<td>活动搭建（第一版）</td>
+<td>数仓工作流</td>
+<td>告警排查</td>
+</tr>
+</tbody></table>
+<h2 id="二、选型决策树"><a href="#二、选型决策树" class="headerlink" title="二、选型决策树"></a>二、选型决策树</h2><pre class="mermaid">flowchart TD
+    Q["要构建 AI 工作流"] --&gt; Q1{"需要可视化/&lt;br/&gt;非技术人员参与?"}
+    Q1 --&gt;|是| DIFY["Dify&lt;br/&gt;快速验证"]
+    Q1 --&gt;|否| Q2{"需要可控状态机&lt;br/&gt;+ 人机中断?"}
+    Q2 --&gt;|是| LG["LangGraph&lt;br/&gt;生产级编排"]
+    Q2 --&gt;|否| Q3{"需要 Agent&lt;br/&gt;自学习 Skill?"}
+    Q3 --&gt;|是| HER["Hermes&lt;br/&gt;Skill 资产化"]
+    Q3 --&gt;|否| Q4{"Java 生态&lt;br/&gt;+ 简单 ReAct?"}
+    Q4 --&gt;|是| SA["Spring AI&lt;br/&gt;ReactAgent"]
+    Q4 --&gt;|否| LG
+
+    style DIFY fill:#fff3cd
+    style LG fill:#d4edda
+    style HER fill:#d1ecf1
+    style SA fill:#f8d7da</pre>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">字符画版本:</span><br><span class="line">[构建AI工作流]</span><br><span class="line">      │</span><br><span class="line">  需要可视化/非技术参与? ──是──▶ [Dify 快速验证]</span><br><span class="line">      │否</span><br><span class="line">  需要可控状态机+人机中断? ──是──▶ [LangGraph 生产编排]</span><br><span class="line">      │否</span><br><span class="line">  需要 Agent 自学习 Skill? ──是──▶ [Hermes Skill资产化]</span><br><span class="line">      │否</span><br><span class="line">  Java生态+简单ReAct? ──是──▶ [Spring AI ReactAgent]</span><br><span class="line">      │否</span><br><span class="line">      ▼</span><br><span class="line">  [LangGraph] (默认回退)</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、得物的选型逻辑（关键启示）"><a href="#三、得物的选型逻辑（关键启示）" class="headerlink" title="三、得物的选型逻辑（关键启示）"></a>三、得物的选型逻辑（关键启示）</h2><p>得物<strong>不是”选一个统一引擎”，而是”按场景特性选”</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>场景特性</th>
+<th>选型</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>需要可控状态机 + 人机中断</td>
+<td>LangGraph</td>
+<td>interrupt&#x2F;resume、checkpoint、HITL</td>
+</tr>
+<tr>
+<td>需要 Skill 资产化 + 自学习</td>
+<td>Hermes</td>
+<td>Skills 自主创建自优化（Learning Loop）</td>
+</tr>
+<tr>
+<td>需要省事快速搭建 ReAct</td>
+<td>Spring AI</td>
+<td>框架内置循环 + 工具拦截器</td>
+</tr>
+<tr>
+<td>需要快速可视化验证</td>
+<td>Dify</td>
+<td>低代码，非技术可参与</td>
+</tr>
+</tbody></table>
+<p><strong>启示</strong>：没有银弹，按场景选。但有一个共性——<strong>都遵循”确定性机制锁定 + 模型只做语义”的铁律</strong>（路由用代码、计算用代码、感知用模型）。</p>
+<h2 id="四、针对你的项目的推荐"><a href="#四、针对你的项目的推荐" class="headerlink" title="四、针对你的项目的推荐"></a>四、针对你的项目的推荐</h2><p><strong>假设</strong>：你要落地一套<strong>可控的 AI 工作流</strong>（有业务约束、需要人确认、要扩展）。</p>
+<h3 id="推荐路径：Dify-验证-→-LangGraph-生产"><a href="#推荐路径：Dify-验证-→-LangGraph-生产" class="headerlink" title="推荐路径：Dify 验证 → LangGraph 生产"></a>推荐路径：Dify 验证 → LangGraph 生产</h3><p>这是得物验证过的路径，风险最低：</p>
+<ol>
+<li><strong>第 0 步</strong>：用 Dify 快速搭原型，验证”AI 能否完成核心任务”（得物第一版）</li>
+<li><strong>第 1 步</strong>：原型跑通后，用 LangGraph 重写为生产级（得物第二版）</li>
+<li><strong>第 2 步</strong>：如需 Agent 自学习沉淀，引入记忆&#x2F;Skill 系统（参考得物自进化文章）</li>
+</ol>
+<h3 id="为什么-LangGraph-是”可控工作流”的默认选择"><a href="#为什么-LangGraph-是”可控工作流”的默认选择" class="headerlink" title="为什么 LangGraph 是”可控工作流”的默认选择"></a>为什么 LangGraph 是”可控工作流”的默认选择</h3><ol>
+<li><strong>interrupt&#x2F;resume 原生支持</strong> — 人机协作刚需</li>
+<li><strong>Checkpointer 持久化</strong> — 中断恢复（关浏览器再开能继续）</li>
+<li><strong>代码级灵活度</strong> — 复杂业务约束（得物 16+ 组件模块协议）</li>
+<li><strong>生态成熟</strong> — LangChain 团队，MIT 开源，文档全</li>
+<li><strong>对历史 O(1)</strong> — 长任务不退化（对比 Temporal 类）</li>
+</ol>
+<h3 id="何时不该选-LangGraph"><a href="#何时不该选-LangGraph" class="headerlink" title="何时不该选 LangGraph"></a>何时<strong>不</strong>该选 LangGraph</h3><ul>
+<li>只是验证想法、非技术人要参与 → <strong>Dify</strong> 更快</li>
+<li>不需要 HITL&#x2F;持久化、就是简单 ReAct → <strong>Spring AI</strong> 更省事</li>
+<li>核心诉求是 Agent 自我进化沉淀技能 → <strong>Hermes</strong> 或自建记忆系统</li>
+<li><strong>避免一上来就 LangGraph</strong>（过度工程，想法未验证）</li>
+</ul>
+<h2 id="五、选型反模式（得物踩过的坑）"><a href="#五、选型反模式（得物踩过的坑）" class="headerlink" title="五、选型反模式（得物踩过的坑）"></a>五、选型反模式（得物踩过的坑）</h2><table>
+<thead>
+<tr>
+<th>反模式</th>
+<th>问题</th>
+<th>得物的修正</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>第一版直接上复杂架构</td>
+<td>组件硬编码、无持久化、不可逆</td>
+<td>先 Dify 验证范式</td>
+</tr>
+<tr>
+<td>用 Dify 做生产级复杂编排</td>
+<td>灵活度不够，无法 Capability Registry</td>
+<td>第二版切 LangGraph</td>
+</tr>
+<tr>
+<td>追求”完全自主 Agent”</td>
+<td>业务约束无体感、无审计、不可解释</td>
+<td>退到 Workflow + HITL 中间态</td>
+</tr>
+<tr>
+<td>追求”统一引擎”</td>
+<td>不同场景特性差异大</td>
+<td>按场景选（LangGraph&#x2F;Hermes&#x2F;Spring AI）</td>
+</tr>
+</tbody></table>
+<h2 id="六、结论"><a href="#六、结论" class="headerlink" title="六、结论"></a>六、结论</h2><p><strong>先问场景，再问引擎</strong>。用得物的”有限状态机法则”判断：</p>
+<ul>
+<li>能画成状态机 + 需要 HITL → <strong>LangGraph</strong></li>
+<li>需要快速可视化验证 → <strong>Dify</strong></li>
+<li>需要 Skill 自学习 → <strong>Hermes</strong></li>
+<li>需要省事 ReAct → <strong>Spring AI</strong></li>
+</ul>
+<p>对你的项目（可控 AI 工作流），推荐 <strong>Dify 起步验证 + LangGraph 生产落地</strong>，这是得物验证过的最低风险路径。</p>
+<blockquote>
+<p>详见 [[实现路径]] 从 0 到 1 的具体步骤，[[风险与取舍]] 的坑与对策。</p>
+</blockquote>
+<h2 id="七、2026-主线演进：从”工作流引擎”到”AICoding-范式”（gap-深挖补充，2026-06-29）"><a href="#七、2026-主线演进：从”工作流引擎”到”AICoding-范式”（gap-深挖补充，2026-06-29）" class="headerlink" title="七、2026 主线演进：从”工作流引擎”到”AICoding 范式”（gap 深挖补充，2026-06-29）"></a>七、2026 主线演进：从”工作流引擎”到”AICoding 范式”（gap 深挖补充，2026-06-29）</h2><blockquote>
+<p>上文一~六聚焦<strong>工作流编排引擎</strong>（LangGraph&#x2F;Dify&#x2F;Hermes&#x2F;Spring AI），对应得物活动搭建&#x2F;数仓&#x2F;告警等场景。但 2026 年得物 AI 的<strong>真正主线</strong>已转向 <strong>AICoding</strong>，且补齐了基础设施层——这是另一条与”工作流引擎”并列的选型维度，不可只看引擎横评。</p>
+</blockquote>
+<h3 id="7-1-AICoding-主线：Claude-Code-Spec-SDD-MCP"><a href="#7-1-AICoding-主线：Claude-Code-Spec-SDD-MCP" class="headerlink" title="7.1 AICoding 主线：Claude Code + Spec&#x2F;SDD + MCP"></a>7.1 AICoding 主线：Claude Code + Spec&#x2F;SDD + MCP</h3><p>得物 2026 年 5-6 月密集发布 4 篇 AICoding 文章，构成 <strong>Spec 驱动三件套</strong>（统一内核&#x3D;规格锁定意图 → 代理受控执行+验证 → 归档沉淀组织资产）：</p>
+<table>
+<thead>
+<tr>
+<th>文章</th>
+<th>定位</th>
+<th>核心机制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id&#x3D;216 OpenSpec</td>
+<td><strong>理论总论</strong></td>
+<td>上下文工程取代提示词工程 &#x2F; Archive 机制治上下文中毒 &#x2F; 幻觉治理八手段</td>
+</tr>
+<tr>
+<td>id&#x3D;213 Claude Code 工作流</td>
+<td><strong>工程落地</strong></td>
+<td>模型插拔 + 多 Agent 主从（架构师贵模型 + 开发者领域模型）</td>
+</tr>
+<tr>
+<td>id&#x3D;212 Spec Coding</td>
+<td><strong>项目实战</strong></td>
+<td>约束+示范+视觉三层规范 &#x2F; 10 天 2.5 万行 &#x2F; 提效 36%</td>
+</tr>
+<tr>
+<td>id&#x3D;202 团队协作</td>
+<td><strong>团队范式</strong></td>
+<td>精准对话流 &#x2F; Plan 模式 &#x2F; 系统提示词 200 字护栏 &#x2F; 四子代理</td>
+</tr>
+</tbody></table>
+<p><strong>对你的启示</strong>：如果你的诉求是<strong>让 AI 写代码</strong>（而非编排业务工作流），主线不是 LangGraph，而是 Claude Code + 规格驱动 + MCP（用 MCP 消除信息孤岛）。这与你的 flow-deep &#x2F; planning-with-files &#x2F; SDD 同源。</p>
+<h3 id="7-2-基础设施层：大模型网关（id-204）"><a href="#7-2-基础设施层：大模型网关（id-204）" class="headerlink" title="7.2 基础设施层：大模型网关（id&#x3D;204）"></a>7.2 基础设施层：大模型网关（id&#x3D;204）</h3><p>无论工作流引擎还是 AICoding，都需要<strong>模型供给底座</strong>。得物自研大模型网关”六步法”：模型市场 → 统一入口 → 全流程成本管控 → 稳定性架构 → 分钟级观测 → Key 生命周期管理。核心设计是<strong>调度器（选哪个模型）与路由模块（怎么转发）解耦</strong>——铁律”确定性机制锁定”在基础设施层的精确表述。收益：模型接入效率 +97%、单季 Token 成本 -45%、140 个模型 100% 纳管。</p>
+<p><strong>与 id&#x3D;213 模型插拔的分层呼应</strong>：应用层插拔（id&#x3D;213）vs 网关层统一管控（id&#x3D;204），互补不重复。</p>
+<h3 id="7-3-选型维度再扩展"><a href="#7-3-选型维度再扩展" class="headerlink" title="7.3 选型维度再扩展"></a>7.3 选型维度再扩展</h3><table>
+<thead>
+<tr>
+<th>你的诉求</th>
+<th>主线选型</th>
+<th>关键文档</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>编排业务工作流（状态机+HITL）</td>
+<td>LangGraph（本文一~六横评）</td>
+<td><code>技术选型论证</code> + <code>30-LangGraph实践/</code></td>
+</tr>
+<tr>
+<td>让 AI 写代码（AICoding）</td>
+<td><strong>Claude Code + Spec&#x2F;SDD + MCP</strong></td>
+<td>Spec 三件套 <code>id=216/213/212</code> + <code>id=202</code></td>
+</tr>
+<tr>
+<td>管好多模型供给</td>
+<td><strong>大模型网关</strong>（基础设施层）</td>
+<td><code>40/得物大模型网关.md</code></td>
+</tr>
+<tr>
+<td>数据治理（数仓）</td>
+<td>Hermes &#x2F; Galaxy MCP &#x2F; 发布门禁</td>
+<td><code>40/</code> 数仓三篇（知识&#x2F;接口&#x2F;流程治理）</td>
+</tr>
+</tbody></table>
+<p><strong>一句话</strong>：先问”是工作流编排还是 AICoding”，再问引擎。两条主线都遵循同一铁律——确定性机制锁定 + 模型只做语义感知。</p>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

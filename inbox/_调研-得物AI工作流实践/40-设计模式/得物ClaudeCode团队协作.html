@@ -1,0 +1,272 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="得物 Claude Code 团队协作实践（id=202）"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>得物 Claude Code 团队协作实践（id=202） | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>得物 Claude Code 团队协作实践（id=202）</h1><div class="article-container"><h1 id="得物-AI-编程实践：从-Claude-Code-实践到团队协作的优化思考"><a href="#得物-AI-编程实践：从-Claude-Code-实践到团队协作的优化思考" class="headerlink" title="得物 AI 编程实践：从 Claude Code 实践到团队协作的优化思考"></a>得物 AI 编程实践：从 Claude Code 实践到团队协作的优化思考</h1><blockquote>
+<p>得物商家域团队把 Claude Code 从”单兵工具”演进到”多子代理团队协作”的完整方法论沉淀。核心是把<strong>人类认知科学</strong>（工作记忆 7±2、渐进式知识构建）映射成对 AI 的<strong>结构化约束</strong>：精准对话流 &#x2F; Plan 模式 &#x2F; 系统提示词 &#x2F; SKILL&amp;MCP &#x2F; 子代理协作五大能力，全部围绕”确定性机制锁定 + 模型只做语义感知”这一得物主线。</p>
+</blockquote>
+<h2 id="一、一句话定位"><a href="#一、一句话定位" class="headerlink" title="一、一句话定位"></a>一、一句话定位</h2><p>得物商家域团队基于 Claude Code 落地一套<strong>人机协作开发范式</strong>：用”精准对话流 + Plan 模式 + 系统提示词”驯服单 Agent 的注意力与约束衰减，用”SKILL&#x2F;MCP”沉淀复用资产，再用”技术方案文档驱动的多子代理协作”把团队协作模式搬进 AI。所有方法的共同根基是认知科学——控制 AI 的认知负荷，与人类带新人的方法同构。</p>
+<h2 id="二、核心能力拆解"><a href="#二、核心能力拆解" class="headerlink" title="二、核心能力拆解"></a>二、核心能力拆解</h2><h3 id="2-1-精准对话流设计：控制-AI-思考的艺术"><a href="#2-1-精准对话流设计：控制-AI-思考的艺术" class="headerlink" title="2.1 精准对话流设计：控制 AI 思考的艺术"></a>2.1 精准对话流设计：控制 AI 思考的艺术</h3><p>定位：把人类编程思维转成 AI 可理解的结构化交互。Claude Code 像”热情但经验不足的实习生”——不给明确指令就给”惊喜”。</p>
+<p><strong>三个关键机制</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>机制</th>
+<th>含义</th>
+<th>反面踩坑</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>上下文聚焦</strong></td>
+<td>单次对话只处理一个功能模块</td>
+<td>曾在一个对话里同时处理多模块，AI 把两个模块的错误处理逻辑混在一起</td>
+</tr>
+<tr>
+<td><strong>约束明确化</strong></td>
+<td>用具体指令压缩 AI 自由度</td>
+<td>不说”遵循项目规范”，而说”使用 ResultDTO 作统一返回格式，错误码参考 ErrorCodeEnum”</td>
+</tr>
+<tr>
+<td><strong>增量式提问</strong></td>
+<td>“先框架后细节”，先接口定义后实现</td>
+<td>类似带新人”先搭骨架再填肉”</td>
+</tr>
+</tbody></table>
+<p><strong>初始 prompt 必须明确的四件事</strong>：①功能边界与目标（做什么&#x2F;不做什么）②技术约束与规范 ③输出格式与交付物 ④分阶段实现计划。</p>
+<p><strong>真实踩坑</strong>：AI 跨模块依赖时易”忘记”约束。技巧——<strong>每个新实现阶段开头简要回顾关键约束</strong>，例如”现在处理任务交接流程，请记得：1. 用 Redis 分布式锁；2. 需修改商运关系和新商成长任务；3. 异常处理符合规范”。</p>
+<h3 id="2-2-Plan-模式：复杂任务的系统化分解"><a href="#2-2-Plan-模式：复杂任务的系统化分解" class="headerlink" title="2.2 Plan 模式：复杂任务的系统化分解"></a>2.2 Plan 模式：复杂任务的系统化分解</h3><p>借鉴项目管理 <strong>WBS（工作分解结构）</strong>。直接把”实现完整拜访任务系统”丢给 AI 会得到：逻辑不完整、模块接口不一致、技术选型不合适。</p>
+<p><strong>三步法</strong>：需求分析与模块划分 → 技术方案设计 → 任务优先级排序。</p>
+<p><strong>真实示例（拜访任务线上化，12 模块）</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">模块清单（按复杂度标 Medium/High/Low）:</span><br><span class="line">M1 任务创建 / M2 任务审批(飞书) / M3 日程同步(飞书日历)</span><br><span class="line">M4 任务列表(ES聚合) / M5 任务详情 / M6 任务统计</span><br><span class="line">M7 结果提交(OSS) / M8 任务分配 / M9 任务触达(飞书消息卡片)</span><br><span class="line">M10 ES同步(Spring Event) / M11 Excel导入 / M12 状态变更(JOB)</span><br><span class="line"></span><br><span class="line">技术方案表: 每个模块标注 数据存储 / 查询方案 / 外部集成</span><br><span class="line">  例: M4 = ES(主)+MySQL(辅) / ES聚合查询 / -</span><br><span class="line">       M2 = MySQL+审批记录表 / - / 飞书审批API</span><br><span class="line"></span><br><span class="line">优先级: P0核心(M1/M5/M4/M7) → P1审批通知(M2/M3/M9)</span><br><span class="line">        → P2运营(M8/M11/M6) → P3性能(M10/M12)</span><br><span class="line"></span><br><span class="line">分阶段实现建议:</span><br><span class="line">  阶段一 基础能力(M1/M5/M4 打通创建→查询→详情)</span><br><span class="line">  阶段二 审批流程(M2/M3 接飞书)</span><br><span class="line">  阶段三 结果闭环(M7/M9)</span><br><span class="line">  阶段四 运营优化(M8/M11/M6)</span><br><span class="line">  阶段五 性能优化(M10/M12)</span><br></pre></td></tr></table></figure>
+
+<p>价值：让 AI 有序工作，同时人对开发进度有清晰把控。</p>
+<h3 id="2-3-系统提示词（CLAUDE-md）：给-AI-立”规矩”"><a href="#2-3-系统提示词（CLAUDE-md）：给-AI-立”规矩”" class="headerlink" title="2.3 系统提示词（CLAUDE.md）：给 AI 立”规矩”"></a>2.3 系统提示词（CLAUDE.md）：给 AI 立”规矩”</h3><p>定位：相当于给新人的”入职手册”。但<strong>新手常犯错误是写成”百科全书”</strong>——得物早期系统提示词长达 5000 字塞进所有规范，AI 要么忽略要么顾此失彼，效果反而差。</p>
+<p><strong>关键反直觉结论：系统提示词应像”护栏”而非”详尽手册”，针对 AI 常见错误模式的针对性提示 &gt;&gt; 全面但泛泛的规范。得物现控制在 200 字以内。</strong></p>
+<p><strong>三个关键模块结构</strong>（原文以图示展示模板，核心是分块而非全文堆砌）。</p>
+<p><strong>三条编写技巧</strong>：</p>
+<ol>
+<li><strong>避免信息过载</strong>：不塞所有知识，而是指引 AI 按需查文档。例：”遇到分布式事务问题时，参考 &#x2F;doc&#x2F;分布式事务最佳实践.md 的 TCC 模式”。</li>
+<li><strong>正向引导优于禁止</strong>：不说”不要用过时 API”，而说”请用 OrderServiceV2 替代 OrderServiceV1”。</li>
+<li><strong>动态调整</strong>：每两周回顾一次，针对 AI 近期常犯错误补约束。例：发现 AI 忘记处理空指针 → 新增”所有方法入参必须用 ValidateUtil.isEmpty() 非空校验，异常抛 IllegalArgumentException”。</li>
+</ol>
+<h3 id="2-4-SKILL-与-MCP：知识沉淀与外部能力扩展"><a href="#2-4-SKILL-与-MCP：知识沉淀与外部能力扩展" class="headerlink" title="2.4 SKILL 与 MCP：知识沉淀与外部能力扩展"></a>2.4 SKILL 与 MCP：知识沉淀与外部能力扩展</h3><p><strong>SKILL 机制</strong>：把单次生效的 Prompt 沉淀为可反复调用的标准化复用资产。例：团队总结”ES 数据查询”内部 SDK 调用方式 → 封装成 SKILL → 后续类似场景直接调用即按最佳实践实现。</p>
+<p><strong>最适合封装 SKILL 的场景</strong>：</p>
+<ul>
+<li>复杂工具使用指南（ElasticSearch 接入、Redis 缓存更新策略）</li>
+<li>常见错误处理模板（分布式锁冲突处理、数据库乐观锁重试机制）</li>
+</ul>
+<p><strong>MCP 协议</strong>：解决 AI 与外部工具&#x2F;数据源连接，让 AI 从静态知识升级到动态访问实时数据。得物集成了<strong>飞书 MCP 服务器</strong>，三个典型场景：</p>
+<ol>
+<li><strong>自动生成技术方案文档</strong>：AI 分析需求后调用 <code>feishu_create_doc</code>，直接在指定知识库目录创建格式化文档。</li>
+<li><strong>读取 PRD 需求</strong>：用户提供飞书文档链接 → <code>feishu_get_doc_content</code> 取内容 → 基于完整需求生成方案。</li>
+<li><strong>数据同步到多维表格</strong>：<code>feishu_append_bitable_data</code> 自动追加代码统计数据（行数、涉及文件），便于团队追踪 AI 编程效率指标。</li>
+</ol>
+<h2 id="三、结构化对话设计方法论（团队级标准流程）"><a href="#三、结构化对话设计方法论（团队级标准流程）" class="headerlink" title="三、结构化对话设计方法论（团队级标准流程）"></a>三、结构化对话设计方法论（团队级标准流程）</h2><h3 id="3-1-传统”需求-响应”模式的失败根源：三个核心矛盾"><a href="#3-1-传统”需求-响应”模式的失败根源：三个核心矛盾" class="headerlink" title="3.1 传统”需求-响应”模式的失败根源：三个核心矛盾"></a>3.1 传统”需求-响应”模式的失败根源：三个核心矛盾</h3><table>
+<thead>
+<tr>
+<th>矛盾</th>
+<th>表现</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>语义鸿沟</strong></td>
+<td>自然语言模糊 vs 代码精确</td>
+<td>说”接口要安全”，AI 理解为”登录校验”，实际想要 @Permission 注解 + ValidatorUtil 校验 + 操作日志</td>
+</tr>
+<tr>
+<td><strong>约束衰减</strong></td>
+<td>对话推进中早期约束权重渐降</td>
+<td>第1轮强调”必须继承 BaseServiceImpl”，第5轮 AI 忘记实现独立 Service，第10轮连分层架构都混淆</td>
+</tr>
+<tr>
+<td><strong>目标偏移</strong></td>
+<td>AI 过度关注细节忽视整体</td>
+<td>纠结参数命名优雅，却漏掉分页、排序等必需功能</td>
+</tr>
+</tbody></table>
+<h3 id="3-2-解决方案：三阶段对话模型（团队标准流程）"><a href="#3-2-解决方案：三阶段对话模型（团队标准流程）" class="headerlink" title="3.2 解决方案：三阶段对话模型（团队标准流程）"></a>3.2 解决方案：三阶段对话模型（团队标准流程）</h3><p><strong>阶段一：需求定义——“用户故事 + 验收标准”格式</strong></p>
+<p>示例（商家数据权限查询）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">作为商家运营，我需要一个商家信息查询接口，查询结果根据我的数据权限过滤</span><br><span class="line">【验收标准】</span><br><span class="line"> - 支持按商家ID/名称/状态查询</span><br><span class="line"> - 分页默认20条，最大100条</span><br><span class="line"> - 按当前用户数据范围过滤</span><br><span class="line"> - 敏感信息(手机号/身份证号)脱敏</span><br><span class="line"> - 至少&quot;商家查看&quot;权限</span><br><span class="line"> - 查询条件记录到操作日志便于审计</span><br></pre></td></tr></table></figure>
+
+<p><strong>阶段二：边界明确——区分”必须遵守”与”建议参考”</strong></p>
+<p>关键技术约束范式（新商户成长任务模块）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">必须遵守:</span><br><span class="line"> - SpringBoot 标准分层, Service 继承 OcsBaseServiceImpl</span><br><span class="line"> - MyBatis-Plus, 实体继承 BaseEntity, Mapper 继承 BaseMapper</span><br><span class="line"> - 返回统一 Result&lt;T&gt;, 错误码用 ErrorCode</span><br><span class="line"> - @Permission 权限校验, @Valid + ValidatorUtil 参数校验</span><br><span class="line"> - 飞书消息必须用 FeishuClient, 不重复实现</span><br><span class="line">建议参考:</span><br><span class="line"> - 状态流转参考 TaskServiceImpl 状态机</span><br><span class="line"> - 批量分配参考 AssignImportHandler 异步处理</span><br><span class="line"> - 权限校验参考 OperatorRelationServiceImpl</span><br><span class="line">【数据库约束】</span><br><span class="line"> - 新增表必含 created_at/updated_at/is_deleted</span><br><span class="line"> - 表名 ocs_ 前缀, 蛇形命名</span><br><span class="line"> - 高频查询字段必须建索引</span><br><span class="line"> - 外键代码层面维护, 不在 DB 层创建</span><br></pre></td></tr></table></figure>
+
+<p><strong>阶段三：迭代反馈——增量验证，关键节点主动暂停</strong></p>
+<ul>
+<li>分模块实现逐个验证（先核心 Service 后 Controller）</li>
+<li>关键节点暂停：表设计完成先确认表结构；核心逻辑完成先过单测；集成外部 API 前先确认调用方式</li>
+<li>持续同步技术方案：模块状态流转 <code>implemented → reviewed → verified</code></li>
+</ul>
+<p><strong>对话三原则</strong>（原文以图示）：分阶段 &#x2F; 单次聚焦单模块 &#x2F; 关键决策反复锚定。</p>
+<h3 id="3-3-背后的认知科学原理"><a href="#3-3-背后的认知科学原理" class="headerlink" title="3.3 背后的认知科学原理"></a>3.3 背后的认知科学原理</h3><ul>
+<li><strong>工作记忆限制理论</strong>：人一次记 7±2 个信息块，AI 上下文理解同样有限 → 分阶段 + 单模块控制认知负荷。</li>
+<li><strong>渐进式知识构建</strong>：先整体框架后细节，符合认知规律，与教新人”先架构图→模块交互→具体实现”同构。</li>
+</ul>
+<h2 id="四、AI-子代理协作模式（团队级核心创新）"><a href="#四、AI-子代理协作模式（团队级核心创新）" class="headerlink" title="四、AI 子代理协作模式（团队级核心创新）"></a>四、AI 子代理协作模式（团队级核心创新）</h2><h3 id="4-1-为什么需要子代理：传统团队协作三大痛点"><a href="#4-1-为什么需要子代理：传统团队协作三大痛点" class="headerlink" title="4.1 为什么需要子代理：传统团队协作三大痛点"></a>4.1 为什么需要子代理：传统团队协作三大痛点</h3><ul>
+<li><strong>信息传递损耗</strong>：需求文档经多环节传递，像”电话游戏”传到后面面目全非。</li>
+<li><strong>责任边界模糊</strong>：出问题时”架构问题&#x2F;实现问题&#x2F;测试不充分”互相推诿。</li>
+<li><strong>反馈周期漫长</strong>：需求到代码审查走几天，发现问题已投入大量资源。</li>
+</ul>
+<h3 id="4-2-核心机制：中间产物驱动（借鉴-MetaGPT）"><a href="#4-2-核心机制：中间产物驱动（借鉴-MetaGPT）" class="headerlink" title="4.2 核心机制：中间产物驱动（借鉴 MetaGPT）"></a>4.2 核心机制：中间产物驱动（借鉴 MetaGPT）</h3><p>所有子代理通过共享**”技术方案文档”**协作——这是团队的”共享白板”，含需求分析、模块划分、实现状态、接口设计。每个子代理只修改自己角色相关部分，确保一致性。</p>
+<p><strong>为什么选中间产物驱动而非直接沟通</strong>：直接对话导致沟通渠道指数级增长（n 个代理有 n(n-1)&#x2F;2 渠道）。单一事实来源大幅降低协作复杂度，且便于追踪变更历史。</p>
+<h3 id="4-3-四个核心子代理角色"><a href="#4-3-四个核心子代理角色" class="headerlink" title="4.3 四个核心子代理角色"></a>4.3 四个核心子代理角色</h3><table>
+<thead>
+<tr>
+<th>角色</th>
+<th>对应现实角色</th>
+<th>核心职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>技术方案架构师</strong></td>
+<td>架构师</td>
+<td>需求拆解、模块划分、技术选型、接口定义、数据模型、依赖梳理、维护技术方案文档</td>
+</tr>
+<tr>
+<td><strong>代码审查专家</strong></td>
+<td>技术负责人</td>
+<td>架构合规性、规范命名、潜在性能&#x2F;bug、可维护性评估、具体修改建议</td>
+</tr>
+<tr>
+<td><strong>代码实现专家</strong></td>
+<td>主力开发</td>
+<td>按方案实现代码、写单测集成测试、修复审查问题、写 API 文档、同步实现状态</td>
+</tr>
+<tr>
+<td><strong>前端页面生成器</strong></td>
+<td>前端（定制）</td>
+<td>按接口定义生成符合<strong>低代码平台规范</strong>的前端页面配置（商家域管理后台定制角色）</td>
+</tr>
+</tbody></table>
+<p><strong>角色划分依据</strong>：基于软件开发自然阶段（设计→实现→审查）+ 专业领域（后端→前端），符合 SDLC 自然规律，不盲目追求角色数量。</p>
+<h3 id="4-4-协作流程：”先整体规划，再迭代实现”（Sprint-规划-Daily-Scrum）"><a href="#4-4-协作流程：”先整体规划，再迭代实现”（Sprint-规划-Daily-Scrum）" class="headerlink" title="4.4 协作流程：”先整体规划，再迭代实现”（Sprint 规划 + Daily Scrum）"></a>4.4 协作流程：”先整体规划，再迭代实现”（Sprint 规划 + Daily Scrum）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">1. 整体规划阶段</span><br><span class="line">   - PM 提供需求文档</span><br><span class="line">   - 协调者调用&quot;架构师&quot;子代理 → 生成技术方案文档</span><br><span class="line">   - 团队评审 → 架构师迭代修改至确认</span><br><span class="line"></span><br><span class="line">2. 单模块迭代阶段（每个模块循环）</span><br><span class="line">   - 协调者从技术方案文档选取一个模块</span><br><span class="line">   - 调用&quot;实现专家&quot;生成代码</span><br><span class="line">   - 调用&quot;审查专家&quot;审查代码</span><br><span class="line">   - 实现专家据审查意见修改</span><br><span class="line">   - 重复&quot;实现-审查-修改&quot;直到通过</span><br><span class="line">   - 更新技术方案文档, 标记模块&quot;已完成&quot;</span><br><span class="line">   - 进入下一模块</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么增量迭代而非一次性开发</strong>：复杂系统构建本质是不断学习调整的过程，及早发现问题调整方向，避免错误道路走太远——即”小步快跑，快速迭代”。</p>
+<h3 id="4-5-子代理协作的三个显著价值"><a href="#4-5-子代理协作的三个显著价值" class="headerlink" title="4.5 子代理协作的三个显著价值"></a>4.5 子代理协作的三个显著价值</h3><ol>
+<li><strong>专业化分工提升质量</strong>：专门代码审查子代理比通用 AI 能发现更多潜在问题（类比专科医院 vs 综合医院）。</li>
+<li><strong>流程标准化降低风险</strong>：技术方案文档 + 明确角色分工，让流程标准化可视化，新人看文档即可上手。</li>
+<li><strong>知识沉淀促进复用</strong>：专业知识与决策逻辑编码为可复用配置规则，避免”人走经验丢”。</li>
+</ol>
+<h3 id="4-6-子代理协作的四个实际挑战与应对"><a href="#4-6-子代理协作的四个实际挑战与应对" class="headerlink" title="4.6 子代理协作的四个实际挑战与应对"></a>4.6 子代理协作的四个实际挑战与应对</h3><table>
+<thead>
+<tr>
+<th>挑战</th>
+<th>应对</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>上下文同步问题</strong>（文档更新各代理未及时同步）</td>
+<td>每次修改文档后明确通知相关代理”技术方案 XX 部分已更新”</td>
+</tr>
+<tr>
+<td><strong>协作边界模糊</strong>（跨模块功能该谁负责）</td>
+<td>技术方案文档加”责任人”字段，明确每模块归属</td>
+</tr>
+<tr>
+<td><strong>灵活性与标准化平衡</strong></td>
+<td>原则：90% 常规严格遵循标准流程，10% 特殊情况人工介入</td>
+</tr>
+<tr>
+<td><strong>错误传递放大效应</strong>（方案设计错则后续全错）</td>
+<td>加强技术方案人工评审，确保”地基”打牢</td>
+</tr>
+</tbody></table>
+<h2 id="五、真实踩坑与人机协同要点"><a href="#五、真实踩坑与人机协同要点" class="headerlink" title="五、真实踩坑与人机协同要点"></a>五、真实踩坑与人机协同要点</h2><h3 id="5-1-上下文管理四个实用技巧"><a href="#5-1-上下文管理四个实用技巧" class="headerlink" title="5.1 上下文管理四个实用技巧"></a>5.1 上下文管理四个实用技巧</h3><ol>
+<li><strong>对话线程化</strong>：不同功能模块用独立对话线程（曾在同一对话讨论三模块导致上下文混乱到推倒重来）。</li>
+<li><strong>关键信息锚定</strong>：重要技术决策和约束在对话中反复强调。</li>
+<li><strong>文档外化</strong>：复杂设计记录在外部文档而非依赖对话历史，对话中引用（”数据库设计详见 &#x2F;doc&#x2F;db_design.md，特别是索引设计部分”）。</li>
+<li><strong>状态可视化</strong>：技术方案文档用进度标记 <code>[未开始]/[设计中]/[已实现]/[已审查]</code> 直观跟踪。</li>
+</ol>
+<h3 id="5-2-质量控制三个关键策略"><a href="#5-2-质量控制三个关键策略" class="headerlink" title="5.2 质量控制三个关键策略"></a>5.2 质量控制三个关键策略</h3><ul>
+<li><strong>多层次验证</strong>：单测（AI 生成）+ 集成测试（人工设计）+ 代码审查（人机结合）三层验证体系。</li>
+<li><strong>渐进式信任</strong>：从简单低风险模块开始用 AI，先内部工具验证无误再用于核心业务。</li>
+<li><strong>错误模式学习</strong>：维护”AI 错误案例库”，记录”忘记处理分布式锁超时””日期格式转换错误”等典型问题及解决方案，针对性优化系统提示词。</li>
+</ul>
+<h3 id="5-3-人机协作最佳平衡点：三类工作划分"><a href="#5-3-人机协作最佳平衡点：三类工作划分" class="headerlink" title="5.3 人机协作最佳平衡点：三类工作划分"></a>5.3 人机协作最佳平衡点：三类工作划分</h3><ul>
+<li><strong>AI 主导</strong>：标准化代码生成（基础 CRUD）、单测编写、API 文档生成等重复性高规则明确的任务。</li>
+<li><strong>人机协作</strong>：技术方案设计、复杂逻辑实现、代码审查等需领域知识 + 创造性思维的任务。</li>
+<li><strong>人类主导</strong>：需求分析、架构设计、质量决策等高风险高创造性任务。</li>
+</ul>
+<blockquote>
+<p>核心定位：”人类主导，AI 辅助”——而非反过来。开发者对 AI 生成代码负全部责任，如同对自己写的代码负责。</p>
+</blockquote>
+<h2 id="六、AI-编程的局限性认知（清醒边界）"><a href="#六、AI-编程的局限性认知（清醒边界）" class="headerlink" title="六、AI 编程的局限性认知（清醒边界）"></a>六、AI 编程的局限性认知（清醒边界）</h2><ol>
+<li><strong>创造性思维不足</strong>：AI 擅长已有知识范围内组合优化，突破性创新有限。尝试让 AI 设计全新商家结算模型时，仍倾向参考现有模型修改，难跳出框架。</li>
+<li><strong>上下文理解深度有限</strong>：即便上下文窗口很大，对”牵一发而动全身”的核心模块仍难把握深层设计意图与隐性依赖。</li>
+<li><strong>质量责任边界模糊</strong>：AI 代码出质量问题时责任界定复杂——得物解法是开发者负全责。</li>
+<li><strong>领域知识滞后性</strong>：AI 对公司内部系统最新变更反应不及时——得物建立”知识库更新机制”，<strong>每月整理最新系统变更和业务规则成文档供 AI 参考</strong>。</li>
+</ol>
+<h2 id="七、可借鉴点与已挖研究的关系"><a href="#七、可借鉴点与已挖研究的关系" class="headerlink" title="七、可借鉴点与已挖研究的关系"></a>七、可借鉴点与已挖研究的关系</h2><h3 id="7-1-与-id-213（多-Agent-主从架构）的呼应"><a href="#7-1-与-id-213（多-Agent-主从架构）的呼应" class="headerlink" title="7.1 与 id&#x3D;213（多 Agent 主从架构）的呼应"></a>7.1 与 id&#x3D;213（多 Agent 主从架构）的呼应</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>id&#x3D;213 Claude Code 工作流</th>
+<th>id&#x3D;202 团队协作（本文）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>多 Agent 形态</strong></td>
+<td>3 个常驻 CC 会话（架构师贵模型 + 2 开发者领域模型），成本取舍</td>
+<td>4 个专业化子代理（架构师&#x2F;审查&#x2F;实现&#x2F;前端），中间产物驱动协作</td>
+</tr>
+<tr>
+<td><strong>协作契约</strong></td>
+<td>SDD 三阶段（proposal&#x2F;apply&#x2F;archive）</td>
+<td>技术方案文档作单一事实来源 + 三阶段对话模型</td>
+</tr>
+<tr>
+<td><strong>模型分工</strong></td>
+<td>显式成本取舍（贵模型规划、便宜模型实施）</td>
+<td>隐含分工（不同子代理专注不同阶段）</td>
+</tr>
+<tr>
+<td><strong>核心理念</strong></td>
+<td>确定性机制 + 模型语义感知</td>
+<td>同源——结构化约束锁定 AI 行为</td>
+</tr>
+</tbody></table>
+<p><strong>互补关系</strong>：id&#x3D;213 侧重<strong>工具层选型与成本</strong>（模型插拔、Shell 别名、多屏布局），id&#x3D;202 侧重<strong>方法论与团队协作范式</strong>（对话流、Plan、子代理协作）。两者拼起来是得物 Claude Code 实践的完整图景：工具选型 → 单兵方法论 → 团队协作范式。</p>
+<h3 id="7-2-与你环境的强同源（skill-系统-MCP）"><a href="#7-2-与你环境的强同源（skill-系统-MCP）" class="headerlink" title="7.2 与你环境的强同源（skill 系统 &#x2F; MCP）"></a>7.2 与你环境的强同源（skill 系统 &#x2F; MCP）</h3><ol>
+<li><strong>SKILL 同源</strong>：本文的 SKILL 机制（把 Prompt 沉淀为可复用组件，如 ES 接入、Redis 缓存策略封装）正是你 <code>~/.claude/skills/</code> 体系（auto-skill&#x2F;web-access&#x2F;flow-deep 等）的同一思想。得物的”复杂工具使用指南””常见错误处理模板”封装为 SKILL，对应你的 skill-creator 与 gsd 系列经验沉淀。</li>
+<li><strong>MCP 同源</strong>：得物集成飞书 MCP（feishu_create_doc &#x2F; feishu_get_doc_content &#x2F; feishu_append_bitable_data）扩展 AI 外部能力，正是你 MCP.md 中 Context7&#x2F;Sequential&#x2F;Magic&#x2F;Playwright 多服务器编排的同类实践。飞书 MCP &#x3D; 你的 Hermes MCP（通知&#x2F;同步&#x2F;cron）的得物版本。</li>
+<li><strong>三阶段对话模型 ≈ flow-deep 管道</strong>：需求定义（Stage 1 Prompt 优化）→ 边界明确（Stage 3 规划）→ 迭代反馈（Stage 4 执行 + Stage 5 验证），结构高度同构。</li>
+<li><strong>子代理中间产物驱动 ≈ planning-with-files</strong>：技术方案文档作单一事实来源 &#x3D; planning-with-files 的 task_plan.md&#x2F;findings.md&#x2F;progress.md 契约化文档。</li>
+<li><strong>系统提示词 200 字护栏</strong>：与你 CLAUDE.md 的”3S 原则（Single&#x2F;Specific&#x2F;Short）”和 RTK token 优化理念完全一致——信息过载反伤效果。</li>
+</ol>
+<h3 id="7-3-可直接迁移的实践"><a href="#7-3-可直接迁移的实践" class="headerlink" title="7.3 可直接迁移的实践"></a>7.3 可直接迁移的实践</h3><ol>
+<li><strong>“约束衰减”对抗技巧</strong>：每个新实现阶段开头回顾关键约束——可固化进 flow-deep 的 Stage 4 执行模板。</li>
+<li><strong>系统提示词动态调整</strong>：每两周回顾 + 维护”AI 错误案例库”——可建立定期 review 机制。</li>
+<li><strong>子代理”责任人”字段</strong>：在 planning-with-files 的 task_plan.md 中为每个任务标注负责的子代理&#x2F;Agent 类型，解决协作边界模糊。</li>
+<li><strong>90&#x2F;10 原则</strong>：90% 常规走标准流程，10% 特殊人工介入——作为 multi-agent 编排的兜底策略。</li>
+<li><strong>领域知识月更机制</strong>：定期把内部系统变更整理成文档供 AI 参考——对抗 AI 领域知识滞后。</li>
+</ol>
+<h2 id="八、局限与待验证"><a href="#八、局限与待验证" class="headerlink" title="八、局限与待验证"></a>八、局限与待验证</h2><ol>
+<li><strong>子代理实现细节未披露</strong>：原文未给出子代理的具体配置（是 Claude Code 的 subagent 配置文件、还是外挂脚本协调？），”协调者”是人是 AI 未明确。需结合 id&#x3D;213 的多 Agent 主从（3 常驻 CC 会话）交叉推断——可能同一套机制的不同表述。</li>
+<li><strong>前端页面生成器子代理</strong>：依赖得物低代码平台规范，外部不可直接复用，但”为特定平台定制专门子代理”的思路可迁移。</li>
+<li><strong>系统提示词模板三模块结构</strong>：原文以图片展示（image_1772162374336.png），正文未文字化具体三模块名称，仅有编写技巧。需抓图识别补全（本次抓取未取图）。</li>
+<li><strong>“技术方案文档”格式</strong>：提到 tech-solution.json 和 tech-solution.md，但未给出完整 schema，模块状态枚举（implemented&#x2F;reviewed&#x2F;verified）为已知。</li>
+<li><strong>与 id&#x3D;213 的关系</strong>：两篇文章均出自得物技术博客 Claude Code 系列，团队是否同一支、子代理与多 Agent 主从是否同一机制，待后续 id&#x3D;204&#x2F;212 等交叉验证。</li>
+</ol>
+<h2 id="九、一句话总结"><a href="#九、一句话总结" class="headerlink" title="九、一句话总结"></a>九、一句话总结</h2><blockquote>
+<p>得物把”带新人”的认知科学（工作记忆 7±2、渐进式构建、护栏而非手册）系统化映射成对 Claude Code 的五层约束（对话流&#x2F;Plan&#x2F;提示词&#x2F;SKILL&amp;MCP&#x2F;子代理），再用”技术方案文档作单一事实来源”把人类团队协作范式搬进 AI——核心仍是得物一以贯之的”确定性机制锁定 + 模型只做语义感知”，与你 flow-deep + planning-with-files + skill 体系高度同源。</p>
+</blockquote>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

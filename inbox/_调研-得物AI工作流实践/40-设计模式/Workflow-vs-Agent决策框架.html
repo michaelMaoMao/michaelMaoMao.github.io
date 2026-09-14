@@ -1,0 +1,94 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Workflow vs Agent 决策框架"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>Workflow vs Agent 决策框架 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>Workflow vs Agent 决策框架</h1><div class="article-container"><h1 id="Workflow-vs-Agent-决策框架"><a href="#Workflow-vs-Agent-决策框架" class="headerlink" title="Workflow vs Agent 决策框架"></a>Workflow vs Agent 决策框架</h1><blockquote>
+<p>这是得物活动搭建原文最有”可操作性”的一条经验，也是贯穿本系列的核心判断。</p>
+</blockquote>
+<h2 id="一、得物的判断法则（有限状态机法则）"><a href="#一、得物的判断法则（有限状态机法则）" class="headerlink" title="一、得物的判断法则（有限状态机法则）"></a>一、得物的判断法则（有限状态机法则）</h2><blockquote>
+<p><strong>流程能画成一张有限状态机图 → 用 Workflow</strong><br><strong>更像”给目标，让 AI 自己想办法达到” → 用 Agent</strong><br><strong>企业级多数是混合：大框架 Workflow 保可控，局部节点 Agent 提灵活</strong></p>
+</blockquote>
+<h2 id="二、四篇-四场景实证（选型背后的理由）"><a href="#二、四篇-四场景实证（选型背后的理由）" class="headerlink" title="二、四篇&#x2F;四场景实证（选型背后的理由）"></a>二、四篇&#x2F;四场景实证（选型背后的理由）</h2><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>流程特征</th>
+<th>选型</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>得物·活动搭建</td>
+<td>步骤明确、完成条件确定、正确率要求极高</td>
+<td><strong>Workflow (LangGraph)</strong></td>
+<td>可画成状态机</td>
+</tr>
+<tr>
+<td>得物·数仓工作流</td>
+<td>需求流转 + 规则资产化 + 经验沉淀</td>
+<td><strong>单 Agent + 多能力模块 (Hermes)</strong></td>
+<td>需自学习</td>
+</tr>
+<tr>
+<td>得物·告警排查</td>
+<td>ReAct 式查日志&#x2F;指标&#x2F;链路推理</td>
+<td><strong>ReAct Agent (Spring AI)</strong></td>
+<td>目标导向探索</td>
+</tr>
+<tr>
+<td>高德·配图</td>
+<td>召回&#x2F;排序&#x2F;质检同构批量 + 精排组合决策</td>
+<td><strong>Pipeline(重活) + Agent(巧活)</strong></td>
+<td>混合</td>
+</tr>
+</tbody></table>
+<h2 id="三、决策-checklist"><a href="#三、决策-checklist" class="headerlink" title="三、决策 checklist"></a>三、决策 checklist</h2><p>回答这 4 个问题：</p>
+<ol>
+<li><strong>流程步骤是否明确、完成条件是否确定？</strong> 是 → Workflow 倾向 +</li>
+<li><strong>对正确率要求是否极高？</strong> 是 → Workflow 倾向 +（可控）</li>
+<li><strong>是否需要”理解规则 + 组合决策”？</strong> 是 → Agent 倾向 +（局部）</li>
+<li><strong>是否需要”给定目标自己探索路径”？</strong> 是 → 纯 Agent 倾向 +</li>
+</ol>
+<ul>
+<li>1、2 都”是” → <strong>Workflow</strong>（大框架）</li>
+<li>3”是” → 在 Workflow 的<strong>局部节点</strong>用 Agent</li>
+<li>只有 4”是” → 考虑<strong>纯 Agent</strong>（但生产极少）</li>
+</ul>
+<h2 id="四、混合模式（大多数生产场景的最优解）"><a href="#四、混合模式（大多数生产场景的最优解）" class="headerlink" title="四、混合模式（大多数生产场景的最优解）"></a>四、混合模式（大多数生产场景的最优解）</h2><pre class="mermaid">flowchart TB
+    subgraph WF["Workflow 大框架（可控）"]
+        N1["节点1&lt;br/&gt;(代码/确定)"] --&gt; N2["节点2&lt;br/&gt;(LLM 感知)"]
+        N2 --&gt; N3["节点3&lt;br/&gt;(Agent 局部推理)"]
+        N3 --&gt; N4["节点4&lt;br/&gt;(代码/确定)"]
+    end
+    style N2 fill:#fff3cd
+    style N3 fill:#d1ecf1</pre>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Workflow 大框架 = 确定性骨架</span><br><span class="line">  ├─ 代码节点（路由/计算/校验）  ← 确定性机制锁定</span><br><span class="line">  ├─ LLM 感知节点（解析/生成）   ← 模型做语义</span><br><span class="line">  └─ Agent 局部节点（理解规则）  ← 模型做组合决策</span><br></pre></td></tr></table></figure>
+
+<p><strong>核心原则</strong>：路由权、计算权、校验权<strong>永远在代码</strong>；模型只做”感知 + 局部语义推理”。</p>
+<h2 id="五、行业旁证"><a href="#五、行业旁证" class="headerlink" title="五、行业旁证"></a>五、行业旁证</h2><ul>
+<li>Harrison Chase（LangChain 创始人）：大部分成功的 AI 应用是 Workflow 而非 Agent</li>
+<li>Klarna 客服：被报道为”Agent”，架构上是精心设计的 Workflow（意图路由 + 工具调用 + 人工升级）</li>
+<li>真正在生产跑”完全自主 Agent”的案例极少</li>
+</ul>
+<h2 id="六、一句话"><a href="#六、一句话" class="headerlink" title="六、一句话"></a>六、一句话</h2><blockquote>
+<p>不要问”要不要用 Agent”，要问”我的流程能不能画成有限状态机”——能，就用 Workflow 把可控性握在手里，把 Agent 留给局部节点。</p>
+</blockquote>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="interrupt/resume demo 落地验证"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>interrupt/resume demo 落地验证 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>interrupt/resume demo 落地验证</h1><div class="article-container"><h1 id="interrupt-resume-demo-落地验证"><a href="#interrupt-resume-demo-落地验证" class="headerlink" title="interrupt&#x2F;resume demo 落地验证"></a>interrupt&#x2F;resume demo 落地验证</h1><blockquote>
+<p>在本地 venv 跑通 <code>interrupt_demo.py</code>，<strong>实证 Phase 1 代码骨架真实可落地</strong>，复现得物活动搭建”6 中断点 + 中断恢复”核心机制。脚本见同目录 <code>interrupt_demo.py</code>。</p>
+</blockquote>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ul>
+<li>Python 3.11.4 &#x2F; langgraph <strong>1.2.6</strong> &#x2F; InMemorySaver（开发用，生产换 PostgreSQL）</li>
+<li>venv 隔离在 <code>/tmp/lg-venv</code>（不污染系统 Python）</li>
+</ul>
+<h2 id="验证结果（运行输出）"><a href="#验证结果（运行输出）" class="headerlink" title="验证结果（运行输出）"></a>验证结果（运行输出）</h2><h3 id="第-1-轮：跑到-confirm-中断-✓"><a href="#第-1-轮：跑到-confirm-中断-✓" class="headerlink" title="第 1 轮：跑到 confirm 中断 ✓"></a>第 1 轮：跑到 confirm 中断 ✓</h3><ul>
+<li><code>parse</code> 节点执行（模拟 LLM 生成草稿）</li>
+<li><code>confirm</code> 节点调 <code>interrupt()</code> → 图暂停</li>
+<li>输出 <code>__interrupt__</code> 事件，value &#x3D; 推给前端的 payload <code>&#123;draft, msg&#125;</code></li>
+<li><code>get_state</code> 读取：<code>next=(&#39;confirm&#39;,)</code>，values 已含 draft（<strong>证明 checkpointer 持久化生效</strong>）</li>
+</ul>
+<h3 id="第-2-轮：Command-resume-恢复-✓"><a href="#第-2-轮：Command-resume-恢复-✓" class="headerlink" title="第 2 轮：Command(resume) 恢复 ✓"></a>第 2 轮：Command(resume) 恢复 ✓</h3><ul>
+<li>传 <code>Command(resume=&#123;approved, edited&#125;)</code></li>
+<li><code>confirm</code> 收到反馈（<code>interrupt()</code> 返回值 &#x3D; resume 数据）</li>
+<li><code>build</code> 节点执行写操作（确认后才写，<strong>验证副作用延后原则</strong>）</li>
+<li>最终状态完整：draft + confirmed + result</li>
+</ul>
+<h2 id="验证的三个核心机制"><a href="#验证的三个核心机制" class="headerlink" title="验证的三个核心机制"></a>验证的三个核心机制</h2><table>
+<thead>
+<tr>
+<th>机制</th>
+<th>验证</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>interrupt(value) 暂停</strong></td>
+<td>图在 confirm 暂停，value 作为 payload 推出 ✓</td>
+</tr>
+<tr>
+<td><strong>Checkpointer 持久化</strong></td>
+<td>get_state 能读暂停点和已执行 values（同 thread_id 可跨进程恢复）✓</td>
+</tr>
+<tr>
+<td><strong>Command(resume) 恢复</strong></td>
+<td>resume 数据成为 interrupt() 返回值，图从断点继续 ✓</td>
+</tr>
+</tbody></table>
+<h2 id="对应得物实践"><a href="#对应得物实践" class="headerlink" title="对应得物实践"></a>对应得物实践</h2><table>
+<thead>
+<tr>
+<th>demo 元素</th>
+<th>得物活动搭建对应</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>confirm_node 的 interrupt()</td>
+<td>得物 6 个中断点之一</td>
+</tr>
+<tr>
+<td>interrupt 的 value payload</td>
+<td>得物中断卡片的数据</td>
+</tr>
+<tr>
+<td>Command(resume&#x3D;…)</td>
+<td>前端用户操作后推回</td>
+</tr>
+<tr>
+<td>build 在 confirm 之后</td>
+<td>得物”初始化无副作用，确认后才写”</td>
+</tr>
+</tbody></table>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p><strong><code>实现路径.md</code> 的 Phase 1 代码骨架真实可落地</strong>。langgraph 1.2.6 的 interrupt&#x2F;resume + checkpointer 在本地完整复现得物活动搭建核心。生产化只需三步：</p>
+<ol>
+<li><code>InMemorySaver</code> → PostgreSQL&#x2F;Redis checkpointer</li>
+<li><code>parse_node</code> 的模拟 → 真实 LLM 调用</li>
+<li>加 LangSmith tracing 做可观测</li>
+</ol>
+<h2 id="复现命令"><a href="#复现命令" class="headerlink" title="复现命令"></a>复现命令</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python3 -m venv /tmp/lg-venv</span><br><span class="line">/tmp/lg-venv/bin/pip install langgraph</span><br><span class="line">/tmp/lg-venv/bin/python interrupt_demo.py</span><br></pre></td></tr></table></figure>
+
+<h2 id="调研-Loop-闭环验证"><a href="#调研-Loop-闭环验证" class="headerlink" title="调研 Loop 闭环验证"></a>调研 Loop 闭环验证</h2><p>这个 demo 也是”调研 Loop”的收尾验证环——从读文章（理解机制）→ 抓官方文档（设计原理）→ Context7（API 代码）→ <strong>本地实证（跑通）</strong>，形成完整闭环。证明调研库的落地论证不是纸上谈兵。</p>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

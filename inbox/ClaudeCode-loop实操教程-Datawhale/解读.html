@@ -1,0 +1,166 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="解读：Claude Code /loop 实操教程"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>解读：Claude Code /loop 实操教程 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>解读：Claude Code /loop 实操教程</h1><div class="article-container"><h1 id="解读：-loop-到底是什么"><a href="#解读：-loop-到底是什么" class="headerlink" title="解读：&#x2F;loop 到底是什么"></a>解读：&#x2F;loop 到底是什么</h1><blockquote>
+<p>本文是对 Datawhale《刚刚！Claude Code 的 &#x2F;loop 实操教程来了》的解读笔记。<br>与本系列前三篇（架构文章）不同，这是一篇<strong>实操教程</strong>——解读重点放在”机制还原”和”与你既有实践的对照”。</p>
+</blockquote>
+<hr>
+<h2 id="一、TL-DR"><a href="#一、TL-DR" class="headerlink" title="一、TL;DR"></a>一、TL;DR</h2><p>作者用一个”监控竞品公众号更新”的真实场景，跑通了 Claude Code 的 <code>/loop</code>。读完全文最关键的认知是：<strong><code>/loop</code> 的本质就是 cron + prompt</strong>——调度器只做一件蠢事（到时间把 prompt 塞给 agent），所有”智能”（判断状态、区分错误、决定做不做）都承载在你写的那段 prompt 里。</p>
+<p><strong>一句话精华</strong>：循环的智能不在基础设施里，在你设计的 prompt 里。</p>
+<hr>
+<h2 id="二、这篇的定位（与前-3-篇互补）"><a href="#二、这篇的定位（与前-3-篇互补）" class="headerlink" title="二、这篇的定位（与前 3 篇互补）"></a>二、这篇的定位（与前 3 篇互补）</h2><p>本系列前 3 篇都是”架构复盘”（讲怎么选型、怎么分层），这一篇是”动手教程”（讲一个命令怎么用）。它的价值不在宏大叙事，而在<strong>把 &#x2F;loop 这个被神化的概念还原成一个朴素机制</strong>——读完你会知道：&#x2F;loop 没有魔法，它和 crontab 的区别，只在于”塞给 agent 的不是死脚本，而是会判断的 prompt”。</p>
+<hr>
+<h2 id="三、agent-唤醒形态谱系（Loop-Engineering-的设计空间）"><a href="#三、agent-唤醒形态谱系（Loop-Engineering-的设计空间）" class="headerlink" title="三、agent 唤醒形态谱系（Loop Engineering 的设计空间）"></a>三、agent 唤醒形态谱系（Loop Engineering 的设计空间）</h2><p>很多人以为 Loop Engineering &#x3D; &#x2F;loop。文章先纠正了这个认知——agent 的自动化触发有五种形态：</p>
+<pre class="mermaid">flowchart LR
+    A["① /loop&lt;br/&gt;Scheduled&lt;br/&gt;按时间表重复"] --&gt; COMB["实际工作流&lt;br/&gt;组合使用"]
+    B["② /goal&lt;br/&gt;目标驱动&lt;br/&gt;持续到达标"] --&gt; COMB
+    C["③ hooks&lt;br/&gt;事件触发&lt;br/&gt;确定性脚本"] --&gt; COMB
+    D["④ spawn 子agent&lt;br/&gt;并行+各自goal验证"] --&gt; COMB
+    E["⑤ workflow&lt;br/&gt;LLM决定子agent组合"] --&gt; COMB
+
+    style A fill:#d4edda
+    style COMB fill:#d1ecf1</pre>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">字符画版本（五种形态 → 组合）:</span><br><span class="line"></span><br><span class="line">① /loop (按时间表)   ─┐</span><br><span class="line">② /goal (目标驱动)   ─┤</span><br><span class="line">③ hooks (事件触发)   ─┼──▶ 实际工作流组合使用</span><br><span class="line">④ spawn (并行验证)   ─┤</span><br><span class="line">⑤ workflow(LLM编排) ─┘</span><br></pre></td></tr></table></figure>
+
+<p>文章只聚焦最基础的 ①（Scheduled loop）。但这个谱系本身就是一张有用的”设计地图”——选 loop 形态时，先问”我要的是定时、目标、事件、并行、还是动态编排”。</p>
+<hr>
+<h2 id="四、-loop-的机制真相：cron-prompt"><a href="#四、-loop-的机制真相：cron-prompt" class="headerlink" title="四、&#x2F;loop 的机制真相：cron + prompt"></a>四、&#x2F;loop 的机制真相：cron + prompt</h2><p>作者读了 Claude Code 源码（loop.ts &#x2F; cronScheduler.ts），还原出 &#x2F;loop 的完整机制：</p>
+<pre class="mermaid">flowchart TD
+    IN["用户输入: /loop 30m prompt"] --&gt; PARSE["loop.ts 解析&lt;br/&gt;interval=30m → cron=*/30 * * * *"]
+    PARSE --&gt; CREATE["CronCreate 创建定时任务&lt;br/&gt;recurring=true"]
+    CREATE --&gt; RUN["立即执行一次 prompt&lt;br/&gt;不等第一个 tick"]
+    CREATE --&gt; SCHED["cronScheduler 每秒检查"]
+    SCHED --&gt; FIRE{"到期?"}
+    FIRE --&gt;|是| INJECT["注入消息队列&lt;br/&gt;→ agent 新 turn"]
+    FIRE --&gt;|否| SCHED
+
+    style INJECT fill:#fff3cd</pre>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">字符画版本:</span><br><span class="line"></span><br><span class="line">/loop 30m &lt;prompt&gt;</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line">loop.ts 解析 → cron=&quot;*/30 * * * *&quot;</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line">CronCreate 定时任务 + 立即执行首轮</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line">cronScheduler 每秒检查 ──到期?──▶ 注入消息队列 → agent 新 turn</span><br><span class="line">                  │否</span><br><span class="line">                  └─继续检查</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键发现：源码里没有 evaluator，没有自动判断”是否达标”的组件。</strong> &#x2F;loop 做的事就是”定时唤醒 prompt”。</p>
+<p>那”判断达标”、”决定继续停止”、”区分错误类型”这些智能从哪来？——<strong>全在你写的 prompt 里。</strong></p>
+<p>这条结论和本系列第 3 篇的”Hook 优先于 Skill”是同一个硬币的两面：</p>
+<ul>
+<li>第 3 篇说：<strong>确定性的触发</strong>（Hook）应该交给系统基础设施</li>
+<li>本篇说：<strong>智能的决策</strong>（判断做什么）应该交给 prompt，不要指望基础设施</li>
+</ul>
+<p>合起来就是贯穿系列的铁律：<strong>基础设施做确定性的事（定时触发&#x2F;100%采集），智能（判断&#x2F;决策）交给 prompt 和模型。</strong></p>
+<hr>
+<h2 id="五、loop-vs-cron-的本质区别：异常处理"><a href="#五、loop-vs-cron-的本质区别：异常处理" class="headerlink" title="五、loop vs cron 的本质区别：异常处理"></a>五、loop vs cron 的本质区别：异常处理</h2><p>文章最有说服力的部分，是 token 失效场景下 loop 和 cron 的对比。微信公众平台 token 几小时就过期，API 返回 <code>ret=200003 invalid session</code>：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>cron 脚本</th>
+<th>&#x2F;loop</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>正常情况</td>
+<td>全量执行</td>
+<td>正常同步</td>
+</tr>
+<tr>
+<td>无更新</td>
+<td>仍全量执行完整逻辑</td>
+<td>极简一行响应（token 最省）</td>
+</tr>
+<tr>
+<td>token 失效</td>
+<td>报错→退出→日志躺 traceback→明天才发现断数据</td>
+<td>判断是”凭证过期”非”内容问题”→<strong>不重试</strong>→标记状态→通知用户</td>
+</tr>
+<tr>
+<td>下一轮</td>
+<td>盲目重试（可能又挂）</td>
+<td>先读状态文件，轻量检测 token 是否恢复，未恢复直接跳过</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>核心差别叫”<strong>控制器判断力</strong>“：同样是”执行失败”，agent 区分了”内容层面的问题（值得重试）”和”基础设施层面的问题（需要人介入）”。这个判断不在调度器里，<strong>在 prompt 里</strong>。</p>
+</blockquote>
+<p>这个对比清晰说明了 loop 的价值不在”自动化”（cron 也能自动），而在”<strong>运行时判断</strong>“——agent 遇到未预见的返回值，能基于上下文做合理决策，无需你在脚本里穷举所有错误码。</p>
+<hr>
+<h2 id="六、”先写-skill”的深意"><a href="#六、”先写-skill”的深意" class="headerlink" title="六、”先写 skill”的深意"></a>六、”先写 skill”的深意</h2><blockquote>
+<p>“Loop 的第一步不是 loop 本身的六大组件，而是处理问题的那个 skill，你得先有解决问题的方法。”</p>
+</blockquote>
+<p>这条与系列呼应强烈：</p>
+<ul>
+<li>第 1 篇（得物）：组件模块协议——把能力固化成可复用模块</li>
+<li>第 2 篇（高德）：<strong>Skill 化是 Agent 落地的工程前提</strong></li>
+<li>本篇：<strong>先有 skill，再设计 loop</strong></li>
+</ul>
+<p>三篇的共识：<strong>Agent&#x2F;loop 的智能只是”编排层”，真正的业务能力必须先沉淀成确定性的 skill&#x2F;组件。</strong> 没有 skill 的 loop，就是空中楼阁。</p>
+<hr>
+<h2 id="七、与你本次实践的对照（实用增量）"><a href="#七、与你本次实践的对照（实用增量）" class="headerlink" title="七、与你本次实践的对照（实用增量）"></a>七、与你本次实践的对照（实用增量）</h2><p>这篇教程的场景是”监控公众号更新”，而本次任务我正好抓取了 4 篇公众号文章。文中方案和我的方案正好是两种互补路线：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>文中：wx-mp-rss-core</th>
+<th>本次：直接 fetch</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>原理</td>
+<td>微信公众平台 API（需扫码登录拿 token）</td>
+<td>直接 GET <code>/s/</code> 文章 URL（公开内容服务端渲染）</td>
+</tr>
+<tr>
+<td>凭证</td>
+<td>token + cookies，约 3 天过期需重新扫码</td>
+<td>无需登录</td>
+</tr>
+<tr>
+<td>能力</td>
+<td>可列任意公众号最新文章（适合<strong>监控&#x2F;发现</strong>）</td>
+<td>只能抓已知 URL 的单篇（适合<strong>一次性存档</strong>）</td>
+</tr>
+<tr>
+<td>风险</td>
+<td>token 过期需维护</td>
+<td>反爬升级时可能失效</td>
+</tr>
+<tr>
+<td>适用</td>
+<td>持续追踪多个号（文中 loop 场景）</td>
+<td>收集指定文章入 inbox（本次场景）</td>
+</tr>
+</tbody></table>
+<p><strong>结论</strong>：两种方案不冲突——若你要做”持续追踪 AI 公众号更新并自动入库”的 loop，用 wx-mp-rss-core 做发现层 + 直接 fetch 做存档层，正好拼成本文 inbox 的自动化上游。</p>
+<hr>
+<h2 id="八、批判性思考"><a href="#八、批判性思考" class="headerlink" title="八、批判性思考"></a>八、批判性思考</h2><ol>
+<li><p><strong>loop 的”自主性”有边界</strong>。token 过期时 loop 只是”报告 + 等待扫码”，仍需人介入。文章诚实地展示这个边界——loop 擅长”内容层判断”，但”基础设施层修复”还得靠人。完全自主的 loop 还差一个”自动续期&#x2F;自愈”能力。</p>
+</li>
+<li><p><strong>loop 质量高度依赖 prompt 工程</strong>。”无更新时极简响应””token 失效时不重试”这些好行为，都依赖 prompt 里写清了决策规则。prompt 没写好，agent 可能啰嗦或盲目重试。所以 loop 的灵活性背后是<strong>设计成本</strong>——既是优点也是负担。</p>
+</li>
+<li><p><strong>&#x2F;loop 没有 evaluator</strong>。源码证实 &#x2F;loop 是”定时循环”而非”目标驱动循环”。要”持续直到测试通过”得用 &#x2F;goal 而非 &#x2F;loop。文章聚焦 &#x2F;loop 但没对比 &#x2F;goal 的达标判断机制——这是 loop 形态谱系里值得单独展开的一支。</p>
+</li>
+<li><p><strong>loop 依赖 agent 在线</strong>。&#x2F;loop 的 cron 触发后，需要 Claude Code 环境（agent）在线才能执行。纯 cron 脚本独立运行。所以 loop 适合”人在环里”的开发场景，不适合完全无人值守的生产监控——这个前提文章没点明。</p>
+</li>
+</ol>
+<hr>
+<h2 id="九、一句话收获"><a href="#九、一句话收获" class="headerlink" title="九、一句话收获"></a>九、一句话收获</h2><blockquote>
+<p>&#x2F;loop 不是魔法，是 cron + prompt——调度器负责”准时叫醒”，prompt 负责”醒来后怎么判断和行动”。所以设计 loop 的真正工作不在配置定时器，而在写好那段承载全部决策逻辑的 prompt；而写好 prompt 的前提，是你已经有了能解决问题的 skill。</p>
+</blockquote>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

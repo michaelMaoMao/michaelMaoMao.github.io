@@ -1,0 +1,206 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="让 Claude Code 拥有自我进化和记忆系统｜得物技术"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>让 Claude Code 拥有自我进化和记忆系统｜得物技术 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>让 Claude Code 拥有自我进化和记忆系统｜得物技术</h1><div class="article-container"><h1 id="让-Claude-Code-拥有自我进化和记忆系统｜得物技术"><a href="#让-Claude-Code-拥有自我进化和记忆系统｜得物技术" class="headerlink" title="让 Claude Code 拥有自我进化和记忆系统｜得物技术"></a>让 Claude Code 拥有自我进化和记忆系统｜得物技术</h1><blockquote>
+<p><strong>来源</strong>：得物技术　<strong>发布</strong>：2026-06-10 18:30　<strong>抓取</strong>：2026-06-25<br><strong>原文链接</strong>：<a href="https://mp.weixin.qq.com/s/PGT49KORSVZYpJxykWnwOw">https://mp.weixin.qq.com/s/PGT49KORSVZYpJxykWnwOw</a></p>
+</blockquote>
+<hr>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_gif/AAQtmjCc74DZeqm2Rc4qc7ocVLZVd8FOASKicbMfKsaziasqIDXGPt8yR8anxPO3NCF4a4DkYCACam4oNAOBmSbA/640?wx_fmt=gif&wxfrom=5&wx_lazy=1" alt="图片"></p>
+<p><strong>目录</strong></p>
+<p>一、背景</p>
+<p>二、系统架构总览</p>
+<p>三、行为观测层</p>
+<p>1.Hook 机制——确定性触发的关键</p>
+<p>2.Observation 数据格式</p>
+<p>3.数据分片与生命周期管理</p>
+<p>四、模式提炼层</p>
+<p>1.路径 A：统计模式检测</p>
+<p>2.路径 B：AI 语义分析</p>
+<p>3.Instinct 数据模型</p>
+<p>4.语义去重算法</p>
+<p>5.Domain 聚合与规则注入</p>
+<p>五、记忆注入层</p>
+<p>1.记忆类型体系</p>
+<p>2.记忆文件格式</p>
+<p>3.记忆召回实现：从检索到注入的完整链路</p>
+<p>4.Embedding LLM：向量化的技术选型</p>
+<p>5.两套记忆系统的协作</p>
+<p>六、整体设计理念</p>
+<p>1.数据流设计</p>
+<p>2.防膨胀设计</p>
+<p>3.其他系统设计</p>
+<p>七、实际效果</p>
+<p>1.收益一：上下文冷启动时间从 10 分钟降至 30 秒</p>
+<p>2.收益二：Token 消耗降低约 78%</p>
+<p>3.收益三：错误重复率下降 80%</p>
+<p>4.收益四：知识复利效应</p>
+<p>八、总结</p>
+<p><strong>一</strong></p>
+<p>背景</p>
+<p>每次打开 Claude Code 开始新对话，它都是一张白纸。昨天你花了 10 分钟解释的项目架构、你反复纠正的代码风格偏好、你建立的特殊开发规范——全部归零。但是使用过 OpenClaw 和 Hermes 的同学都知道，这 2 个 agent 具备持久化记忆系统，这让我开始思考：能不能给 Claude Code 装上一套”长期记忆”系统？更进一步，不只是被动记忆，而是主动学习：观察我的行为模式、项目架构，提炼行为规律、项目知识，下次自动应用。这就是本文要介绍的系统。</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/FMFU1P6sHHvR6WxbzrY5tIEGNqllk0SXCQMG2cNdO2Oia2sd5DE9BayuabBVe3R7hGg0e8TLP07QiazWVTfWovrnZp2AzS1xXRKTUmOJtIyzM/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p><strong>二</strong></p>
+<p><strong>系统架构总览</strong></p>
+<p>整个系统由三个核心子系统构成：</p>
+<p><strong>行为观测层（Observation Engine）</strong></p>
+<p><strong>模式提炼层（Instinct Engine）</strong></p>
+<p><strong>记忆注入层（Memory Engine）</strong></p>
+<p>通过各个子系统协作，形成一个完整的自学习闭环：</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/FMFU1P6sHHsllFibqdbfK45GCekszT7Wvw2LnBDiblNe7SibIcxwicctxfGsC43RXMlbJcQzfe4XcFyCfKPr0mdvC4tsXQGicwLVY0xhNibARuYpc/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p><strong>三</strong></p>
+<p><strong>行为观测层</strong></p>
+<p>Observation Engine 通过 Hook 机制 100% 捕获每次工具调用，写入 JSONL 观测流，是整个系统的数据源。</p>
+<p><strong>Hook 机制——确定性触发的关键</strong></p>
+<p>早期版本用 Skill 来触发学习，但 Skill 依赖模型主动调用，触发率不稳定。v2 版本改用 Claude Code 原生 Hook 机制，彻底解决了这个问题。Hook 是 Claude Code 在工具调用生命周期中的回调点，可以通过 Claudecode CLI 执行 &#x2F;hooks 命令获取。</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/FMFU1P6sHHuVlMfT8f74iazFKcxPgDakACkJBaYx6tjoGUaRrv7IVWEiah3g3JxwauzHMJEKqqoIibQDWJ2tRhehqhy6Gvqicic7ju7rb3CfuY1c/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p>配置在 ~&#x2F;.claude&#x2F;settings.json：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; &quot;hooks&quot;: &#123; &quot;PreToolUse&quot;: [ &#123; &quot;matcher&quot;: &quot;Bash&quot;, &quot;hooks&quot;: [ &#123; &quot;type&quot;: &quot;command&quot;, &quot;command&quot;: &quot;~/.claude/hooks/observe.sh pre&quot; &#125; ] &#125; ], &quot;PostToolUse&quot;: [ &#123; &quot;matcher&quot;: &quot;.*&quot;, &quot;hooks&quot;: [ &#123; &quot;type&quot;: &quot;command&quot;, &quot;command&quot;: &quot;~/.claude/hooks/observe.sh post&quot; &#125; ] &#125; ], &quot;Stop&quot;: [ &#123; &quot;hooks&quot;: [ &#123; &quot;type&quot;: &quot;command&quot;, &quot;command&quot;: &quot;~/.claude/bin/auto-analyze-instincts.py &amp;&amp; ~/.claude/bin/auto-evolve.py&quot; &#125; ] &#125; ] &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关键设计：Stop Hook 在会话结束时触发，驱动分析和提炼流程。PostToolUse 匹配所有工具（.*），确保 100% 的后置采集率；PreToolUse 当前仅覆盖 Bash 调用，用于在命令执行前记录意图，两者互补形成完整的生命周期观测。</p>
+<p><strong>Observation 数据格式</strong></p>
+<p>每条观测记录是一个 JSONL 行，包含工具名称、时间戳、输入参数等：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; &quot;session_id&quot;: &quot;abc123&quot;, &quot;ts&quot;: &quot;2026-05-26T10:30:00Z&quot;, &quot;phase&quot;: &quot;post&quot;, &quot;tool&quot;: &quot;Edit&quot;, &quot;input&quot;: &#123; &quot;file_path&quot;: &quot;/src/app.ts&quot;, &quot;old_string&quot;: &quot;...&quot;, &quot;new_string&quot;: &quot;...&quot; &#125;, &quot;bash_desc&quot;: null&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当前系统已积累数万条观测记录，约 4MB 数据，记录了跨越数月的完整编程行为轨迹。</p>
+<p><strong>数据分片与生命周期管理</strong></p>
+<p>为防止数据膨胀，observations_rotate.py 在文件超 5MB 或 8000 行时自动按月份分片归档，主文件只保留最近 30 天的数据。</p>
+<p><strong>四</strong></p>
+<p><strong>模式提炼层</strong></p>
+<p>Instinct Engine 会话结束时自动分析观测数据，提炼行为模式为原子化 Instinct 规则，置信度动态演化。这是整个系统最核心的部分。auto-analyze-instincts.py 在每次会话结束时运行，通过两条并行路径提炼行为模式。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/FMFU1P6sHHtVA1icxictllHVtceuVkR75OeKAqUkzRgf53JrQM3BOQhH6NS9cEITGcUXmw7gyQXXUH6XDf6FaBfd50v9iarWQymJW2qKM1OQXI/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p><strong>路径 A：统计模式检测</strong></p>
+<p>基于规则的硬编码检测器，识别高频出现的工具调用序列：</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/FMFU1P6sHHuEQcuMjkWE67BRCJ0Sm4C6zW698QqS3bMYiaz5FJ6awZpdWXbUjEha6juKnQoXY7eKg3DUIKQIm3lDnCsCjxNYyZPGJ90onkAQ/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p>每检测到一个模式，生成或更新一条 Instinct：</p>
+<p>**首次发现：**confidence &#x3D; 0.5</p>
+<p><strong>重复验证</strong>：confidence +&#x3D; 0.05（上限 0.9）</p>
+<p>**长期未触发：**confidence -&#x3D; 0.05（低于 0.55 标记为 deprecated）</p>
+<p><strong>路径 B：AI 语义分析</strong></p>
+<p>将观测摘要交给 Claude 模型进行语义理解，捕获统计模式无法识别的深层规律：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># 调用本地 Claude CLI 进行语义分析result = subprocess.run( [&quot;claude&quot;, &quot;--print&quot;, &quot;--model&quot;, &quot;claude-haiku-4-5-20251001&quot;, &quot;-p&quot;, prompt], capture_output=True, text=True)# Claude 返回 JSON 数组，每条是一个 instinctinstincts = json.loads(result.stdout)</span><br></pre></td></tr></table></figure>
+
+<p>两条路径互补：统计路径快速可靠，语义路径捕获复杂模式。</p>
+<p><strong>Instinct 数据模型</strong></p>
+<p>每个 Instinct 是独立的 Markdown 文件，存储在 ~&#x2F;.claude&#x2F;homunculus&#x2F;instincts&#x2F;personal&#x2F;：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">---id: read-before-edit-patterntrigger: &quot;when about to edit a file that hasn&#x27;t been read in this session&quot;confidence: 0.78domain: workflowsource: session-observationdeprecated: falseobserved_at: &quot;2026-05-20&quot;---## Action在 Edit 文件前，先用 Read 工具读取该文件的当前内容，特别是当文件较长或最近有其他改动时。不跳过读取直接编辑，以避免基于过时内容产生错误的修改。## Evidence在过去 多次 Edit 操作中，绝大多数之前有对应的 Read 调用。</span><br></pre></td></tr></table></figure>
+
+<p><strong>语义去重算法</strong></p>
+<p>单条 Instinct 是原子性的，auto-evolve.py 将同域高置信度规则聚合成 Evolved Skill，并生成会话级规则文件。核心是基于 Jaccard 相似度的 Union-Find 去重：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">defdeduplicate_instincts(instincts, sim_threshold=0.5): &quot;&quot;&quot;提取英文关键词，计算 Jaccard 相似度，相似的合并为一组&quot;&quot;&quot; tokens = [tokenize(i[&quot;trigger&quot;] + &quot; &quot; + i[&quot;action&quot;]) for i in instincts] n = len(instincts) parent = list(range(n)) for i inrange(n): for j inrange(i + 1, n): if jaccard(tokens[i], tokens[j]) &gt;= sim_threshold: union(i, j) # 合并相似 instinct # 每组取置信度最高的作为代表 return [max(group, key=lambda x: x[&quot;confidence&quot;]) for group in groups.values()]</span><br></pre></td></tr></table></figure>
+
+<p>只提取英文关键词的设计很巧妙：用户可能用中文或英文描述同一个习惯，基于英文技术词汇的 Jaccard 相似度能跨语言识别同一意图。</p>
+<p><strong>Domain 聚合与规则注入</strong></p>
+<p>去重后按 domain 分组，每组 &gt;&#x3D; 2 条才生成 Evolved Skill：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">workflow (7条) → evolved-workflow.mdtesting (3条) → evolved-testing.mdgit (2条) → evolved-git.mdcode-style (2条) → evolved-code-style.mdproject-context (2条) → evolved-project-context.mdresearch-habit (4条) → evolved-research-habit.md</span><br></pre></td></tr></table></figure>
+
+<p>各 domain 的 evolved-*.md 内容随即被合并、精简后写入 <del>&#x2F;.claude&#x2F;rules&#x2F;auto-evolved.md——每次会话结束时整体覆盖重写，始终保持最新状态。Claude Code 启动时<strong>自动加载</strong></del>&#x2F;.claude&#x2F;rules&#x2F; 目录下所有 .md 文件，实现规则的跨会话注入。</p>
+<p>五</p>
+<p><strong>记忆注入层</strong></p>
+<p>Memory Engine：提炼完成的规则写入规则文件，下次会话启动时自动加载，完成知识的跨会话持久化。结构化知识的持久化：Instinct 系统处理行为模式，Memory 系统则处理知识性记忆——解决过的 Bug、重要的技术决策、项目上下文等。</p>
+<p><strong>记忆类型体系</strong></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/FMFU1P6sHHuv1QEXrX0U6FZuITqUnWoEbwP3pZdakTX8maKcEQ5OkLYwib7smWN66Igicd0a7Goy3TvWUa3r0gZPw5FiaUJGTZc6Fjicztic7Qp4/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p><strong>记忆文件格式</strong></p>
+<p>每条记忆存储为独立的 Markdown 文件，使用 YAML frontmatter：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">---name: feedback-commit-timingdescription: 改完代码不主动提交，等用户验证确认后再 commit/pushmetadata: type: feedback---改完代码后不要自动 commit 或 push。等用户在本地验证功能正常后，再由用户确认提交。**Why:** 自动提交会打断用户的验证节奏，且一旦 push 到远端就需要额外操作回滚。**How to apply:** 完成代码修改后，明确告知用户改动内容，等待其 confirm 再执行 git 操作。</span><br></pre></td></tr></table></figure>
+
+<p><strong>记忆召回实现：从检索到注入的完整链路</strong></p>
+<p>记忆存储完成只是第一步，召回才是让记忆产生价值的关键环节。整个召回链路分为四个阶段：</p>
+<p><strong>阶段一：触发时机</strong></p>
+<p>召回由 SessionStart Hook 驱动，会话开始时，inject_memory_context.py 通过 SessionStart Hook 自动向 Claude 注入相关记忆上下文，完成记忆的自动关联与应用，而非等到用户发出请求时才加载——这保证了上下文在第一条消息前就已就绪。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; &quot;hooks&quot;: &#123; &quot;SessionStart&quot;: [ &#123; &quot;hooks&quot;: [ &#123; &quot;type&quot;: &quot;command&quot;, &quot;command&quot;: &quot;python3 ~/.claude/memory/inject_memory_context.py&quot; &#125; ] &#125; ] &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>阶段二：查询构造</strong></p>
+<p>inject_memory_context.py 以当前工作目录（$PWD）和最近 3 条 git commit message 作为召回查询的输入，自动构造出与当前任务语境最接近的查询向量：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">defbuild_query(cwd: str) -&gt; str: # 提取项目名 project_name = Path(cwd).name # 获取最近 3 条 commit 作为补充语义 recent_commits = subprocess.check_output( [&quot;git&quot;, &quot;log&quot;, &quot;--oneline&quot;, &quot;-3&quot;], cwd=cwd ).decode().strip() returnf&quot;&#123;project_name&#125;&#123;recent_commits&#125;&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>阶段三：向量检索（Top-K 召回）</strong></p>
+<p>查询向量与记忆库中所有条目的向量做余弦相似度比较，取 Top-5 最相关的记忆：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">defrecall_memories(query: str, top_k: int = 5) -&gt; list[dict]: query_vec = embed(query) # 生成查询向量 scores = [] for mem in load_all_memories(): sim = cosine_similarity(query_vec, mem[&quot;embedding&quot;]) scores.append((sim, mem)) scores.sort(key=lambda x: -x[0]) return [m for _, m in scores[:top_k]]</span><br></pre></td></tr></table></figure>
+
+<p><strong>阶段四：上下文注入</strong></p>
+<p>召回的记忆以结构化 Markdown 格式注入到 Claude 的系统提示中，每条记忆附带类型标签，让模型能感知记忆来源并给予相应权重：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">## 🧠 项目记忆（自动注入，请优先参考）[feedback] 改完代码不主动提交，等用户验证确认后再 commit/push&gt; Why: 自动提交会打断验证节奏，回滚成本高[project] 当前项目使用 Vitest 做单元测试，TDD 优先&gt; How to apply: 新功能先在 tests/ 写测试用例，再实现[user] 用户是 Go 专家，TypeScript 中级水平&gt; How to apply: TS 代码解释适当补充类型系统的背景知识</span><br></pre></td></tr></table></figure>
+
+<p><strong>Embedding LLM：向量化的技术选型</strong></p>
+<p>记忆系统的语义检索依赖向量嵌入（Embedding），这是让”关键词匹配”升级为”语义理解”的核心技术。**为什么需要 Embedding？**传统全文搜索只能匹配字面量，无法理解同义表达。而 Embedding 将文本映射为高维向量空间中的点，语义相近的文本在空间中距离相近，即使措辞完全不同。比如查询 “不要自动提交代码” 与记忆条目 “等用户确认后再 commit” 字面无交集，但 Embedding 相似度仍然很高。</p>
+<p>**当前方案：**本地 Embedding 模型为了保护代码隐私（记忆内容可能包含项目路径、函数名等敏感信息），系统选用本地运行的轻量 Embedding 模型配合 qdrant 向量库，避免将记忆上传到第三方服务：</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/FMFU1P6sHHuGeF293Jia3s1RYsAvsex8myZpUmkqsFgNTcZ2OK5nibz3jCcJZHn2dA0USZqqsnF8s9BxMG2sNjIDxShH77Vr2hosoFywgzibeY/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p><strong>Embedding 写入流程：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">defupsert_memory(memory: dict): # 构造嵌入文本 = 标题 + 描述 + 正文摘要 text = f&quot;&#123;memory[&#x27;name&#x27;]&#125;&#123;memory[&#x27;description&#x27;]&#125;&#123;memory[&#x27;body&#x27;][:200]&#125;&quot; vector = embed_local(text) # nomic-embed-text 本地推理 qdrant_client.upsert( collection_name=&quot;memories&quot;, points=[PointStruct( id=memory_hash(memory[&quot;name&quot;]), vector=vector, payload=&#123;&quot;name&quot;: memory[&quot;name&quot;], &quot;type&quot;: memory[&quot;type&quot;], &quot;path&quot;: memory[&quot;file_path&quot;]&#125; )] )</span><br></pre></td></tr></table></figure>
+
+<p>**为什么不用 Claude Embedding API？**Claude 目前未开放独立的 Embedding API，且将记忆内容发送到云端存在隐私风险。本地 nomic-embed-text 在 M 系列芯片上推理速度约 10ms&#x2F;条，完全满足实时写入需求。</p>
+<p><strong>两套记忆系统的协作</strong></p>
+<p>整个系统分为两个相互独立又互相补充的记忆维度：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/FMFU1P6sHHso6QfeQb6HGLApdK8M3zKiaWPDicjptpwaGL6p1Ay5CfphGAWPMPlF3ItIzBhBichT9yI8ImeuiabQoJiao0yxRuSBj5icpaSDr4tnI/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/FMFU1P6sHHsOQN5fc0ibibfJFd1lWHtlev0Bgfj8h7SbibMXAt5wUzTLvbicLkfiaqVYKdNDlcruQflQ6OWg0Qp1ict7CM7TXymkicOQpF19FSYiaxs/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p><strong>六</strong></p>
+<p><strong>数据流设计</strong></p>
+<p><strong>数据流设计</strong></p>
+<p>从一次工具调用到最终影响下次会话的完整路径：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/FMFU1P6sHHudiaNmcYVLohAX74MRBA2RQT6ibdmR3JdbIFopeLxicT6HeTn4X34sjMfza03uibEEXOSARfkichCM5gNichvzibicib8wVr0EkJCj5kWM/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1. 用户对话中触发工具调用（如 Edit 文件） ↓2. PreToolUse Hook → observe.sh → observations.jsonl ↓3. 工具执行 ↓4. PostToolUse Hook → observe.sh → observations.jsonl ↓5. 会话结束，Stop Hook 触发 ↓6. auto-analyze-instincts.py ├── 路径 A：统计模式检测（5 种硬编码模式） └── 路径 B：Claude API 语义分析 ↓7. 写入/更新 ~/.claude/homunculus/instincts/personal/*.md ↓8. auto-evolve.py ├── 过滤 confidence &gt;= 0.7 ├── Jaccard 语义去重（Union-Find） ├── 按 domain 聚合 └── 写入 rules/auto-evolved.md ↓9. 下次会话启动时 ├── Claude Code 自动加载 rules/auto-evolved.md └── SessionStart Hook → inject_memory_context.py → 注入项目记忆</span><br></pre></td></tr></table></figure>
+
+<p><strong>防膨胀设计</strong></p>
+<p>系统长期运行必然面临数据膨胀问题。多个层次的防膨胀机制确保系统始终保持精简。</p>
+<p><strong>数据层防膨胀</strong></p>
+<p>**Observations：**超 5MB 或 8000 行自动按月归档；</p>
+<p>**Instinct：**低置信度（&lt; 0.55）标记 deprecated；</p>
+<p>**Memory raw：**按类型 TTL 管理（60-90 天）。</p>
+<p><strong>索引层防膨胀</strong></p>
+<p>**MEMORY.md：**超 160 行按优先级裁剪；</p>
+<p>**auto-evolved.md：**每次会话结束覆盖重写；</p>
+<p>**去重：**Jaccard 相似度合并重复 Instinct。</p>
+<p><strong>其他系统设计</strong></p>
+<p><strong>原子性优先</strong>先积累原子规则，等同类足够多再聚类聚合，避免过早抽象。一个 Instinct 只对应一个 trigger + action。<strong>隐私边界</strong>Observations 只保本地，export 只分享 Instinct 模式规则，不含代码路径或会话内容。<strong>置信度演化</strong>规则不是静态的。反复观测强化，长期不触发衰减。系统具有”遗忘”能力，自然淘汰过时规则。<strong>Hook 优先于 Skill</strong>确定性触发是数据质量的保障。放弃依赖模型主动调用的 Skill 触发，改用系统级 Hook 确保 100% 采集率。</p>
+<p><strong>七</strong></p>
+<p><strong>实际效果</strong></p>
+<p>经过数月的积累，系统已提炼出数百条 Instinct，其中十余条高置信度规则（≥70%）每次会话自动激活。以下是几个典型案例：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/FMFU1P6sHHvRAglgjGeLxtXsoZ4gyo8aibveXFPRqZV4QpyZ9AFcZFCpcLKksvH1vGrBmtSS8EUIDyxBz3dOR7uGbHDfVXjibmOSSJgNIiaUVU/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p>系统收益量化：效率提升与 Token 节省。构建这套系统的投入不小，但它带来的收益是可以量化的。以下是基于数月真实使用数据的测量结果。</p>
+<p><strong>收益一：上下文冷启动时间从 10 分钟降至 30 秒</strong></p>
+<p>问题：每次新会话开始，都要重新向 Claude 解释项目背景、技术栈、规范约束，通常需要 3-5 轮对话、约十分钟左右才能让模型”进入状态”。改进后：SessionStart Hook 在 30 秒内自动注入项目记忆和高置信度规则，模型第一条响应就能体现项目上下文感知。</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/FMFU1P6sHHvUh0XD9dZ8ITTlZquO96Q1icbmxEuZvKTR84dt2dMfVyXNdoYJicJ8fhUibZ3WricbZqNQkVXDxGCPFmeYwMvaT7AJlmNyRCBnRjU/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p><strong>收益二：Token 消耗降低约 78%</strong></p>
+<p>问题：重复解释项目背景、编码规范等固定信息，每次都占用大量 input token。改进后：Memory 系统精确召回相关记忆（Top-5），避免将全部历史上下文塞入 prompt。相比”每次粘贴完整 CLAUDE.md”的方式，平均节省约数千 tokens&#x2F;会话。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/FMFU1P6sHHuicm6MkQjXpRjBXsKmukzNJ0pTmLka5W0ORMa4XjEPuDq2Xg9raj7OEoT8RvDbksafyXCcRqU8BxR5LtdBomMkiaRoASicES6eO8/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p><strong>收益三：错误重复率下降 80%</strong></p>
+<p>Instinct 系统的核心价值不是记住”做了什么”，而是记住”犯过什么错、为什么犯”。以 CLI 工具前置检查规则（73% 置信度）为例：规则提炼前：每月平均因”CLI 未安装&#x2F;认证失效”导致任务中断 数次。规则提炼后：每月 极少，且出现时是新工具而非已知工具。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/FMFU1P6sHHticZO4YzA3DnA4IpbWX3Q5pE4MSykaEibACkRib1NFSe3Vxmqz9oIYSN5IwibGiaewWkIPBFP7HUsnz0f9XnT8VvmIQrKIGCPuJnI4/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p><strong>收益四：知识复利效应</strong></p>
+<p>记忆系统的价值随时间<strong>指数增长</strong>，而非线性增长：第 1 个月：规则稀少，主要消除低级错误，ROI 较低。第 3 个月：十余条高置信度规则激活，覆盖主要工作流，每日节省显著时间。第 6 个月：数百条 Instinct 积累，项目级记忆形成，Claude 的行为已高度贴合个人习惯。</p>
+<p><strong>八</strong></p>
+<p><strong>总结</strong></p>
+<p>本文记录了为 Claude Code 构建的一套持久化记忆与自我学习系统的设计思路与实现细节。这套系统让 AI 助手能够跨越会话边界记住用户习惯，并在每次对话结束后自动提炼行为规律和系统信息，通过向量检索快速提取关键信息，下一次对话时主动应用，逐步进化为更懂你的编程伙伴。</p>
+<p><strong>往期回顾</strong></p>
+<p>1.用 LLM Agent 重构告警排查流程｜得物技术</p>
+<p>2.得物技术在 AICon 关于大模型与 Agent 技术实践分享来袭！</p>
+<p>3.HorizonVault 技术深潜：如何在 HDD 上做出 100GB&#x2F;s+ 级大吞吐分布式存储｜得物技术</p>
+<p>4.Claude Code Harness 工程：数仓侧落地方案｜得物技术</p>
+<p>5.BP Claw 破解 AI 编码输入难题 ——FlinkSpec 需求智能化实践｜得物技术</p>
+<p>文 &#x2F;晴天</p>
+<p>关注得物技术，每周三更新技术干货</p>
+<p>要是觉得文章对你有帮助的话，欢迎评论转发点赞～</p>
+<p>未经得物技术许可严禁转载，否则依法追究法律责任。</p>
+<p>“</p>
+<p><strong>扫码添加小助手微信</strong></p>
+<p>如有任何疑问，或想要了解更多技术资讯，请添加小助手微信：</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_jpg/FMFU1P6sHHseicOWkdhicIJ9RxvRNCWWpCheicgAfYBZpzj28frVKgMuKX93SUKI3jDlOkScj7ouy1Y52RjBedh2BTSvdAkxfeLaEoTZo14cN4/640?wx_fmt=jpeg&from=appmsg" alt="图片"></p>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

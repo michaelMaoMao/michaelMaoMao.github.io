@@ -1,0 +1,126 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="实现路径：从 0 到 1 落地可控 AI 工作流"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>实现路径：从 0 到 1 落地可控 AI 工作流 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>实现路径：从 0 到 1 落地可控 AI 工作流</h1><div class="article-container"><h1 id="实现路径"><a href="#实现路径" class="headerlink" title="实现路径"></a>实现路径</h1><blockquote>
+<p>基于得物三版演进 + LangGraph 机制，给出从 0 到 1 落地一套可控 AI 工作流的分阶段路径。每阶段有目标、做法、代码骨架、完成标准。</p>
+</blockquote>
+<h2 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h2><pre class="mermaid">flowchart LR
+    P0["Phase 0&lt;br/&gt;Dify 验证范式"] --&gt; P1["Phase 1&lt;br/&gt;LangGraph 最小图"]
+    P1 --&gt; P2["Phase 2&lt;br/&gt;Checkpointer 持久化"]
+    P2 --&gt; P3["Phase 3&lt;br/&gt;组件模块化"]
+    P3 --&gt; P4["Phase 4&lt;br/&gt;权限分级+副作用控制"]
+    P4 --&gt; P5["Phase 5&lt;br/&gt;监控+迭代"]
+
+    style P0 fill:#fff3cd
+    style P1 fill:#d4edda
+    style P5 fill:#d1ecf1</pre>
+
+<h2 id="Phase-0：用-Dify-验证范式（1-2-周）"><a href="#Phase-0：用-Dify-验证范式（1-2-周）" class="headerlink" title="Phase 0：用 Dify 验证范式（1-2 周）"></a>Phase 0：用 Dify 验证范式（1-2 周）</h2><ul>
+<li><strong>目标</strong>：验证”AI 能否完成核心任务”，<strong>不追求生产级</strong></li>
+<li><strong>做法</strong>：Dify 可视化搭 2-3 个节点（解析 → 匹配 → 输出），验证 AI 的核心能力边界</li>
+<li><strong>完成标准</strong>：核心任务能跑通，人工可以用起来</li>
+<li><strong>得物对应</strong>：第一版（2 个 Dify Workflow 解析策划文档 + 语义匹配下拉选项）</li>
+<li><strong>退出信号</strong>：发现”范式没变、组件硬编码、无持久化”→ 进入 Phase 1</li>
+</ul>
+<h2 id="Phase-1：LangGraph-最小可控工作流（1-周）"><a href="#Phase-1：LangGraph-最小可控工作流（1-周）" class="headerlink" title="Phase 1：LangGraph 最小可控工作流（1 周）"></a>Phase 1：LangGraph 最小可控工作流（1 周）</h2><ul>
+<li><strong>目标</strong>：把验证过的流程用 LangGraph 重写为<strong>状态图 + interrupt</strong></li>
+<li><strong>代码骨架</strong>：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph, START, END</span><br><span class="line"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> InMemorySaver</span><br><span class="line"><span class="keyword">from</span> langgraph.types <span class="keyword">import</span> Command, interrupt</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">State</span>(<span class="title class_ inherited__">TypedDict</span>):</span><br><span class="line">    draft: <span class="built_in">str</span></span><br><span class="line">    confirmed: <span class="built_in">dict</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">parse_node</span>(<span class="params">state</span>):</span><br><span class="line">    <span class="comment"># LLM 做语义解析（模型只做感知）</span></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;draft&quot;</span>: llm_parse(input_doc)&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">confirm_node</span>(<span class="params">state</span>):</span><br><span class="line">    <span class="comment"># interrupt：人确认（HITL）</span></span><br><span class="line">    result = interrupt(&#123;<span class="string">&quot;draft&quot;</span>: state[<span class="string">&quot;draft&quot;</span>], <span class="string">&quot;msg&quot;</span>: <span class="string">&quot;请确认&quot;</span>&#125;)</span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;confirmed&quot;</span>: result&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">build_node</span>(<span class="params">state</span>):</span><br><span class="line">    <span class="comment"># 代码做实际写操作（确定性）</span></span><br><span class="line">    do_write(state[<span class="string">&quot;confirmed&quot;</span>])</span><br><span class="line">    <span class="keyword">return</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">graph = (</span><br><span class="line">    StateGraph(State)</span><br><span class="line">    .add_node(<span class="string">&quot;parse&quot;</span>, parse_node)</span><br><span class="line">    .add_node(<span class="string">&quot;confirm&quot;</span>, confirm_node)</span><br><span class="line">    .add_node(<span class="string">&quot;build&quot;</span>, build_node)</span><br><span class="line">    .add_edge(START, <span class="string">&quot;parse&quot;</span>)</span><br><span class="line">    .add_edge(<span class="string">&quot;parse&quot;</span>, <span class="string">&quot;confirm&quot;</span>)</span><br><span class="line">    .add_edge(<span class="string">&quot;confirm&quot;</span>, <span class="string">&quot;build&quot;</span>)</span><br><span class="line">    .add_edge(<span class="string">&quot;build&quot;</span>, END)</span><br><span class="line">    .<span class="built_in">compile</span>(checkpointer=InMemorySaver())</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>完成标准</strong>：能跑、能 interrupt、能 Command(resume) 恢复</li>
+<li><strong>关键纪律</strong>：LLM 只在 <code>parse_node</code> 做语义；路由&#x2F;写操作在代码里（铁律）</li>
+</ul>
+<h2 id="Phase-2：Checkpointer-持久化"><a href="#Phase-2：Checkpointer-持久化" class="headerlink" title="Phase 2：Checkpointer 持久化"></a>Phase 2：Checkpointer 持久化</h2><ul>
+<li><strong>目标</strong>：关掉浏览器再打开能继续（得物第二版核心特性）</li>
+<li><strong>做法</strong>：<code>InMemorySaver</code> → 持久化 checkpointer（PostgreSQL&#x2F;Redis）+ 稳定 <code>thread_id</code></li>
+<li><strong>完成标准</strong>：进程重启后，用同一 <code>thread_id</code> 能恢复到中断点</li>
+</ul>
+<h2 id="Phase-3：组件模块化（Capability-Registry-思想）"><a href="#Phase-3：组件模块化（Capability-Registry-思想）" class="headerlink" title="Phase 3：组件模块化（Capability Registry 思想）"></a>Phase 3：组件模块化（Capability Registry 思想）</h2><ul>
+<li><strong>目标</strong>：新增场景<strong>不改核心调度</strong></li>
+<li><strong>做法</strong>：借鉴得物组件模块协议——<ul>
+<li>统一生命周期（初始化 → … → 构建前 → 构建）</li>
+<li>双轨注册（显式选择 + 条件注入）</li>
+<li>开闭原则（对扩展开放，对修改关闭）</li>
+</ul>
+</li>
+<li><strong>完成标准</strong>：加一个新场景，只需注册新模块，不动核心图</li>
+</ul>
+<h2 id="Phase-4：权限分级-副作用控制"><a href="#Phase-4：权限分级-副作用控制" class="headerlink" title="Phase 4：权限分级 + 副作用控制"></a>Phase 4：权限分级 + 副作用控制</h2><ul>
+<li><strong>目标</strong>：<strong>不产生脏数据</strong>（得物踩过的真实 bug）</li>
+<li><strong>做法</strong>：<ul>
+<li>三级权限：读（AI 可独立）&#x2F; 写（受控阶段）&#x2F; 发布（必须人工确认）</li>
+<li><strong>副作用延后原则</strong>：初始化阶段绝不产生写操作，只有用户明确确认后才写</li>
+</ul>
+</li>
+<li><strong>完成标准</strong>：用户只”看一眼卡片”不会产生任何持久化数据</li>
+</ul>
+<h2 id="Phase-5：监控-迭代"><a href="#Phase-5：监控-迭代" class="headerlink" title="Phase 5：监控 + 迭代"></a>Phase 5：监控 + 迭代</h2><ul>
+<li><strong>目标</strong>：可观测、可优化</li>
+<li><strong>做法</strong>：<ul>
+<li>tracing（LangSmith）做全程可观测</li>
+<li>看板跟踪每步输入&#x2F;输出&#x2F;失败路径（参考高德六段式漏斗监控）</li>
+<li>灰度发布 + 回滚（参考得物”结果必须可回滚”）</li>
+</ul>
+</li>
+<li><strong>完成标准</strong>：每次执行可追踪，问题可定位</li>
+</ul>
+<h2 id="关键决策点速查"><a href="#关键决策点速查" class="headerlink" title="关键决策点速查"></a>关键决策点速查</h2><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>最易踩的坑</th>
+<th>对策</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Phase 0</td>
+<td>沉迷 Dify 做生产</td>
+<td>记住它只是验证工具</td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td>LLM 参与路由</td>
+<td>路由握在代码里</td>
+</tr>
+<tr>
+<td>Phase 2</td>
+<td>thread_id 不稳定</td>
+<td>用用户会话级 id</td>
+</tr>
+<tr>
+<td>Phase 3</td>
+<td>过早抽象</td>
+<td>先有 3+ 同类再聚合</td>
+</tr>
+<tr>
+<td>Phase 4</td>
+<td>初始化偷偷写</td>
+<td>副作用全部延后到确认后</td>
+</tr>
+<tr>
+<td>Phase 5</td>
+<td>只看成功率</td>
+<td>看完整漏斗 + 失败路径</td>
+</tr>
+</tbody></table>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

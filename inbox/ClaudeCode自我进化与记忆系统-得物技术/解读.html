@@ -1,0 +1,234 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="解读：让 Claude Code 拥有自我进化和记忆系统"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>解读：让 Claude Code 拥有自我进化和记忆系统 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>解读：让 Claude Code 拥有自我进化和记忆系统</h1><div class="article-container"><h1 id="解读：给-Claude-Code-装上”记忆与自我进化”"><a href="#解读：给-Claude-Code-装上”记忆与自我进化”" class="headerlink" title="解读：给 Claude Code 装上”记忆与自我进化”"></a>解读：给 Claude Code 装上”记忆与自我进化”</h1><blockquote>
+<p>本文是对得物技术《让 Claude Code 拥有自我进化和记忆系统》的解读笔记。<br>本系列三篇（得物活动搭建 &#x2F; 高德配图 &#x2F; Claude Code 自进化）至此闭环——它们是”把 LLM 落地”这一主题在三个层面的展开。</p>
+</blockquote>
+<hr>
+<h2 id="一、TL-DR"><a href="#一、TL-DR" class="headerlink" title="一、TL;DR"></a>一、TL;DR</h2><p>Claude Code 每次新对话都是一张白纸。作者给它装了一套三层系统：<strong>观测行为 → 提炼模式 → 注入记忆</strong>，形成跨会话的自学习闭环。核心机制是用 Claude Code 原生 Hook 做”确定性触发”，替代依赖模型主动调用的 Skill，保证 100% 的行为采集率。</p>
+<p><strong>一句话精华</strong>：让 AI 拥有记忆的关键，不在于”存得多”，而在于<strong>用确定性机制采集、用置信度演化筛选、用向量检索精准召回</strong>——并且系统必须会”遗忘”。</p>
+<hr>
+<h2 id="二、为什么值得读"><a href="#二、为什么值得读" class="headerlink" title="二、为什么值得读"></a>二、为什么值得读</h2><p>这篇是本系列里**最接近”通用基础设施”**的一篇——它的成果不只服务于某个业务，而是增强 AI 助手本身。稀缺价值有三：</p>
+<ol>
+<li><strong>Hook 优先于 Skill 的洞察</strong>：点破了”依赖模型主动调用”的不稳定性，是数据采集层的设计铁律。</li>
+<li><strong>置信度演化模型</strong>：给机器记忆装上”遗忘”机制，是防膨胀的核心，也是与”只增不减的日志”的本质区别。</li>
+<li><strong>工程细节充分</strong>：JSONL 格式、Jaccard 去重、Union-Find、本地 Embedding、分片归档——可以直接照着实现。</li>
+</ol>
+<hr>
+<h2 id="三、自学习闭环：三层架构"><a href="#三、自学习闭环：三层架构" class="headerlink" title="三、自学习闭环：三层架构"></a>三、自学习闭环：三层架构</h2><pre class="mermaid">flowchart TB
+    L1["① 行为观测层 Observation Engine&lt;br/&gt;Hook 100% 捕获工具调用 → JSONL"]
+    L2["② 模式提炼层 Instinct Engine&lt;br/&gt;统计检测 + AI 语义分析 → 原子规则"]
+    L3["③ 记忆注入层 Memory Engine&lt;br/&gt;规则写入 + 向量检索 + 启动注入"]
+    L1 --&gt;|观测流| L2
+    L2 --&gt;|Instinct 规则| L3
+    L3 --&gt;|下次会话启动| L1
+
+    style L1 fill:#fff3cd
+    style L2 fill:#d4edda
+    style L3 fill:#d1ecf1</pre>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">字符画版本（闭环）:</span><br><span class="line"></span><br><span class="line">   ┌─── ① 观测层 ───┐</span><br><span class="line">   │ Hook 100% 捕获  │</span><br><span class="line">   │ → JSONL 观测流  │</span><br><span class="line">   └───────┬───────┘</span><br><span class="line">           ▼</span><br><span class="line">   ┌─── ② 提炼层 ───┐</span><br><span class="line">   │ 统计检测+AI语义 │</span><br><span class="line">   │ → 原子 Instinct │</span><br><span class="line">   └───────┬───────┘</span><br><span class="line">           ▼</span><br><span class="line">   ┌─── ③ 注入层 ───┐</span><br><span class="line">   │ 写规则+向量检索 │</span><br><span class="line">   │ → 启动时注入    │</span><br><span class="line">   └───────┬───────┘</span><br><span class="line">           │ 下次会话</span><br><span class="line">           ▼</span><br><span class="line">       回到 ① （闭环）</span><br></pre></td></tr></table></figure>
+
+<p>三层构成一个闭环：今天的行为被观测，会话结束时被提炼成规则，下次启动时被注入回来影响新的行为。<strong>时间是这个系统的朋友</strong>——文章称之为”知识复利”。</p>
+<hr>
+<h2 id="四、核心拆解：六个值得记住的设计"><a href="#四、核心拆解：六个值得记住的设计" class="headerlink" title="四、核心拆解：六个值得记住的设计"></a>四、核心拆解：六个值得记住的设计</h2><h3 id="设计-1：Hook-优先于-Skill（全文最核心）"><a href="#设计-1：Hook-优先于-Skill（全文最核心）" class="headerlink" title="设计 1：Hook 优先于 Skill（全文最核心）"></a>设计 1：Hook 优先于 Skill（全文最核心）</h3><blockquote>
+<p>“早期版本用 Skill 来触发学习，但 Skill 依赖模型主动调用，触发率不稳定。v2 改用 Claude Code 原生 Hook 机制，彻底解决了这个问题。”</p>
+</blockquote>
+<p>这是全文最重要的一句话。Skill 触发是<strong>概率性</strong>的（取决于模型是否”想起来”调用），Hook 是<strong>确定性</strong>的（系统级回调，100% 触发）。作者用 PostToolUse 匹配 <code>.*</code> 保证全采集，用 Stop Hook 驱动会话结束时的分析。</p>
+<p>这条原则与本系列前两篇遥相呼应：</p>
+<table>
+<thead>
+<tr>
+<th>文章</th>
+<th>表述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>第 1 篇（得物活动）</td>
+<td>LLM 不参与流程路由，路由权握在代码里</td>
+</tr>
+<tr>
+<td>第 2 篇（高德配图）</td>
+<td>模型负责感知，代码负责计算</td>
+</tr>
+<tr>
+<td>第 3 篇（本文）</td>
+<td>Hook 优先于 Skill，确定性触发替代模型主动调用</td>
+</tr>
+</tbody></table>
+<p><strong>共同主线：把确定性的部分用确定性机制锁定，把模型留给语义理解。</strong></p>
+<h3 id="设计-2：双路径提炼（统计-AI-语义）"><a href="#设计-2：双路径提炼（统计-AI-语义）" class="headerlink" title="设计 2：双路径提炼（统计 + AI 语义）"></a>设计 2：双路径提炼（统计 + AI 语义）</h3><p>模式提炼用两条并行路径，互补：</p>
+<ul>
+<li><strong>路径 A 统计模式检测</strong>：硬编码检测器识别高频工具调用序列。快、可靠，但只能发现”已知模式”。</li>
+<li><strong>路径 B AI 语义分析</strong>：调用本地 Claude（haiku）理解观测摘要，捕获统计无法识别的深层规律。慢、有成本，但能发现”未知模式”。</li>
+</ul>
+<p>这又是”确定性 + 概率性”的组合拳——和第 2 篇”确定性 Pipeline 扛重活 + Agent 做巧活”是同构的。</p>
+<h3 id="设计-3：置信度演化-——-机器的”遗忘”"><a href="#设计-3：置信度演化-——-机器的”遗忘”" class="headerlink" title="设计 3：置信度演化 —— 机器的”遗忘”"></a>设计 3：置信度演化 —— 机器的”遗忘”</h3><p>Instinct 规则不是静态的，而是一个有生命周期的实体：</p>
+<pre class="mermaid">stateDiagram-v2
+    [*] --&gt; 首次发现: 检测到模式
+    首次发现 --&gt; 重复验证: 再次触发 (conf=0.5)
+    重复验证 --&gt; 重复验证: 重复触发: +0.05 (上限0.9)
+    重复验证 --&gt; 衰减中: 长期未触发
+    衰减中 --&gt; 重复验证: 再次触发
+    衰减中 --&gt; 废弃: conf &lt; 0.55
+    废弃 --&gt; [*]: 标记 deprecated</pre>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">字符画版本:</span><br><span class="line"></span><br><span class="line">[*] ──检测到模式──▶ 首次发现(conf 0.5)</span><br><span class="line">                       │ 再次触发</span><br><span class="line">                       ▼</span><br><span class="line">                  ┌─ 重复验证 ─┐</span><br><span class="line">                  │            │</span><br><span class="line">              +0.05│            │长期未触发</span><br><span class="line">              (上限0.9)         │</span><br><span class="line">                  │            ▼</span><br><span class="line">                  └─▶       衰减中</span><br><span class="line">                       │      │</span><br><span class="line">                  再次触发      │ conf&lt;0.55</span><br><span class="line">                  (回血)       ▼</span><br><span class="line">                       │    废弃(deprecated)──▶[*]</span><br></pre></td></tr></table></figure>
+
+<p><strong>首次 0.5 → 重复 +0.05（上限 0.9）→ 长期不触发 -0.05 → 低于 0.55 废弃</strong>。</p>
+<p>这是对生物记忆的建模：用进废退。它的深层价值是<strong>让系统能淘汰过时规则</strong>——当你的工作流改变后，旧规则会自然衰减消失，而不是永久占用上下文。没有”遗忘”的记忆系统必然膨胀崩塌。</p>
+<h3 id="设计-4：Jaccard-英文关键词去重"><a href="#设计-4：Jaccard-英文关键词去重" class="headerlink" title="设计 4：Jaccard 英文关键词去重"></a>设计 4：Jaccard 英文关键词去重</h3><p>auto-evolve 用 Jaccard 相似度 + Union-Find 合并同义 Instinct，且<strong>只提取英文关键词</strong>。巧妙之处：用户可能用中文或英文描述同一习惯，基于英文技术词汇（Read&#x2F;Edit&#x2F;test&#x2F;git）的相似度能跨语言识别同一意图。</p>
+<h3 id="设计-5：记忆召回四阶段（注入比存储更重要）"><a href="#设计-5：记忆召回四阶段（注入比存储更重要）" class="headerlink" title="设计 5：记忆召回四阶段（注入比存储更重要）"></a>设计 5：记忆召回四阶段（注入比存储更重要）</h3><blockquote>
+<p>“记忆存储完成只是第一步，召回才是让记忆产生价值的关键。”</p>
+</blockquote>
+<p>四阶段：① SessionStart Hook 触发（不等用户请求）→ ② 用 <code>$PWD</code> + 最近 3 条 git commit 构造查询 → ③ 向量 Top-5 检索 → ④ 结构化注入系统提示。</p>
+<p>关键细节：<strong>查询用”项目名 + 最近 commit”</strong>——这意味着记忆召回与当前工作上下文自动对齐，无需用户手动说明”我在做什么”。这是让记忆”主动而非被动”的设计。</p>
+<h3 id="设计-6：防膨胀是核心，不是附属"><a href="#设计-6：防膨胀是核心，不是附属" class="headerlink" title="设计 6：防膨胀是核心，不是附属"></a>设计 6：防膨胀是核心，不是附属</h3><p>长期运行的系统，膨胀是头号杀手。作者在数据层和索引层都做了防护：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>机制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Observations</td>
+<td>超 5MB&#x2F;8000 行按月归档，主文件只留 30 天</td>
+</tr>
+<tr>
+<td>Instinct</td>
+<td>低置信度（&lt;0.55）标记 deprecated</td>
+</tr>
+<tr>
+<td>Memory raw</td>
+<td>按类型 TTL 60-90 天</td>
+</tr>
+<tr>
+<td>MEMORY.md</td>
+<td>超 160 行按优先级裁剪</td>
+</tr>
+<tr>
+<td>auto-evolved.md</td>
+<td>每次会话结束覆盖重写</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>“原子性优先：先积累原子规则，等同类足够多再聚类聚合，避免过早抽象。”</p>
+</blockquote>
+<p>这条”原子性优先”很重要——它防止了系统在数据不足时就生成大而空的”抽象规则”。先有足够样本，再提炼，是对 LLM 幻觉的工程防御。</p>
+<hr>
+<h2 id="五、与你当前环境的对照（延伸观察）"><a href="#五、与你当前环境的对照（延伸观察）" class="headerlink" title="五、与你当前环境的对照（延伸观察）"></a>五、与你当前环境的对照（延伸观察）</h2><p>这篇文章描述的设计范式，与当前这个 Claude Code 工作环境的机制高度同构，可作为互相印证的参照：</p>
+<ul>
+<li>文章的 <strong>Memory 文件格式</strong>（<code>name</code>&#x2F;<code>description</code>&#x2F;<code>metadata.type</code> + <strong>Why</strong> + <strong>How to apply</strong>）与本环境的 Memory 写入规范几乎一致——这是同一设计思想的不同实现。</li>
+<li>文章的 <strong>SessionStart Hook 自动注入记忆</strong>，对应本会话开头注入的”recent context &#x2F; 记忆时间线”——你看到的那条带 obs ID 的上下文，正是”记忆召回注入”的实际运行。</li>
+<li>文章的 <strong>跨会话经验召回</strong>，对应本环境中 flow-deep 的 Stage -1、auto-skill 的知识库机制。</li>
+</ul>
+<p>这说明：<strong>“给 AI 助手装记忆”正在从单篇文章的探索，变成行业基础设施的标配</strong>。文章结尾提到的 OpenClaw、Hermes 已有类似能力，也印证了这一趋势。</p>
+<hr>
+<h2 id="六、可迁移的模式"><a href="#六、可迁移的模式" class="headerlink" title="六、可迁移的模式"></a>六、可迁移的模式</h2><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>一句话</th>
+<th>系列呼应</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hook 优先于 Skill</td>
+<td>确定性触发 &gt; 模型主动调用</td>
+<td>≈ 模型感知&#x2F;代码计算</td>
+</tr>
+<tr>
+<td>双路径提炼</td>
+<td>统计硬规则 + AI 语义，互补</td>
+<td>≈ Pipeline 重活 + Agent 巧活</td>
+</tr>
+<tr>
+<td>置信度演化</td>
+<td>强化 + 衰减 + 遗忘，淘汰过时</td>
+<td>（本文独有，精华）</td>
+</tr>
+<tr>
+<td>原子性优先</td>
+<td>先积累再聚合，防过早抽象</td>
+<td>（本文独有）</td>
+</tr>
+<tr>
+<td>防膨胀分层</td>
+<td>数据层 + 索引层双保险</td>
+<td>（本文独有）</td>
+</tr>
+<tr>
+<td>上下文对齐召回</td>
+<td>用 PWD + commit 自动构造查询</td>
+<td>（本文独有）</td>
+</tr>
+<tr>
+<td>本地 Embedding</td>
+<td>隐私优先，向量检索本地化</td>
+<td>（本文独有）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="七、批判性思考"><a href="#七、批判性思考" class="headerlink" title="七、批判性思考"></a>七、批判性思考</h2><ol>
+<li><p><strong>量化数据缺乏测量细节</strong>。78% Token 下降、80% 错误重复率下降——漂亮但没有测量方法、基线、样本量。相对可信的是”冷启动 10min→30s”（可观察）。读者应把这些数字当作”方向性参考”而非”精确结论”。</p>
+</li>
+<li><p><strong>Jaccard 去重的局限</strong>。Jaccard 只看英文关键词字面重叠，会误并”语义不同但关键词相同”的规则（如”Read before Edit”与”Read after error to locate bug”）。矛盾的是：系统用 Embedding 做了 Memory 检索，却没用于 Instinct 去重——一致性可改进。</p>
+</li>
+<li><p><strong>“行为模式”≠”应该如此”（最大风险）</strong>。系统提炼的是”你反复这么做”的模式，但频率不等于正确性。<strong>它可能把坏习惯也固化为高置信度规则</strong>。文章没有”行为好坏”的判断机制，只有频率和置信度。一个更完整的设计应引入”反馈信号”（如用户纠正次数）来区分”好习惯”和”坏习惯”。</p>
+</li>
+<li><p><strong>覆盖式写入的脆弱性</strong>。auto-evolved.md 每次会话结束整体覆盖重写——若某次语义分析（路径 B）出错或幻觉，可能污染整个规则文件。虽有置信度过滤，但覆盖式写入缺乏版本回滚，建议保留历史版本便于追溯。</p>
+</li>
+<li><p><strong>“自我进化”的边界</strong>。文章标题说”自我进化”，但实际是”自我提炼已有行为模式”。真正的进化还应包含”发现并采纳新策略”——这需要外部知识输入（如文章、最佳实践），而非仅观察用户自身。这是一个可拓展方向。</p>
+</li>
+</ol>
+<hr>
+<h2 id="八、一句话收获"><a href="#八、一句话收获" class="headerlink" title="八、一句话收获"></a>八、一句话收获</h2><blockquote>
+<p>给 AI 装记忆的秘诀不是”存得多”，而是”会遗忘”——用确定性 Hook 采集行为，用置信度的强化与衰减让规则自然优胜劣汰，用向量检索在恰当的上下文精准召回。让时间成为系统的朋友，但必须给它装好”膨胀的刹车”。</p>
+</blockquote>
+<hr>
+<h2 id="九、系列总览（三篇贯穿主线）"><a href="#九、系列总览（三篇贯穿主线）" class="headerlink" title="九、系列总览（三篇贯穿主线）"></a>九、系列总览（三篇贯穿主线）</h2><p>本系列三篇文章，本质是同一主题在三个层面的展开：</p>
+<table>
+<thead>
+<tr>
+<th>层面</th>
+<th>文章</th>
+<th>核心机制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>人机交互流程</td>
+<td>得物活动搭建</td>
+<td>interrupt&#x2F;resume + 权限分级</td>
+</tr>
+<tr>
+<td>在线内容生产</td>
+<td>高德配图</td>
+<td>Pipeline 重活 + Agent 巧活</td>
+</tr>
+<tr>
+<td>AI 助手本身</td>
+<td>Claude Code 自进化</td>
+<td>Hook 采集 + 记忆注入</td>
+</tr>
+</tbody></table>
+<p><strong>贯穿三篇的铁律</strong>：确定性的部分用确定性机制（代码&#x2F;Hook&#x2F;Pipeline&#x2F;校验），模型只做语义感知。这是把 LLM 从”Demo”推向”生产”的共同门槛。</p>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

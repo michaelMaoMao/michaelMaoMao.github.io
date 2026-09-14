@@ -1,0 +1,279 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="用 LLM Agent 重构告警排查流程｜得物技术"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>用 LLM Agent 重构告警排查流程｜得物技术 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>用 LLM Agent 重构告警排查流程｜得物技术</h1><div class="article-container"><blockquote>
+<p>得物技术团队基于 LLM Agent 构建的告警自动排查系统 <strong>Troubleshooter</strong>，通过 ReAct 推理循环调度日志&#x2F;指标&#x2F;链路追踪工具，将中位数排查耗时从 20 分钟降至 4.4 分钟。本文梳理其架构、工具设计、幻觉控制与可观测性方案。</p>
+</blockquote>
+<h2 id="一、背景与痛点"><a href="#一、背景与痛点" class="headerlink" title="一、背景与痛点"></a>一、背景与痛点</h2><p>传统告警排查的工作流程：</p>
+<ul>
+<li>第一反应是打开<strong>日志平台</strong>搜关键词</li>
+<li>切到 <strong>APM</strong> 看监控曲线</li>
+<li>再去<strong>链路追踪系统</strong>找 trace 详情</li>
+<li>三个平台来回切换，最后可能发现只是上游 GC 抖动导致的瞬间超时，一分钟后就自愈了</li>
+</ul>
+<p><strong>核心痛点</strong>：</p>
+<ol>
+<li><strong>耗时不在分析本身</strong>，而在频繁登录不同平台、拼凑分散的数据，单次告警排查通常需要 <strong>10～30 分钟</strong></li>
+<li><strong>排查效率高度依赖个人经验</strong>，新人面对告警往往不知道该先看什么</li>
+</ol>
+<p>于是得物团队做了 <strong>Troubleshooter</strong>——用 LLM Agent 自动完成告警的数据采集、根因分析和处置建议生成。上线后中位数排查耗时从 20 分钟左右降到 <strong>4.4 分钟</strong>，覆盖了 <strong>11 个服务</strong>和 <strong>10+ 种告警类型</strong>。</p>
+<h2 id="二、整体架构设计"><a href="#二、整体架构设计" class="headerlink" title="二、整体架构设计"></a>二、整体架构设计</h2><h3 id="分层解耦原则"><a href="#分层解耦原则" class="headerlink" title="分层解耦原则"></a>分层解耦原则</h3><p>整体采用<strong>分层设计</strong>，核心原则是<strong>告警接入与排查执行解耦</strong>：</p>
+<ul>
+<li><strong>接入层</strong>：只负责接收和持久化告警</li>
+<li><strong>排查层</strong>：由独立的调度器异步触发</li>
+</ul>
+<h3 id="技术栈与编排引擎选型"><a href="#技术栈与编排引擎选型" class="headerlink" title="技术栈与编排引擎选型"></a>技术栈与编排引擎选型</h3><p><strong>编排引擎：Spring AI Alibaba 的 <code>ReactAgent</code></strong>（不是 LangGraph，也不是得物自研 Hermes）</p>
+<p>选 Spring AI Alibaba 而非自建 ReAct 循环的原因是「省事」——框架已内置：</p>
+<ul>
+<li>推理循环</li>
+<li>工具拦截器（ToolInterceptor）</li>
+<li>模型拦截器（ModelInterceptor）</li>
+</ul>
+<blockquote>
+<p>备注：得物另有一篇《从0到1搭建一个智能分析 OBS 埋点数据的 AI Agent｜得物技术》使用 obs-mcp-server 的 MCP 路线，与本篇的 Spring AI Alibaba 路线不同。本篇通篇未提及 Hermes 或 LangGraph。</p>
+</blockquote>
+<h2 id="三、核心流程（端到端排查链路）"><a href="#三、核心流程（端到端排查链路）" class="headerlink" title="三、核心流程（端到端排查链路）"></a>三、核心流程（端到端排查链路）</h2><p>完整排查链路分 7 步：</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>节点</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>告警接入</td>
+<td>接收告警数据，生成唯一事件 ID</td>
+</tr>
+<tr>
+<td>2</td>
+<td>指纹生成</td>
+<td>提取 <strong>5 维度特征</strong>（服务名、告警类型、错误模式、指标名、错误摘要），生成 32 位 MD5 指纹</td>
+</tr>
+<tr>
+<td>3</td>
+<td>知识匹配</td>
+<td>在知识库中检索相似记录，<strong>匹配成功则直接复用历史结论</strong>（秒级返回）</td>
+</tr>
+<tr>
+<td>4</td>
+<td>AI 排查</td>
+<td>SupervisorAgent 编排排查，执行 ReAct 推理循环</td>
+</tr>
+<tr>
+<td>5</td>
+<td>结论验收</td>
+<td>独立的 <strong>ValidationAgent</strong> 检查根因明确性和处置建议完整性</td>
+</tr>
+<tr>
+<td>6</td>
+<td>报告推送</td>
+<td>生成 Markdown 格式报告，推送到飞书群组</td>
+</tr>
+<tr>
+<td>7</td>
+<td>知识沉淀</td>
+<td>运维确认后的结论存入知识库</td>
+</tr>
+</tbody></table>
+<p><strong>关键设计</strong>：指纹 + 知识匹配构成了<strong>已知问题的快速通道</strong>，AI 排查只针对新问题或匹配失败的场景，兼顾效率与成本。</p>
+<h2 id="四、AI-排查引擎：ReAct-Agent-实战"><a href="#四、AI-排查引擎：ReAct-Agent-实战" class="headerlink" title="四、AI 排查引擎：ReAct Agent 实战"></a>四、AI 排查引擎：ReAct Agent 实战</h2><h3 id="ReAct-循环"><a href="#ReAct-循环" class="headerlink" title="ReAct 循环"></a>ReAct 循环</h3><p>使用 Spring AI Alibaba 的 <code>ReactAgent</code>，实现经典 ReAct 推理循环：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LLM 思考 → 选择工具 → 执行工具 → 观察结果 → 继续思考 → ... → 输出结论</span><br></pre></td></tr></table></figure>
+
+<h3 id="SupervisorAgent：不是简单地调-Prompt"><a href="#SupervisorAgent：不是简单地调-Prompt" class="headerlink" title="SupervisorAgent：不是简单地调 Prompt"></a>SupervisorAgent：不是简单地调 Prompt</h3><p>核心观点：LLM 无法凭空知道服务当前 QPS、错误日志内容、调用链超时环节，<strong>它需要工具</strong>。</p>
+<p>SupervisorAgent 的核心结构（伪代码）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SupervisorAgent</span> &#123;</span><br><span class="line">    <span class="comment">// 四个 @Tool 方法，暴露给 ReactAgent 框架</span></span><br><span class="line">    <span class="meta">@Tool(description = &quot;查询并分析应用日志，返回排查摘要&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">queryLogs</span><span class="params">(String serviceName, Integer minutes, ...)</span> &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Tool(description = &quot;查询服务监控指标（QPS/RT/错误率/CPU/内存/GC）&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">queryMetrics</span><span class="params">(String serviceName, String metricTypes, ...)</span> &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Tool(description = &quot;通过 traceId 查询分布式调用链详情&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">queryTrace</span><span class="params">(String traceId)</span> &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Tool(description = &quot;无 traceId 时，通过接口路径查询错误日志并提取 traceId&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">queryEndpointErrors</span><span class="params">(String serviceName, String endpoint, ...)</span> &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> InvestigationResult <span class="title function_">investigate</span><span class="params">(TroubleEvent event)</span> &#123;</span><br><span class="line">        <span class="comment">// 1. 动态构建 instruction（策略匹配 or 兜底策略）</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">dynamicInstruction</span> <span class="operator">=</span> buildDynamicInstruction(event);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. 构建 ReAct Agent</span></span><br><span class="line">        <span class="type">ReactAgent</span> <span class="variable">agent</span> <span class="operator">=</span> ReactAgent.builder()</span><br><span class="line">                .name(<span class="string">&quot;supervisor&quot;</span>)</span><br><span class="line">                .model(selectedModel)</span><br><span class="line">                .systemPrompt(dynamicInstruction)</span><br><span class="line">                .methodTools(<span class="built_in">this</span>)   <span class="comment">// 四个 @Tool 方法作为可用工具</span></span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. 验收循环：最多 2 次 LLM 内容重试</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">attempt</span> <span class="operator">=</span> <span class="number">0</span>; attempt &lt;= maxRetries + <span class="number">2</span>; attempt++) &#123;</span><br><span class="line">            <span class="type">AssistantMessage</span> <span class="variable">response</span> <span class="operator">=</span> agent.call(currentPrompt);</span><br><span class="line">            <span class="type">ValidationResult</span> <span class="variable">validation</span> <span class="operator">=</span> conclusionValidationAgent</span><br><span class="line">                    .validate(responseText, metricsQueried, eventId);</span><br><span class="line">            <span class="keyword">if</span> (validation.isPassed()) <span class="keyword">break</span>;</span><br><span class="line">            <span class="comment">// 不通过：将反馈注入 prompt，要求 LLM 修正</span></span><br><span class="line">            currentPrompt = buildRetryPrompt(feedback, responseText);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> InvestigationResult.complete(responseText, suggestion);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="四个排查工具的设计哲学"><a href="#四个排查工具的设计哲学" class="headerlink" title="四个排查工具的设计哲学"></a>四个排查工具的设计哲学</h3><h4 id="工具一：queryLogs-——-日志查询与分析"><a href="#工具一：queryLogs-——-日志查询与分析" class="headerlink" title="工具一：queryLogs —— 日志查询与分析"></a>工具一：queryLogs —— 日志查询与分析</h4><p>日志是排查的<strong>第一入口</strong>，通过 WebSocket 连接日志平台，按<strong>优先级分批查询</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">查询优先级: traceId &gt; exceptionName &gt; endpoint &gt; keywords</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>每批结果都经过 <strong>LLM 异步分析</strong>，最后汇总所有批次的结论</li>
+<li>日志去重（<code>LogDeduplicator</code>）：防止同一请求的多条日志重复占据分析窗口</li>
+</ul>
+<h4 id="工具二：queryMetrics-——-监控指标查询"><a href="#工具二：queryMetrics-——-监控指标查询" class="headerlink" title="工具二：queryMetrics —— 监控指标查询"></a>工具二：queryMetrics —— 监控指标查询</h4><p>支持 <strong>10 个维度</strong>的指标查询：<code>qps, rt, errorRate, containerCpu, containerMemory, percentileRt, gcCount, gcRt, qpstop10, rttop10</code></p>
+<p>LLM 可根据告警类型<strong>自主决定</strong>查询哪些维度：</p>
+<ul>
+<li>OOM 告警 → LLM 通常选 <code>qps,rt,containerCpu,containerMemory,gcCount,gcRt</code> 全维度</li>
+<li>接口 RT 突增 → 关注 <code>qps,rt,percentileRt,rttop10</code></li>
+</ul>
+<p><code>MetricService</code> 接口为不同环境（csprd&#x2F;oa&#x2F;pre&#x2F;t1）提供<strong>可插拔实现</strong>，因为 APM 查询参数中环境代码不同——生产环境用 <code>csprd-proxy</code>，测试环境用 <code>t1-proxy</code>。</p>
+<h4 id="工具三：queryTrace-——-分布式链路追踪"><a href="#工具三：queryTrace-——-分布式链路追踪" class="headerlink" title="工具三：queryTrace —— 分布式链路追踪"></a>工具三：queryTrace —— 分布式链路追踪</h4><p>当告警带有 traceId 时，直接查询 APM 获取 Span 树，渲染为格式化文本后交给 LLM 分析，能识别出哪个下游依赖变慢、哪个环节抛出了异常。</p>
+<h4 id="工具四：queryEndpointErrors-——-接口错误排查"><a href="#工具四：queryEndpointErrors-——-接口错误排查" class="headerlink" title="工具四：queryEndpointErrors —— 接口错误排查"></a>工具四：queryEndpointErrors —— 接口错误排查</h4><p>当没有 traceId 但有明确的接口路径时，查询该接口的错误日志，通过正则提取所有 traceId，再逐个分析。</p>
+<p><strong>重要防护逻辑</strong>：当 endpoint 为根路径 <code>/</code> 时<strong>拒绝执行</strong>——匹配所有请求的查询不具备排查意义。</p>
+<h2 id="五、上下文与策略管理"><a href="#五、上下文与策略管理" class="headerlink" title="五、上下文与策略管理"></a>五、上下文与策略管理</h2><h3 id="动态策略组装（Prompt-模板）"><a href="#动态策略组装（Prompt-模板）" class="headerlink" title="动态策略组装（Prompt 模板）"></a>动态策略组装（Prompt 模板）</h3><p>不同服务、不同告警类型的排查思路差异很大：</p>
+<ul>
+<li>OOM 告警 → 关注 GC 指标和堆内存</li>
+<li>接口超时 → 关注 QPS 突变和下游依赖延迟</li>
+</ul>
+<p>设计了<strong>策略匹配机制</strong>：按 <code>(service_name, alert_type)</code> 从数据库精确匹配排查策略，未匹配时使用内置兜底策略。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">instruction = ROLE + strategy(service_name, alert_type) + OUTPUT_FORMAT</span><br></pre></td></tr></table></figure>
+
+<p><strong>运维人员可通过前端页面在线编辑策略内容，无需改代码</strong>——这是低代码运维的关键设计。</p>
+<h3 id="工具超时隔离"><a href="#工具超时隔离" class="headerlink" title="工具超时隔离"></a>工具超时隔离</h3><p>外部系统（日志平台、APM）不一定稳定。每个工具调用通过 <code>ToolExecutor</code> 包装，用<strong>独立线程池 + <code>Future.get(timeout)</code></strong> 实现超时控制：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> ToolResult <span class="title function_">executeWithTimeout</span><span class="params">(Tool tool, Map&lt;String, Object&gt; parameters)</span> &#123;</span><br><span class="line">    Future&lt;ToolResult&gt; future = executor.submit(() -&gt; tool.execute(parameters));</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> future.get(tool.getTimeoutSeconds(), TimeUnit.SECONDS);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (TimeoutException e) &#123;</span><br><span class="line">        future.cancel(<span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">return</span> ToolResult.timedOut(<span class="string">&quot;工具执行超时&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ExecutionException e) &#123;</span><br><span class="line">        <span class="keyword">return</span> ToolResult.failed(<span class="string">&quot;工具执行失败: &quot;</span> + e.getCause().getMessage());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>降级策略</strong>：超时时返回降级消息（如「指标查询超时，继续使用已有信息进行排查」），LLM 会基于已有证据继续推进，<strong>不会因单个工具超时导致整个排查流程中断</strong>。</p>
+<h3 id="上下文窗口管理"><a href="#上下文窗口管理" class="headerlink" title="上下文窗口管理"></a>上下文窗口管理</h3><p>文章未明确提及大上下文压缩机制（如滑动窗口、摘要压缩），但通过以下设计间接控制上下文膨胀：</p>
+<ul>
+<li><strong>日志去重</strong>（<code>LogDeduplicator</code>）：防止同一请求的多条日志重复占据分析窗口</li>
+<li><strong>分批查询 + 每批 LLM 异步分析 + 汇总</strong>：避免一次性灌入全量日志</li>
+<li><strong>工具返回「分析摘要」而非原始数据</strong>（如 <code>queryLogs</code> 返回「排查摘要」而非原始日志文本）</li>
+<li><strong>环境字段不让 LLM 自行映射</strong>：在 tool 方法中直接使用告警事件中的环境字段，避免 LLM “翻译” 环境名时出错</li>
+</ul>
+<h2 id="六、幻觉控制与结论质量保障"><a href="#六、幻觉控制与结论质量保障" class="headerlink" title="六、幻觉控制与结论质量保障"></a>六、幻觉控制与结论质量保障</h2><p>LLM 输出不稳定是落地最大的风险点。从<strong>四个维度</strong>构建幻觉控制体系：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>机制</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>规则格式校验</strong></td>
+<td>零 LLM 调用</td>
+<td>第一轮检查 5 个必要章节是否存在、指标表格格式是否规范，毫秒级完成</td>
+</tr>
+<tr>
+<td><strong>独立验收 Agent</strong></td>
+<td>内容质量审查</td>
+<td>检查：结论是否明确、核心判定是否合理、根因是否有工具证据、建议是否可执行</td>
+</tr>
+<tr>
+<td><strong>多轮交叉验证</strong></td>
+<td>工具结果相互印证</td>
+<td><code>queryLogs</code> × <code>queryTrace</code>、<code>queryLogs</code> × <code>queryMetrics</code>、时间线一致性校验</td>
+</tr>
+<tr>
+<td><strong>重试机制</strong></td>
+<td>分级重试</td>
+<td>格式问题不消耗重试配额；内容问题最多重试 2 次；验收 Agent 异常时宽容通过</td>
+</tr>
+</tbody></table>
+<p>规则格式校验示例（零 LLM 调用）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> ValidationResult <span class="title function_">checkFormat</span><span class="params">(String conclusion, <span class="type">boolean</span> hasMetricsQuery)</span> &#123;</span><br><span class="line">    <span class="comment">// 检查 5 个必要章节</span></span><br><span class="line">    <span class="keyword">for</span> (String[] keywords : REQUIRED_SECTIONS) &#123;</span><br><span class="line">        <span class="keyword">if</span> (containsSection(conclusion, keyword)) found = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">else</span> missingItems.add(<span class="string">&quot;缺少章节「&quot;</span> + keywords[<span class="number">0</span>] + <span class="string">&quot;」&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果调用过 queryMetrics，必须有指标表格</span></span><br><span class="line">    <span class="keyword">if</span> (hasMetricsQuery &amp;&amp; !METRIC_TABLE_PATTERN.matcher(conclusion).find()) &#123;</span><br><span class="line">        missingItems.add(<span class="string">&quot;缺少指标数据表格&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键设计哲学</strong>：格式校验用代码、内容校验用 LLM，避免「用 LLM 验 LLM」的循环风险。</p>
+<h2 id="七、排查过程可观测性"><a href="#七、排查过程可观测性" class="headerlink" title="七、排查过程可观测性"></a>七、排查过程可观测性</h2><p>排查过程不能是黑盒，需要让运维人员看到 AI 每一步在做什么。</p>
+<h3 id="文件系统日志（按事件-ID-分目录）"><a href="#文件系统日志（按事件-ID-分目录）" class="headerlink" title="文件系统日志（按事件 ID 分目录）"></a>文件系统日志（按事件 ID 分目录）</h3><p>每次排查在文件系统中创建独立目录，<code>LoggerInterceptor</code> 和 <code>ToolInterceptor</code> 记录所有 LLM 输入&#x2F;输出和工具调用&#x2F;返回：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">logs/evt-20260514153012345-001/</span><br><span class="line">├── raw_alert.txt          # 原始告警消息</span><br><span class="line">├── 00_RECEIVED.log        # 接入记录</span><br><span class="line">├── 01_INVESTIGATION_START.log</span><br><span class="line">├── 03_LLM_SYSTEM_PROMPT.log  # 系统指令</span><br><span class="line">├── 04_LLM_USER_PROMPT.log    # 告警信息</span><br><span class="line">├── 05_LLM_CALL_1.log         # 第1次 LLM 调用</span><br><span class="line">├── 06_工具调用：日志分析.log   # 日志分析工具结果</span><br><span class="line">├── 07_LLM_CALL_2.log         # 第2次 LLM 调用</span><br><span class="line">├── 08_工具调用：指标查询.log</span><br><span class="line">├── 09_LLM_FINAL_RESPONSE.log # 最终结论</span><br><span class="line">├── 10_VALIDATION_START.log</span><br><span class="line">├── 11_VALIDATION_PASS.log</span><br><span class="line">└── 12_CONCLUSION.log</span><br></pre></td></tr></table></figure>
+
+<h3 id="内存进度追踪"><a href="#内存进度追踪" class="headerlink" title="内存进度追踪"></a>内存进度追踪</h3><p><code>EventProgressTracker</code> 在内存中维护每个事件的实时状态（当前阶段、当前策略描述），前端通过 <strong>3 秒轮询</strong>获取进度更新。</p>
+<h2 id="八、真实排查案例：效率网关超时"><a href="#八、真实排查案例：效率网关超时" class="headerlink" title="八、真实排查案例：效率网关超时"></a>八、真实排查案例：效率网关超时</h2><p>以一次生产环境网关超时告警为例：</p>
+<p><strong>告警信息</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">服务名: 效率网关</span><br><span class="line">告警类型: 效率网关业务应用30s内接口异常告警</span><br><span class="line">错误信息: 效率网关业务应用30s内接口异常告警，持续0分钟</span><br><span class="line">严重级别: P4</span><br><span class="line">环境: 生产环境</span><br><span class="line">接口路径: /xxxx-admin/daemon/api/xxxx/xxxx/list</span><br><span class="line">TraceID: 无（告警未携带 traceId）</span><br><span class="line">告警时间: 2026-04-23 18:10:36</span><br></pre></td></tr></table></figure>
+
+<p><strong>AI 排查过程</strong>：SupervisorAgent 在 4 分钟内完成了 <strong>3 次工具调用 + 1 轮验收修正</strong>：</p>
+<ul>
+<li>第 1 次验收（未通过）：缺失必填字段，要求补全</li>
+<li>第 2 次验收（通过）：LLM 补充了结构化字段，紧急程度为「观察」，置信度为「高」</li>
+</ul>
+<p><strong>AI 最终排查结论</strong>（节选）：</p>
+<blockquote>
+<p>本次告警系<strong>舆情管理端</strong>服务底层 gorm-v2 数据库查询严重阻塞，引发效率网关 30 秒硬性超时，经排查确认为特定多条件过滤场景下的偶发性慢查询导致的链路中断。</p>
+<p><strong>根因</strong>：<code>upgrade_quality_status IN (0,1,2,3,5)</code> 多条件过滤 + 分页查询时，底层 gorm-v2 数据库组件执行严重阻塞，耗时 29.99s，超过效率网关 30s 超时阈值，触发 <code>TimeoutException</code>。</p>
+<p><strong>置信度：高</strong>（分布式调用链完整还原了 99% 耗时集中于 gorm-v2 组件，网关超时堆栈、响应式流中断机制与业务端多状态过滤 SQL 高度吻合）</p>
+</blockquote>
+<p><strong>效果对比</strong>：整个排查过程从告警接入到输出结论耗时约 <strong>4 分钟</strong>（工具调用总计 88s + LLM 推理 + 验收）。人工排查保守估计需 10～20 分钟。</p>
+<h2 id="九、技术难点与踩过的坑"><a href="#九、技术难点与踩过的坑" class="headerlink" title="九、技术难点与踩过的坑"></a>九、技术难点与踩过的坑</h2><h3 id="环境统一映射"><a href="#环境统一映射" class="headerlink" title="环境统一映射"></a>环境统一映射</h3><p>告警信息中的环境标识五花八门：「xxprd」「生产」「XX石」「prd」「xxprd-proxy」实际上指的都是生产环境，且日志平台和 APM 平台的环境代码还不一样。</p>
+<p><strong>解决方案</strong>：通过 <code>EnvironmentProperties</code> 集中管理 5 套环境的别名映射，支持<strong>精确匹配 + 包含匹配</strong>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">troubleshooter:</span></span><br><span class="line">  <span class="attr">envs:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">aliases:</span> [<span class="string">xxprd</span>, <span class="string">xxprd-proxy</span>, <span class="string">prd</span>, <span class="string">生产</span>, <span class="string">xx石</span>, <span class="string">xx石生产</span>]</span><br><span class="line">      <span class="attr">logEnv:</span> <span class="string">XXPRD</span></span><br><span class="line">      <span class="attr">metricEnv:</span> <span class="string">xxprd-proxy</span></span><br><span class="line">    <span class="comment"># ... 预发、测试等</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>关键原则</strong>：在 tool 方法中直接使用告警事件中的环境字段，<strong>不让 LLM 自行映射</strong>——避免 LLM “翻译” 环境名时出错。</p>
+<h3 id="LLM-调用-Round-Robin-多-Key"><a href="#LLM-调用-Round-Robin-多-Key" class="headerlink" title="LLM 调用 Round-Robin 多 Key"></a>LLM 调用 Round-Robin 多 Key</h3><p>LLM 网关有频率限制，单个 API Key 在高频调用下会被限流。实现 <code>RoundRobinChatModel</code>，支持配置多个 API Key：</p>
+<ul>
+<li><strong>按事件 ID 哈希取模固定分配</strong>：同一个排查过程中的所有 LLM 调用使用同一个 Key，避免上下文切换</li>
+</ul>
+<h2 id="十、量化效果"><a href="#十、量化效果" class="headerlink" title="十、量化效果"></a>十、量化效果</h2><p>统计区间：<strong>2026-04-21 至 2026-05-14</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>中位数排查耗时</td>
+<td><strong>从 ~20 分钟降至 4.4 分钟</strong></td>
+</tr>
+<tr>
+<td>覆盖服务数</td>
+<td>11 个</td>
+</tr>
+<tr>
+<td>覆盖告警类型</td>
+<td>10+ 种</td>
+</tr>
+<tr>
+<td>结论验收首次通过率</td>
+<td><strong>约 60%</strong></td>
+</tr>
+<tr>
+<td>结论验收二次通过率</td>
+<td><strong>约 38%</strong>（累计 98%）</td>
+</tr>
+<tr>
+<td>验收耗尽兜底率</td>
+<td><strong>约 2%</strong></td>
+</tr>
+</tbody></table>
+<h2 id="十一、后续迭代方向"><a href="#十一、后续迭代方向" class="headerlink" title="十一、后续迭代方向"></a>十一、后续迭代方向</h2><p>按优先级规划：</p>
+<ol>
+<li><strong>多 Agent 并行排查</strong>：日志查询和指标查询可以并行执行</li>
+<li><strong>指纹知识库</strong>：实现秒级匹配已知问题</li>
+<li><strong>跨服务关联分析</strong>：识别级联故障</li>
+<li><strong>自动处置能力</strong>：从「排查 + 建议」升级到「排查 + 自动修复」</li>
+<li><strong>向量语义检索</strong>：实现语义级相似问题检索</li>
+</ol>
+<h2 id="可借鉴的设计模式"><a href="#可借鉴的设计模式" class="headerlink" title="可借鉴的设计模式"></a>可借鉴的设计模式</h2><ol>
+<li><strong>编排引擎选型务实</strong>：不盲目自研，用 Spring AI Alibaba 的开箱 ReactAgent 换开发效率</li>
+<li><strong>接入与执行解耦</strong>：接入层只持久化，调度器异步触发排查，避免阻塞告警链路</li>
+<li><strong>指纹 + 知识匹配</strong>：已知问题秒级复用历史结论，AI 只排查新问题，兼顾效率与成本</li>
+<li><strong>工具返回「分析摘要」而非原始数据</strong>：由工具侧用 LLM 预处理，避免主 Agent 上下文爆炸</li>
+<li><strong>动态策略组装</strong>：<code>(service_name, alert_type)</code> 匹配策略 + 运维低代码编辑，无需改代码即可适配新场景</li>
+<li><strong>工具超时隔离 + 降级消息</strong>：独立线程池 + Future 超时，单工具失败不阻断整条链路</li>
+<li><strong>分层幻觉控制</strong>：格式校验用代码（零 LLM、毫秒级）、内容校验用独立验收 Agent，避免「LLM 验 LLM」</li>
+<li><strong>交叉验证</strong>：多工具结果必须相互印证（日志×链路、日志×指标、时间线一致性）</li>
+<li><strong>验收循环 + 反馈注入重试</strong>：不通过时把验收反馈注入 prompt 让 LLM 修正，而非简单重试</li>
+<li><strong>文件系统可观测性</strong>：按事件 ID 分目录的完整调用日志，便于事后审计与 Debug</li>
+<li><strong>不让 LLM 做确定性映射</strong>：环境字段在 tool 方法中直接使用，避免 LLM 翻译出错</li>
+<li><strong>Round-Robin 多 Key + 事件 ID 哈希固定</strong>：分散限流压力，同时保证同一会话上下文连续性</li>
+</ol>
+<h2 id="调研笔记"><a href="#调研笔记" class="headerlink" title="调研笔记"></a>调研笔记</h2><h3 id="抓取状态"><a href="#抓取状态" class="headerlink" title="抓取状态"></a>抓取状态</h3><ul>
+<li><strong>目标 URL</strong>（腾讯云）<code>https://developer.cloud.tencent.com/article/2682409</code>：客户端 JS 渲染，WebFetch&#x2F;WebReader&#x2F;Tavily extract 均只能拿到页面模板和摘要，<strong>无法获取正文全文</strong></li>
+<li><strong>降级方案</strong>：改抓知乎镜像 <code>https://zhuanlan.zhihu.com/p/2045812718301623091</code>（SSR 正常），正文部分章节完整；最终从 <strong>itmax.cn 镜像</strong> <code>https://itmax.cn/?p=10021386</code> 拿到含代码块、配置示例、案例结论的<strong>最完整正文</strong></li>
+<li><strong>抓取方式</strong>：WebReader（知乎 + itmax.cn）+ WebSearch（多源交叉验证）</li>
+<li><strong>抓取状态</strong>：成功（经多源拼接，正文完整度 ≥95%）</li>
+</ul>
+<h3 id="质量评价"><a href="#质量评价" class="headerlink" title="质量评价"></a>质量评价</h3><ul>
+<li>文章完整度高，覆盖架构、工具、幻觉控制、可观测性、真实案例、量化数据，工程参考价值强</li>
+<li>代码片段为伪代码（类结构示意），非生产级实现，落地时需自行补全 Spring AI Alibaba 的具体 API</li>
+<li>量化数据透明：给出验收通过率（60%&#x2F;38%&#x2F;2%），而非只讲成功案例</li>
+</ul>
+<h3 id="与其他得物文章的关联"><a href="#与其他得物文章的关联" class="headerlink" title="与其他得物文章的关联"></a>与其他得物文章的关联</h3><ul>
+<li><strong>编排引擎</strong>：本文用 <strong>Spring AI Alibaba 的 ReactAgent</strong>，<strong>未提及 Hermes，也未提及 LangGraph</strong></li>
+<li>得物另有一篇《从0到1搭建一个智能分析 OBS 埋点数据的 AI Agent｜得物技术》（<code>https://tech.dewu.com/article?id=195</code>）使用 <strong>obs-mcp-server 的 MCP 路线</strong>，与本篇路线不同，可对照阅读</li>
+<li>文末往期回顾提到得物在 AICon 关于大模型与 Agent 技术的实践分享，以及 Claude Code Harness 工程的数仓落地方案，均为得物 AI 工程化系列的关联文章</li>
+</ul>
+<h3 id="与-30-核心洞察-40-工作流设计模式-的潜在关联"><a href="#与-30-核心洞察-40-工作流设计模式-的潜在关联" class="headerlink" title="与 30-核心洞察&#x2F;40-工作流设计模式 的潜在关联"></a>与 30-核心洞察&#x2F;40-工作流设计模式 的潜在关联</h3><p>本文的「指纹 + 知识匹配快速通道」「动态策略组装」「分层幻觉控制（代码校验格式 + LLM 校验内容）」「工具超时隔离 + 降级」等模式，均可作为工作流设计模式的实战案例素材。</p>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

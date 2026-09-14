@@ -1,0 +1,107 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="刚刚！Claude Code 的 /loop 实操教程来了"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>刚刚！Claude Code 的 /loop 实操教程来了 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>刚刚！Claude Code 的 /loop 实操教程来了</h1><div class="article-container"><h1 id="刚刚！Claude-Code-的-loop-实操教程来了"><a href="#刚刚！Claude-Code-的-loop-实操教程来了" class="headerlink" title="刚刚！Claude Code 的 &#x2F;loop 实操教程来了"></a>刚刚！Claude Code 的 &#x2F;loop 实操教程来了</h1><blockquote>
+<p><strong>来源</strong>：Datawhale　<strong>发布</strong>：2026-06-25 22:05　<strong>抓取</strong>：2026-06-26<br><strong>原文链接</strong>：<a href="https://mp.weixin.qq.com/s/-zNyfvaPMGAJrKThPRZWkA">https://mp.weixin.qq.com/s/-zNyfvaPMGAJrKThPRZWkA</a></p>
+</blockquote>
+<hr>
+<p>Datawhale干货</p>
+<p><strong>作者：王大鹏，Datawhale成员</strong></p>
+<p>上一篇我们从控制论的视角拆解了 Loop Engineering 的结构。这篇动手——用 Claude Code 跑一个真实的 loop，看看”设计循环”这件事在实践中到底长什么样。</p>
+<p>Claude Code 里 agent 被”唤醒”的几种方式</p>
+<p>动手之前先对齐一个认知。很多人听到 Loop Engineering 会以为它只是 &#x2F;loop 这一个命令。但在 Claude Code 里，agent 的自动化触发有好几种形态，它们共同构成了 Loop Engineering 的设计空间：</p>
+<p>你可以用 &#x2F;loop 让 agent 按时间表重复执行——每 5 分钟检查一次部署状态，每天早上 10 点审查 PR。你也可以用 &#x2F;goal 设定一个目标，agent 持续工作直到达标或卡住——所有测试通过、构建成功、PR 就绪。你还可以配置 hooks，让特定事件确定性地触发脚本——agent 编辑了文件就自动跑 lint，一轮结束前自动验证构建。再进一步，主 agent 可以 spawn 子 agent 并行执行拆分后的任务，每个子 agent 带着自己的 goal 做验证循环。当你不确定拆分成什么类型的子agent什么时候拆分时，也可以用workflow来让LLM决定子agent的组合方式。</p>
+<p>实际工作流里这些形态会组合使用。比如 How I AI 播客里演示的一个例子：一个 scheduled loop 每周五触发，主 agent 分析本周 PR 并识别缺失的 skill，然后 spawn 多个子 agent，每个子 agent 用 goal loop 验证一个 skill 是否真正可用。</p>
+<p>本文聚焦在最基础的那一种——Scheduled loop（&#x2F;loop），用一个完整的实践案例从设计到运行跑通。</p>
+<p>场景：监控竞品公众号文章更新</p>
+<p>一个关注 AI Agent 方向的公众号，有几个同领域的号想持续追踪，不是刷到了才被动看，而是有更新就知道。</p>
+<p>没有 loop 时的做法是：想起来了就打开微信看看、或者用 RSS 工具扫一遍（微信公众号还需要额外转成RSS）。问题是被动靠推荐的触发不太靠谱，会错过一些时效性强的内容。</p>
+<p>用 cron 脚本也能做。写个 Python 定时跑，抓到新文章存下来。但 cron 脚本是死的——公众号内容常常需要cookie token，过期了它就静默失败，你第二天才发现少了一天的数据，有些后知后觉。</p>
+<p>用 loop 要做的事情是：<strong>让 agent 定时醒来、自己判断状态、自己决定做什么——正常就同步，异常就即时报告，而不是无脑执行然后挂掉。</strong></p>
+<p><strong>工具准备</strong></p>
+<p>抓取用的是 wx-mp-rss-core，一个基于微信公众平台 API 的文章获取工具。它需要扫码登录拿到 token，token 会过期（通常能用3天）。</p>
+<p>监控对象：Datawhale等两个 AI 方向的公众号。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /path/to/wx-mp-rss-core# 扫码登录，token 写入 wx_token.jsonpython3 examples/login_example.py</span><br></pre></td></tr></table></figure>
+
+<p>登录后 wx_token.json 里有两样东西：token（拼在 API URL 里的参数）和 cookies。</p>
+<p>设计 loop prompt</p>
+<p>在 Claude Code 交互模式里输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/loop 30m 你是一个公众号文章同步 agent。工作目录是当前目录。每次被唤醒时执行以下决策流程：1. 读取 sync_state.json 检查上次状态 - 如果上次是 token_expired：先测试 token 是否恢复，未恢复则报告&quot;仍在等待扫码&quot;并退出本轮 - 如果上次是 success：继续正常同步2. 用 wx_token.json 凭证请求两个公众号的最新文章： - Datawhale (fakeid: MzIyNjM2MzQyNg==) - 精神抖擞王大鹏 (fakeid: MzI5MjQzOTY3OA==)3. 对比 sync_state.json 的 known_articles，识别新增文章4. 根据结果决策： - API 返回 ret=200003/invalid session → 状态改为 token_expired，通知用户扫码，不重试 - 有新文章 → 更新 sync_state.json，输出新文章标题 - 无新文章 → 简短报告&quot;无更新&quot;5. 更新 sync_state.json（含 status, last_check_time, known_articles, check_count）</span><br></pre></td></tr></table></figure>
+
+<p>输入回车。Claude Code 立刻做了两件事：</p>
+<p>创建了一个 cron job（*&#x2F;30 * * * *），每 30 分钟触发一次</p>
+<p>立刻执行第一轮</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/zW6S9vt0cS8icmFicQDo3ccITULc5mTMicJ8yfD0KwoBib3NyK4mibBUicOiaW60uMc665r8VeM2qgnYW3ahfDZSb48JzQpgOO9A9KbiaibPgpQa1C4Y/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p>▲ &#x2F;loop 命令输入后 Claude Code 创建 cron 调度并立即执行第一轮</p>
+<p>第一轮：正常同步</p>
+<p>第一次执行时，agent 做了这些：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">✓ 读取 sync_state.json → 状态 success，继续✓ 请求 Datawhale API → ret:0，成功✓ 请求 精神抖擞王大鹏 API → ret:0，成功✓ 对比 known_articles → 发现 2 篇新文章✓ 更新 sync_state.json</span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">📋 首次同步结果 — 发现 4 篇新文章Datawhale：1. 刚刚，全网爆火的Loop Engineering，保姆教程来了！2. 一文搞懂！Loop Engineering的进化史和本质精神抖擞王大鹏：1. 从源码拆解 Claude Code 的记忆体系：它是怎么记住你说过的话的2. Claude Code 详解：Dynamic Workflow 编排机制Token 状态正常，sync_state.json 已初始化。后续每 30 分钟自动检查新文章。</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/zW6S9vt0cSib4HIkCjhYI8bGksTAQkAxvsmznTm4pJebQOoicnAaDarxJufhyoialyXp9S2Y3VNX5orMEhFaATGgJbrZokkF5aGdgFuxpkiagfQ/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p>▲ 第一轮正常同步结果：发现新文章并自动触发下一轮</p>
+<p>状态文件更新为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; &quot;status&quot;: &quot;success&quot;, &quot;last_check_time&quot;: &quot;2026-06-24T22:44:00&quot;, &quot;check_count&quot;: 1, &quot;articles_synced&quot;: 8, &quot;known_articles&quot;: [ &quot;一文搞懂！Loop Engineering的进化史和本质&quot;, &quot;刚刚，全网爆火的Loop Engineering，保姆教程来了！&quot;, &quot;《Datawhale香蕉书》出版了！&quot;, &quot;从源码拆解 Claude Code 的记忆体系...&quot;, &quot;...&quot; ]&#125;</span><br></pre></td></tr></table></figure>
+
+<p>到这一步，跟 cron 脚本没有本质区别。区别从第二轮开始。</p>
+<p>第二轮：无更新时的极简响应</p>
+<p>2 分钟后（demo 里用了 &#x2F;loop 1m 加速），loop 自动触发：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">✓ 读取 sync_state.json → 状态 success✓ 请求两个公众号 → 成功✓ 对比 known_articles → 无新增</span><br></pre></td></tr></table></figure>
+
+<p>输出只有一行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">📋 同步结果：无更新两个公众号最新文章均已在 known_articles 中，本轮无新增。第 2 次检查完成。</span><br></pre></td></tr></table></figure>
+
+<p>状态文件只改了 check_count: 2 和 last_check_time。</p>
+<p>这里的关键不是”它报告了无更新”——而是它知道什么时候不该做事。cron 脚本每次都全量执行完整逻辑；这个 loop 在”没有新东西”时，决策路径最短，token 消耗最低。</p>
+<p>Token 失效：loop 和 cron 的区别</p>
+<p>微信公众平台的 token 几小时就过期。当 token 失效时，API 返回 {“base_resp”:{“ret”:200003,”err_msg”:”invalid session”}}。</p>
+<p>cron 脚本遇到这个会怎样？</p>
+<p>取决于你的错误处理写了多少。大多数人的脚本：报错 → 退出 → 日志里躺着一行 traceback → 你明天发现数据断了一天。</p>
+<p>loop 遇到这个会怎样？</p>
+<p>我们用 Claude Code 跑了一次 token 失效的场景。agent 的反应：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">✓ 请求 API → 返回 ret=200003✓ 判断：这不是内容问题，是凭证过期✗ 不重试（关键决策）✓ 更新 sync_state.json：status → &quot;token_expired&quot;✓ 输出：⚠️ Token 已过期，需要重新扫码登录微信公众平台</span><br></pre></td></tr></table></figure>
+
+<p>状态文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; &quot;status&quot;: &quot;token_expired&quot;, &quot;last_check_time&quot;: &quot;2026-06-24T22:45:00&quot;, &quot;error_detail&quot;: &quot;API returned ret=200003 (invalid session)&quot;, &quot;check_count&quot;: 1, &quot;known_articles&quot;: [...]&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/zW6S9vt0cS96cAicxcyvjLxXiaomOTClmhgukyDI0H691iaiaPJa8JJ4hBNTqtLzQ9kQHBnWUnvbB7PjSVZahEPicYtkxY9bicmHSyWB5OY9kFl00/640?wx_fmt=png&from=appmsg" alt="图片"></p>
+<p>▲ Token 失效后 agent 的降级处理：标记状态、通知用户、下一轮自动检测恢复</p>
+<p>下一次 loop 被唤醒时，它<strong>不会盲目重试 API</strong>。它先读状态文件，看到 token_expired，于是先做一次轻量检测（调一个简单 API 试 token 是否恢复），未恢复就直接退出：”仍在等待扫码，本轮跳过”。</p>
+<p>当然这只是现状，你完全可以在prompt后续加上一个外部的通知机制，然后来即时的重新扫码，续上下一次loop动作。</p>
+<p>这就是上一篇文章里说的<strong>控制器判断力</strong>：同样是”执行失败”，agent 区分了”是内容层面的问题（值得重试）”还是”基础设施层面的问题（需要人介入）”。这个判断不在调度器里，在 prompt 里。</p>
+<p>从源码看 &#x2F;loop 到底做了什么</p>
+<p>读了 Claude Code 的源码，&#x2F;loop 的机制很简单，本质就是cron+prompt。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户输入: /loop 30m &lt;prompt&gt; ↓loop.ts 解析: interval=30m → cron=&quot;*/30 * * * *&quot; ↓CronCreate: 创建定时任务, recurring=true ↓立刻执行一次 prompt（不等第一个 tick） ↓cronScheduler.ts: setInterval(check, 1000) 每秒检查 ↓到期 → onFire(prompt) → 注入消息队列 → agent 开始新 turn</span><br></pre></td></tr></table></figure>
+
+<p>就这些。没有 evaluator，没有自动判断”是否达标”的系统组件。&#x2F;loop 做的事就是 <strong>定时唤醒prompt</strong>。</p>
+<p>那”判断是否达标”、”决定继续还是停止”、”区分错误类型”这些智能从哪来？</p>
+<p><strong>在你设计的 prompt 里。</strong></p>
+<p>循环的”智能”不在基础设施里，在你写的那段 prompt 里。调度器只做一件蠢事：到时间了，把 prompt 塞给 agent。但那段 prompt 承载了一整套决策逻辑——什么条件下该做事、什么条件下该停、什么条件下该喊人。</p>
+<p>Loop的第一步是先写skills</p>
+<p>整个 demo 里，Claude Code 做的事情其实不复杂：调 API、比对列表、写文件。任何 Python 脚本都能做。</p>
+<p>区别在异常处理的设计方式。</p>
+<p>Loop prompt 的异常处理是运行时判断——agent 看到一个未预见的返回值，它能基于对上下文的理解做出合理决策，即使你没有在 prompt 里逐一列举所有错误码。</p>
+<p>所以这是在之前的文章里说的，设计Loop首先的流程不是loop本身的六大组件，而是处理问题的那个skill，你得先有解决问题的方法。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/vI9nYe94fsGxu3P5YibTO899okS0X9WaLmQCtia4U8Eu1xWCz9t8Qtq9PH6T1bTcxibiaCIkGzAxpeRkRFYqibVmwSw/640?wx_fmt=other&wxfrom=5&wx_lazy=1&wx_co=1&tp=webp#imgIndex=20" alt="图片"></p>
+<p>*<em>一起“点</em>***赞”**<strong>三连</strong>↓</p>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

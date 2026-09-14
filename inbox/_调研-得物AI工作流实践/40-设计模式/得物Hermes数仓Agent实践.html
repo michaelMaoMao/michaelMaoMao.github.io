@@ -1,0 +1,220 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="从埋点需求到规则资产：Hermes Agent 重构得物数仓工作流"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>从埋点需求到规则资产：Hermes Agent 重构得物数仓工作流 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>从埋点需求到规则资产：Hermes Agent 重构得物数仓工作流</h1><div class="article-container"><blockquote>
+<p>本文系腾讯云开发者社区转载得物技术团队原创文章，发布于 2026-06-18。原始出处可追溯至微信公众号”得物技术”。多平台同步转载：知乎专栏、InfoQ、CSDN、掘金、开源中国、tool.lu 等。<br>调研备注：腾讯云页面正文为前端动态渲染，反爬严格；本文内容综合多平台公开摘要、目录信息与相关延伸文章重建，<strong>非逐字原文</strong>，侧重提炼技术骨架与设计模式。如需原文措辞请直接访问 source 链接。</p>
+</blockquote>
+<h2 id="一、问题背景：数据承接方真正消耗精力的是什么"><a href="#一、问题背景：数据承接方真正消耗精力的是什么" class="headerlink" title="一、问题背景：数据承接方真正消耗精力的是什么"></a>一、问题背景：数据承接方真正消耗精力的是什么</h2><p>文章开篇点题的核心论断：</p>
+<blockquote>
+<p>在埋点和指标需求里，最消耗数据承接方的不是”生成答案”，而是——<strong>补齐证据链、对齐历史口径、识别下游影响，并在生产写入前留下可追溯的确认记录</strong>。</p>
+</blockquote>
+<p>文中术语约定：</p>
+<ul>
+<li><strong>数据承接方</strong>：承接业务需求的数据同学或业务合作伙伴。</li>
+<li>流程中还涉及”内部研发、元数据、查询和门禁”等能力的角色定位。</li>
+</ul>
+<p>具体的旧流程痛点（分散信息需要重新拼起来）：</p>
+<ol>
+<li><strong>动作采集必要性判断</strong>：需求文档里的某个动作到底要不要采集？</li>
+<li><strong>历史点位比对</strong>：历史上有没有类似点位，是否重复或冲突？</li>
+<li><strong>指标口径核查</strong>：指标口径有没有被下游引用，是否需要对齐既有定义？</li>
+<li><strong>下游影响识别</strong>：变更或新增埋点对下游数据消费方的影响范围。</li>
+<li><strong>可追溯性缺失</strong>：生产环境写入前缺乏留痕，出了问题难以回溯。</li>
+</ol>
+<p>这些工作本质是<strong>工程化的证据收集与风险预演</strong>，而非创造性判断。这正是 AI Agent 能够切入的空间：让 AI 负责工程化准备，让人专注于业务决策。</p>
+<h2 id="二、框架选型：为什么选-Hermes-Agent-而不是-OpenClaw"><a href="#二、框架选型：为什么选-Hermes-Agent-而不是-OpenClaw" class="headerlink" title="二、框架选型：为什么选 Hermes Agent 而不是 OpenClaw"></a>二、框架选型：为什么选 Hermes Agent 而不是 OpenClaw</h2><h3 id="2-1-候选与对比"><a href="#2-1-候选与对比" class="headerlink" title="2.1 候选与对比"></a>2.1 候选与对比</h3><p>得物团队在选型时对比了两类开源 Agent 框架：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Hermes Agent（选用）</th>
+<th>OpenClaw（未选）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>维护状态</td>
+<td>活跃维护</td>
+<td>已停止开发</td>
+</tr>
+<tr>
+<td>持续在线</td>
+<td>支持</td>
+<td>较弱</td>
+</tr>
+<tr>
+<td>持久记忆</td>
+<td>分层持久记忆</td>
+<td>依赖外部存储</td>
+</tr>
+<tr>
+<td>技能沉淀</td>
+<td>Agent 自主创建、自优化的 Procedural Memory</td>
+<td>静态文件，人工编写</td>
+</tr>
+<tr>
+<td>多平台接入</td>
+<td>Gateway 层统一适配</td>
+<td>插件化</td>
+</tr>
+<tr>
+<td>架构理念</td>
+<td>“轻量后端 + 重 Agent 循环”</td>
+<td>“重 Gateway 平台 + 分布式 Node 架构”</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-选型结论"><a href="#2-2-选型结论" class="headerlink" title="2.2 选型结论"></a>2.2 选型结论</h3><p>文章明确指出：</p>
+<blockquote>
+<p>Hermes Agent 因其<strong>持续在线、持久记忆和技能沉淀能力</strong>，优于 OpenClaw，尤其适合处理埋点和指标需求这类长流程、需经验沉淀的场景。</p>
+</blockquote>
+<p>关键澄清见本文「调研笔记」一节。</p>
+<h2 id="三、架构核心：单-Agent-编排-多能力模块-看板确认点"><a href="#三、架构核心：单-Agent-编排-多能力模块-看板确认点" class="headerlink" title="三、架构核心：单 Agent 编排 + 多能力模块 + 看板确认点"></a>三、架构核心：单 Agent 编排 + 多能力模块 + 看板确认点</h2><h3 id="3-1-为什么不做多-Agent"><a href="#3-1-为什么不做多-Agent" class="headerlink" title="3.1 为什么不做多 Agent"></a>3.1 为什么不做多 Agent</h3><p>得物没有把能力拆成”一组互相独立的智能体”，而是采用：</p>
+<blockquote>
+<p><strong>“单 Agent 编排 + 多能力模块 + 看板确认点”</strong></p>
+</blockquote>
+<p>理由：</p>
+<ul>
+<li><strong>Hermes Agent 保持统一上下文</strong>，负责调度阶段流转；</li>
+<li><strong>能力模块承接稳定、可复用的工程化逻辑</strong>；</li>
+<li>多 Agent 会割裂上下文，而埋点流程强依赖跨阶段的上下文一致性（前一阶段的证据要被后一阶段引用）。</li>
+</ul>
+<h3 id="3-2-四个可追踪的工程构件"><a href="#3-2-四个可追踪的工程构件" class="headerlink" title="3.2 四个可追踪的工程构件"></a>3.2 四个可追踪的工程构件</h3><p>在这套框架之上，得物把”一次埋点需求承接”拆解为四个可追踪的工程构件：</p>
+<h4 id="1-工作区（Workspace）"><a href="#1-工作区（Workspace）" class="headerlink" title="1. 工作区（Workspace）"></a>1. 工作区（Workspace）</h4><ul>
+<li>每个需求一个独立空间；</li>
+<li>集中存放：需求文档、历史讨论、评审结论、交付产物；</li>
+<li>作用：让上下文<strong>固化、可检索、可回放</strong>。</li>
+</ul>
+<h4 id="2-看板（Kanban）"><a href="#2-看板（Kanban）" class="headerlink" title="2. 看板（Kanban）"></a>2. 看板（Kanban）</h4><ul>
+<li>状态流转可视化；</li>
+<li>跟踪需求从提出到交付的全生命周期；</li>
+<li><strong>关键角色：人工确认点</strong>——AI 完成工程化准备后，在看板上停下等人工决策拍板，而非自动放行。</li>
+</ul>
+<h4 id="3-规则（Rules）"><a href="#3-规则（Rules）" class="headerlink" title="3. 规则（Rules）"></a>3. 规则（Rules）</h4><ul>
+<li>将埋点规范、承接经验沉淀为可复用的规则资产；</li>
+<li>后文第四节专门展开。</li>
+</ul>
+<h4 id="4-工具接口（Tool-Interface）"><a href="#4-工具接口（Tool-Interface）" class="headerlink" title="4. 工具接口（Tool Interface）"></a>4. 工具接口（Tool Interface）</h4><ul>
+<li>把<strong>查询、绑定、发布、验证</strong>这些动作，包装成参数明确、返回结构化、过程可审计的接口；</li>
+<li>核心原则：<blockquote>
+<p><strong>越靠近写入，越要先预演、再确认、最后留痕。</strong></p>
+</blockquote>
+</li>
+</ul>
+<h2 id="四、总体工作流：从一次对话变成一条可回放链路"><a href="#四、总体工作流：从一次对话变成一条可回放链路" class="headerlink" title="四、总体工作流：从一次对话变成一条可回放链路"></a>四、总体工作流：从一次对话变成一条可回放链路</h2><h3 id="4-1-工作流主线（四件事）"><a href="#4-1-工作流主线（四件事）" class="headerlink" title="4.1 工作流主线（四件事）"></a>4.1 工作流主线（四件事）</h3><p>Hermes Agent 在埋点需求链路上的核心价值是<strong>可回放、可确认、可复用</strong>的工作流能力。当前链路围绕四件事形成主线：</p>
+<ol>
+<li><strong>跑通需求流转</strong>——让需求在各阶段间可控地流转，而非散落在聊天记录里；</li>
+<li><strong>前置风险拦截</strong>——在写入生产前预演变更、暴露冲突；</li>
+<li><strong>沉淀规则资产</strong>——把每次承接的经验固化为可复用规则；</li>
+<li><strong>让数据承接方把精力放在判断上</strong>——AI 做工程化准备，人做业务决策。</li>
+</ol>
+<h3 id="4-2-五个可复用的流程模块"><a href="#4-2-五个可复用的流程模块" class="headerlink" title="4.2 五个可复用的流程模块"></a>4.2 五个可复用的流程模块</h3><p>这些能力模块<strong>不是只服务一次埋点需求</strong>，而是被抽象成可复用的流程模块：</p>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>素材采集</strong></td>
+<td>收集埋点需求所需的上下文与事实源（需求文档、历史点位、指标口径）</td>
+</tr>
+<tr>
+<td><strong>历史检索</strong></td>
+<td>基于分层记忆系统检索历史埋点&#x2F;指标规则与变更记录</td>
+</tr>
+<tr>
+<td><strong>变更预演</strong></td>
+<td>发布前对规则变更做风险预演，固化事实、提前暴露风险（如重复点位、口径冲突）</td>
+</tr>
+<tr>
+<td><strong>发布确认</strong></td>
+<td>人在回路（Human-in-the-loop）做最终决策确认</td>
+</tr>
+<tr>
+<td><strong>经验沉淀</strong></td>
+<td>将每次需求过程中的经验转化为可复用的技能与规则资产</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>文中强调：换事实源和工具接口后，<strong>同一套机制也可复用</strong>到其他类似流程（指标需求等）。</p>
+</blockquote>
+<h3 id="4-3-流程特性"><a href="#4-3-流程特性" class="headerlink" title="4.3 流程特性"></a>4.3 流程特性</h3><ul>
+<li><strong>事实源（Source of Truth）聚焦</strong>：把分散信息重新拼合并固化为”事实”，作为后续处理的可信基础；</li>
+<li><strong>预演验证</strong>：在正式执行前进行风险预演；</li>
+<li><strong>人工确认</strong>：通过看板设置确认节点，形成 Human-in-the-loop 闭环；</li>
+<li><strong>审计留痕</strong>：每一步动作过程可审计，支持事后回放。</li>
+</ul>
+<h2 id="五、能力底座：把规则、上下文和命令资产化"><a href="#五、能力底座：把规则、上下文和命令资产化" class="headerlink" title="五、能力底座：把规则、上下文和命令资产化"></a>五、能力底座：把规则、上下文和命令资产化</h2><h3 id="5-1-什么值得沉淀"><a href="#5-1-什么值得沉淀" class="headerlink" title="5.1 什么值得沉淀"></a>5.1 什么值得沉淀</h3><p>第四节聚焦”<strong>什么值得沉淀</strong>“。文中指出：</p>
+<blockquote>
+<p>埋点自动化真正难的是，把<strong>历史口径、下游影响、人工确认和生产状态</strong>拆成可复用资产。</p>
+</blockquote>
+<p>三类被资产化的对象：</p>
+<ul>
+<li><strong>规则</strong>（Rules）</li>
+<li><strong>上下文</strong>（Context）</li>
+<li><strong>命令</strong>（Commands）</li>
+</ul>
+<h3 id="5-2-资产化的工程意义"><a href="#5-2-资产化的工程意义" class="headerlink" title="5.2 资产化的工程意义"></a>5.2 资产化的工程意义</h3><ul>
+<li><strong>可验证执行</strong>：规则资产化后，执行过程可被验证、可被回归；</li>
+<li><strong>协作可见性</strong>：团队协作中，规则是显式共享的，而非隐式知识；</li>
+<li><strong>结构化工具接口</strong>：工具接口沉淀为资产后，新流程可直接复用；</li>
+<li><strong>风险治理</strong>：资产化的规则让人工确认点、审计留痕有据可依。</li>
+</ul>
+<h2 id="六、量化效果"><a href="#六、量化效果" class="headerlink" title="六、量化效果"></a>六、量化效果</h2><blockquote>
+<p><strong>重要说明</strong>：综合所有公开转载版本与搜索摘要，<strong>本文未检索到明确的量化数据指标</strong>（如效率提升百分比、人力节省、缺陷率下降等）。文章以方法论与架构设计为主，效果部分多为定性描述（”让数据承接方把精力放在判断上”、”流程可控”等）。如需量化数据，建议查阅得物技术后续文章或相关分享。</p>
+</blockquote>
+<h2 id="七、可借鉴的设计模式"><a href="#七、可借鉴的设计模式" class="headerlink" title="七、可借鉴的设计模式"></a>七、可借鉴的设计模式</h2><p>从本文可提炼出几条对通用 Agent 工程有参考价值的设计模式：</p>
+<h3 id="模式-1：单-Agent-编排-能力模块化（避免多-Agent-上下文割裂）"><a href="#模式-1：单-Agent-编排-能力模块化（避免多-Agent-上下文割裂）" class="headerlink" title="模式 1：单 Agent 编排 + 能力模块化（避免多 Agent 上下文割裂）"></a>模式 1：单 Agent 编排 + 能力模块化（避免多 Agent 上下文割裂）</h3><p>适用于<strong>强依赖跨阶段上下文一致性</strong>的长流程。多 Agent 各自维护上下文会导致证据链断裂；单 Agent 统一调度 + 能力模块承接稳定逻辑，兼顾上下文一致性与工程化复用。</p>
+<h3 id="模式-2：四构件骨架（工作区-看板-规则-工具接口）"><a href="#模式-2：四构件骨架（工作区-看板-规则-工具接口）" class="headerlink" title="模式 2：四构件骨架（工作区 &#x2F; 看板 &#x2F; 规则 &#x2F; 工具接口）"></a>模式 2：四构件骨架（工作区 &#x2F; 看板 &#x2F; 规则 &#x2F; 工具接口）</h3><p>将一次性任务拆解为四个可追踪的工程构件，让流程从”散落在对话里”变为”可回放的链路”。这套骨架与具体业务解耦，可复用到指标需求、配置变更等场景。</p>
+<h3 id="模式-3：越靠近写入，越要”预演-确认-留痕”"><a href="#模式-3：越靠近写入，越要”预演-确认-留痕”" class="headerlink" title="模式 3：越靠近写入，越要”预演-确认-留痕”"></a>模式 3：越靠近写入，越要”预演-确认-留痕”</h3><p>工具接口设计的核心原则。把查询&#x2F;绑定&#x2F;发布&#x2F;验证包装成参数明确、返回结构化、过程可审计的接口，并在越靠近生产写入的节点设置越严格的人工确认。</p>
+<h3 id="模式-4：Human-in-the-loop-的看板化"><a href="#模式-4：Human-in-the-loop-的看板化" class="headerlink" title="模式 4：Human-in-the-loop 的看板化"></a>模式 4：Human-in-the-loop 的看板化</h3><p>人工确认点不是简单的 yes&#x2F;no 弹窗，而是看板上的可视化节点。AI 做完工程化准备后”停下”，把决策权显式交还给人。</p>
+<h3 id="模式-5：经验沉淀为规则资产（Skills-自进化）"><a href="#模式-5：经验沉淀为规则资产（Skills-自进化）" class="headerlink" title="模式 5：经验沉淀为规则资产（Skills 自进化）"></a>模式 5：经验沉淀为规则资产（Skills 自进化）</h3><p>把每次承接过程中稳定下来的经验固化为规则&#x2F;上下文&#x2F;命令资产，让 Agent 在下次同类需求中直接复用，形成自进化闭环。</p>
+<h3 id="模式-6：Workflow-优于一次性-Agent-对话"><a href="#模式-6：Workflow-优于一次性-Agent-对话" class="headerlink" title="模式 6：Workflow 优于一次性 Agent 对话"></a>模式 6：Workflow 优于一次性 Agent 对话</h3><p>文章隐含的选型倾向：对于<strong>有固定阶段、需要审计留痕、需要经验沉淀</strong>的工程化场景，应构建可回放的工作流链路，而非一次性 Agent 对话。</p>
+<h2 id="调研笔记"><a href="#调研笔记" class="headerlink" title="调研笔记"></a>调研笔记</h2><h3 id="抓取状态"><a href="#抓取状态" class="headerlink" title="抓取状态"></a>抓取状态</h3><ul>
+<li><strong>结果</strong>：部分成功（内容重建，非逐字原文）。</li>
+<li><strong>方式</strong>：WebFetch + web-reader MCP（腾讯云、开源中国两个目标页面均被反爬，正文为前端动态渲染，仅拿到 SEO 描述与目录骨架）；最终通过 web-search-prime 对多平台转载（知乎专栏、CSDN、InfoQ、掘金、tool.lu、OSCHINA）做关键词切片搜索，<strong>用搜索引擎摘要碎片交叉重建</strong>出文章技术骨架。</li>
+<li><strong>未能拿到</strong>：原文逐字措辞、架构图的视觉细节、可能的量化数据表格。</li>
+<li><strong>后续补救建议</strong>：若需原文逐字稿，可（a）用 web-access skill 的 CDP 模式（localhost:3456 已就绪、Chrome 已授权）直接打开腾讯云页面渲染后抓 DOM；（b）或在微信公众号”得物技术”历史推送中检索原文。</li>
+</ul>
+<h3 id="关于”得物-Hermes-是什么”的关键澄清"><a href="#关于”得物-Hermes-是什么”的关键澄清" class="headerlink" title="关于”得物 Hermes 是什么”的关键澄清"></a>关于”得物 Hermes 是什么”的关键澄清</h3><p>这是本次调研最重要的澄清点，<strong>与任务简报中的假设存在出入</strong>：</p>
+<ol>
+<li><strong>Hermes Agent 不是得物自研</strong>。它是 <a href="https://github.com/nousresearch/hermes-agent">Nous Research 开源</a>的通用 AI Agent 框架，定位为”The agent that grows with you”——自改进 Agent，内置学习循环（Learning Loop），能从经验中自主创建 Skills。</li>
+<li><strong>Hermes Agent 不基于 LangGraph</strong>。它基于 Python 构建，核心是自研的”轻量后端 + 重 Agent 循环”架构，与 LangGraph 无直接关系。</li>
+<li><strong>得物的角色是”应用方”</strong>：得物技术团队选用开源的 Hermes Agent 作为底座，在其上构建了”单 Agent 编排 + 四构件 + 能力模块化”的数仓工作流方案。文中对比的 OpenClaw 是同类竞品（另一个开源 Agent 平台），二者常被并列讨论。</li>
+<li><strong>架构关键词</strong>：Gateway（多平台接入层）、Memory（分层持久记忆）、Skills（Procedural Memory，Agent 自主创建自优化）、Scheduler。Hermes 与 OpenClaw 的核心架构分歧在于 Skills 的产生方式——Hermes 是 Agent 自进化，OpenClaw 是人工编写静态文件。</li>
+</ol>
+<h3 id="文章质量评价"><a href="#文章质量评价" class="headerlink" title="文章质量评价"></a>文章质量评价</h3><ul>
+<li><strong>优点</strong>：方法论清晰，”单 Agent + 能力模块 + 看板确认点”的架构选型论证扎实；四构件骨架（工作区&#x2F;看板&#x2F;规则&#x2F;工具接口）抽象到位，可迁移性强；”越靠近写入越要预演-确认-留痕”是很好的工具接口设计原则。</li>
+<li><strong>不足</strong>：<strong>缺乏量化数据</strong>是硬伤，通篇定性描述；架构图只能从文字描述推断；对 Hermes Agent 框架本身的能力（Learning Loop 具体如何运作、Skills 如何自进化）着墨不多，更多是应用层设计。</li>
+<li><strong>适用读者</strong>：正在为企业内部长流程（非仅数仓）选型 Agent 架构、纠结单 Agent vs 多 Agent、或需要设计”可审计工作流”的工程师与架构师。</li>
+</ul>
+<h3 id="与已知得物系列文章的关联"><a href="#与已知得物系列文章的关联" class="headerlink" title="与已知得物系列文章的关联"></a>与已知得物系列文章的关联</h3><ul>
+<li>本文与得物技术专栏其他 AI Agent 实践文章属同一系列，从工程化角度补充了”Agent 如何在真实业务流程中落地”的视角。</li>
+<li>延伸阅读（来自搜索过程，未逐一验证）：<ul>
+<li>《基于 Hermes Agent 的 AI 可视化协同研发流水线》（腾讯云 article&#x2F;2656397）</li>
+<li>OpenClaw 官方文档：<a href="https://docs.openclaw.ai/zh-CN/concepts/agent-workspace">https://docs.openclaw.ai/zh-CN/concepts/agent-workspace</a></li>
+<li>Hermes Agent GitHub：<a href="https://github.com/nousresearch/hermes-agent">https://github.com/nousresearch/hermes-agent</a></li>
+<li>《OpenClaw 与 Hermes：源码里的 AI Agent 架构课》（知乎专栏）</li>
+<li>《Hermes Agent 深度架构剖析与 OpenClaw 工程化对比》（青雲博客）</li>
+</ul>
+</li>
+</ul>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="得物 Claude Code 工作流实践（id=213）"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>得物 Claude Code 工作流实践（id=213） | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>得物 Claude Code 工作流实践（id=213）</h1><div class="article-container"><h1 id="得物-Claude-Code-工作流实践"><a href="#得物-Claude-Code-工作流实践" class="headerlink" title="得物 Claude Code 工作流实践"></a>得物 Claude Code 工作流实践</h1><blockquote>
+<p>得物后端工程师的 AI 编程工作流沉淀：Claude Code CLI 选型、模型插拔、多 Agent 主从架构、SDD。与你的 flow-deep&#x2F;SDD 路线<strong>高度同源</strong>。</p>
+</blockquote>
+<h2 id="一、工具选型：两点认知"><a href="#一、工具选型：两点认知" class="headerlink" title="一、工具选型：两点认知"></a>一、工具选型：两点认知</h2><ol>
+<li><p><strong>AI 编程工具 &#x3D; 脑（大模型 API）+ 手（提示词&#x2F;工作流）</strong></p>
+<ul>
+<li>脑决定上限，手决定下限</li>
+<li>大模型像发动机——<strong>标准化、可插拔</strong>，所有工具通用</li>
+<li>启示：随便选趁手工具，自行按场景选配”发动机”</li>
+</ul>
+</li>
+<li><p><strong>AI 编程工具领域无技术壁垒</strong></p>
+<ul>
+<li>A 的杀手特性，B 半个月内跟进</li>
+<li>Claude Code 用 Claude Code 迭代 Claude Code（<strong>工具自举</strong>）</li>
+</ul>
+</li>
+</ol>
+<p><strong>选型两点</strong>：①便捷支持模型插拔 ②积极维护者（商业化产品）<br>→ 选 <strong>Claude Code CLI</strong></p>
+<h2 id="二、模型插拔：Shell-函数-环境变量（核心可复用方案）"><a href="#二、模型插拔：Shell-函数-环境变量（核心可复用方案）" class="headerlink" title="二、模型插拔：Shell 函数 + 环境变量（核心可复用方案）"></a>二、模型插拔：Shell 函数 + 环境变量（核心可复用方案）</h2><p>自定义 Shell 函数 + 行内临时环境变量注入 LLM 配置，别名按场景切换：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 智谱 GLM</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">zcc</span></span>()&#123;</span><br><span class="line">    ANTHROPIC_BASE_URL=<span class="string">&quot;https://open.bigmodel.cn/api/anthropic&quot;</span> \</span><br><span class="line">    ANTHROPIC_AUTH_TOKEN=<span class="string">&quot;sk-xxxxxxxxx&quot;</span> \</span><br><span class="line">    launch_claude_code <span class="variable">$@</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">launch_claude_code</span></span>()&#123;</span><br><span class="line">    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1 <span class="built_in">command</span> claude <span class="variable">$@</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">alias</span> claude=<span class="string">&#x27;zcc&#x27;</span>   <span class="comment"># 默认 GLM</span></span><br></pre></td></tr></table></figure>
+
+<p>别名：<code>claude</code>&#x3D;GLM &#x2F; <code>kcc</code>&#x3D;Kimi &#x2F; <code>zcc</code>&#x3D;GLM &#x2F; <code>qcc</code>&#x3D;七牛 MiniMax。</p>
+<p><strong>关键环境变量</strong>：<code>ANTHROPIC_BASE_URL</code> &#x2F; <code>ANTHROPIC_AUTH_TOKEN</code> &#x2F; <code>ANTHROPIC_DEFAULT_&#123;OPUS,SONNET,HAIKU&#125;_MODEL</code> &#x2F; <code>CLAUDE_CODE_SUBAGENT_MODEL</code> &#x2F; <code>ANTHROPIC_SMALL_FAST_MODEL</code>。</p>
+<p>开源工具替代：<code>farion1231/cc-switch</code>。</p>
+<h2 id="三、开发环境：多屏-GUI-TUI-衔接"><a href="#三、开发环境：多屏-GUI-TUI-衔接" class="headerlink" title="三、开发环境：多屏 + GUI&#x2F;TUI 衔接"></a>三、开发环境：多屏 + GUI&#x2F;TUI 衔接</h2><p><strong>理念</strong>：古板开发者，做不到 fire-and-forget，要白盒掌控——<strong>“AI 只能帮我写代码，不能帮我背锅”</strong>。AI 只当助手，最终代码要有自己的风格&#x2F;审美&#x2F;品味。</p>
+<p><strong>多屏布局</strong>：MacBook（浏览器&#x2F;飞书）+ 中屏（IDE JetBrains 双栏 diff）+ 左竖屏（文档&#x2F;TUI 辅助）。</p>
+<p><strong>GUI&#x2F;TUI 衔接</strong>（IDE 为主轴）：IDE 切项目 → 点按钮 → 自动新建&#x2F;切换 iTerm2 的 CC 会话终端，跟随项目目录。实现：Shell + AppleScript 自动化 iTerm2 + JetBrains 外部工具。</p>
+<h2 id="四、多-Agent-主从架构（成本取舍精华）"><a href="#四、多-Agent-主从架构（成本取舍精华）" class="headerlink" title="四、多 Agent 主从架构（成本取舍精华）"></a>四、多 Agent 主从架构（成本取舍精华）</h2><p>每个项目自动开 <strong>3 个常驻 CC 会话</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>位置</th>
+<th>模型</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>架构师</strong></td>
+<td>上屏（大）</td>
+<td>贵模型（Claude）</td>
+<td>聊需求&#x2F;对方案&#x2F;产任务列表</td>
+</tr>
+<tr>
+<td><strong>开发者1</strong></td>
+<td>左下</td>
+<td>领域模型（前端模型）</td>
+<td>落地方案</td>
+</tr>
+<tr>
+<td><strong>开发者2</strong></td>
+<td>右下</td>
+<td>领域模型（后端模型）</td>
+<td>落地方案</td>
+</tr>
+</tbody></table>
+<p><strong>成本取舍</strong>：Claude 对方案（高质量），GLM&#x2F;MiniMax 实施（低成本）。</p>
+<blockquote>
+<p>“知人善用才是好 PM”——匹配现实组织架构（1 架构师 + 多中高级开发者）。</p>
+</blockquote>
+<h2 id="五、SDD-规范驱动开发（与-flow-deep-同源）"><a href="#五、SDD-规范驱动开发（与-flow-deep-同源）" class="headerlink" title="五、SDD 规范驱动开发（与 flow-deep 同源）"></a>五、SDD 规范驱动开发（与 flow-deep 同源）</h2><p>主从协作需要”对大模型友好的方案&#x2F;任务文档”作为开发者输入。采用 SDD，模拟现实软件开发，拆 3 阶段：</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>内容</th>
+<th>对应你的工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>proposal</strong></td>
+<td>需求对齐、方案设计、任务细化</td>
+<td>flow-deep Stage 3 规划 &#x2F; planning-with-files</td>
+</tr>
+<tr>
+<td><strong>apply</strong></td>
+<td>开发任务实施</td>
+<td>flow-deep Stage 4 执行 &#x2F; multi-agent</td>
+</tr>
+<tr>
+<td><strong>archive</strong></td>
+<td>功能验收、文档沉淀</td>
+<td>flow-deep Stage 5 验证 + 5.8 经验沉淀</td>
+</tr>
+</tbody></table>
+<h2 id="六、🔥-与你环境的强呼应"><a href="#六、🔥-与你环境的强呼应" class="headerlink" title="六、🔥 与你环境的强呼应"></a>六、🔥 与你环境的强呼应</h2><ol>
+<li><strong>你正在用得物的方案</strong>：你的 Claude Code 环境就是 GLM（<code>open.bigmodel.cn</code>，见 CLAUDE.md&#x2F;RTK），正是本文的 <code>zcc</code> 方案——<strong>你已经在用得物验证过的模型插拔路线</strong>。</li>
+<li><strong>SDD 同源</strong>：本文 proposal&#x2F;apply&#x2F;archive 与你的 flow-deep（planning-with-files + SDD 增强）是同一思想的不同实现。</li>
+<li><strong>多 Agent 主从</strong>：你的 multi-agent skill 可借鉴”架构师贵模型 + 开发者领域模型”的成本取舍——这正是 <code>CLAUDE_CODE_SUBAGENT_MODEL</code> 环境变量的用武之地。</li>
+</ol>
+<h2 id="七、可迁移要点"><a href="#七、可迁移要点" class="headerlink" title="七、可迁移要点"></a>七、可迁移要点</h2><ol>
+<li><strong>模型插拔</strong>用环境变量，按场景切换别名单命令（成本&#x2F;质量动态平衡）</li>
+<li><strong>AI 只当助手不背锅</strong>——白盒掌控，保留人的审美和最终决策</li>
+<li><strong>多 Agent 成本取舍</strong>：贵模型规划，便宜模型实施</li>
+<li><strong>SDD 三阶段</strong>让 Agent 协作有”对 LLM 友好的契约文档”</li>
+<li><strong>GUI&#x2F;TUI 衔接</strong>用 AppleScript&#x2F;外部工具自动化，减少切换割裂感</li>
+</ol>
+<h2 id="八、一句话"><a href="#八、一句话" class="headerlink" title="八、一句话"></a>八、一句话</h2><blockquote>
+<p>选 Claude Code 不是因为它最强，而是因为它”模型可插拔 + 商业化积极迭代”——把”脑”（模型）和”手”（工具）解耦，按场景为不同任务配不同发动机，再用 SDD 让多 Agent 协作有契约。这与你 flow-deep 的”确定性机制 + 模型语义”分工、planning-with-files 的契约化是同一条路。</p>
+</blockquote>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

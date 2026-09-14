@@ -1,0 +1,358 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="得物 Claude Code + OpenSpec 加速 AICoding 落地（id=216）"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>得物 Claude Code + OpenSpec 加速 AICoding 落地（id=216） | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>得物 Claude Code + OpenSpec 加速 AICoding 落地（id=216）</h1><div class="article-container"><h1 id="得物-Claude-Code-OpenSpec：从模型博弈到工程化的范式转移"><a href="#得物-Claude-Code-OpenSpec：从模型博弈到工程化的范式转移" class="headerlink" title="得物 Claude Code + OpenSpec：从模型博弈到工程化的范式转移"></a>得物 Claude Code + OpenSpec：从模型博弈到工程化的范式转移</h1><blockquote>
+<p>系统论证 2026 年 AICoding 从”模型崇拜”走向”工程落地”的范式转移：瓶颈不在模型而在<strong>上下文管理</strong>与<strong>意图标准化</strong>。给出 Claude Code（代理化执行）+ OpenSpec（规格化驱动）双轮方案，是 id&#x3D;212 Spec Coding &#x2F; id&#x3D;213 SDD 同一方法论的<strong>理论顶梁柱</strong>。</p>
+</blockquote>
+<h2 id="元信息与一句话定位"><a href="#元信息与一句话定位" class="headerlink" title="元信息与一句话定位"></a>元信息与一句话定位</h2><ul>
+<li><strong>核心命题</strong>：AI 编码的真正瓶颈不是模型逻辑能力，而是<strong>上下文管理失效</strong>与<strong>开发意图模糊</strong>。</li>
+<li><strong>双轮方案</strong>：Claude Code（CC）做”代理化执行引擎”，OpenSpec 做”规格化驱动框架”，共同构成”规格驱动开发（SDD）”闭环。</li>
+<li><strong>论证支点</strong>：DORA 2024（AI 采用率 +25% → 交付稳定性 -7.2%）、GPT-4o 性能断崖（1K Token 99.3% → 32K Token 69.7%）、生产力悖论（主观快 20% vs 实际慢 19%）。</li>
+<li><strong>在本系列的位置</strong>：本文是 Spec 驱动三件套（id&#x3D;212&#x2F;213&#x2F;216）的<strong>理论总论</strong>——id&#x3D;213 讲工程落地（模型插拔+多 Agent），id&#x3D;212 讲项目实战，本文讲”为什么必须工程化”。</li>
+</ul>
+<h2 id="一、破局：为什么”从模型博弈走向工程化”"><a href="#一、破局：为什么”从模型博弈走向工程化”" class="headerlink" title="一、破局：为什么”从模型博弈走向工程化”"></a>一、破局：为什么”从模型博弈走向工程化”</h2><h3 id="1-1-单纯堆参数无法解决幻觉与失控（论证链）"><a href="#1-1-单纯堆参数无法解决幻觉与失控（论证链）" class="headerlink" title="1.1 单纯堆参数无法解决幻觉与失控（论证链）"></a>1.1 单纯堆参数无法解决幻觉与失控（论证链）</h3><table>
+<thead>
+<tr>
+<th>证据</th>
+<th>数据</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DORA 2024</td>
+<td>AI 采用率每 +25%，交付稳定性 -7.2%</td>
+<td>AI 用得越多，交付越不稳</td>
+</tr>
+<tr>
+<td>生产力悖论</td>
+<td>主观感知快 20%，实际慢 19%</td>
+<td>感知与真实交付背离</td>
+</tr>
+<tr>
+<td>GPT-4o 性能断崖</td>
+<td>1K Token 99.3% → 32K Token 69.7%</td>
+<td>扩大上下文窗口不解决问题</td>
+</tr>
+</tbody></table>
+<p><strong>根因</strong>：模型在长上下文下面临<strong>上下文中毒（Context Poisoning）<strong>和</strong>注意力漂移（Attention Drift）</strong>，性能非线性下降。陷入”修正循环（Fix&#x2F;Test Loops）”，无法触及深层业务，反而需要更多人工干预。</p>
+<h3 id="1-2-关键转折：上下文工程取代提示词工程"><a href="#1-2-关键转折：上下文工程取代提示词工程" class="headerlink" title="1.2 关键转折：上下文工程取代提示词工程"></a>1.2 关键转折：上下文工程取代提示词工程</h3><ul>
+<li><strong>提示词工程</strong>：研究”如何写更好的指令”——已过时。</li>
+<li><strong>上下文工程（Context Engineering）</strong>：研究”如何为模型筛选<strong>最精准的 Token 集合</strong>“——2026 核心。</li>
+</ul>
+<h3 id="1-3-上下文作为”一等系统”（编译器管道隐喻）"><a href="#1-3-上下文作为”一等系统”（编译器管道隐喻）" class="headerlink" title="1.3 上下文作为”一等系统”（编译器管道隐喻）"></a>1.3 上下文作为”一等系统”（编译器管道隐喻）</h3><p>上下文不再是临时字符串拼接，而是一条精密的<strong>编译器管道</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>原则</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>存储与呈现分离</strong></td>
+<td>区分持久化 Session 状态与单次调用的 Working Context</td>
+</tr>
+<tr>
+<td><strong>显式转换</strong></td>
+<td>通过命名、有序的 Processors 构建上下文，而非随机堆砌</td>
+</tr>
+<tr>
+<td><strong>默认作用域</strong></td>
+<td>每个子代理仅能看到任务所需的最小上下文，按需通过 Tools 获取更多</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>隐性知识（Implicit Knowledge）挑战：关键决策散落在飞书评论&#x2F;群消息&#x2F;会议&#x2F;开发者脑中，AI 缺失这些语境就会”语法正确但违背架构初衷”。这正是 id&#x3D;217”数据确权”要解决的问题。</p>
+</blockquote>
+<h2 id="二、Claude-Code：代理化执行引擎"><a href="#二、Claude-Code：代理化执行引擎" class="headerlink" title="二、Claude Code：代理化执行引擎"></a>二、Claude Code：代理化执行引擎</h2><h3 id="2-1-代理循环（Agentic-Loop）-收集-行动-验证闭环"><a href="#2-1-代理循环（Agentic-Loop）-收集-行动-验证闭环" class="headerlink" title="2.1 代理循环（Agentic Loop）&#x3D; 收集 &#x2F; 行动 &#x2F; 验证闭环"></a>2.1 代理循环（Agentic Loop）&#x3D; 收集 &#x2F; 行动 &#x2F; 验证闭环</h3><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Gather Context</strong></td>
+<td>不盲目读全目录，通过文件搜索 + Git 状态 + <code>CLAUDE.md</code> 建立认知</td>
+</tr>
+<tr>
+<td><strong>Take Action</strong></td>
+<td>跨多文件编辑，或用终端工具（npm install &#x2F; git commit）操作环境</td>
+</tr>
+<tr>
+<td><strong>Verify Results</strong></td>
+<td><strong>最具杀伤力</strong>：自动跑测试、捕错、据反馈调整。带验证的生成成功率远高于单次生成</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>验证闭环是”确定性机制锁定”的典型——把”代码对不对”从模型猜测变成测试断言。</p>
+</blockquote>
+<h3 id="2-2-终端原生工程哲学"><a href="#2-2-终端原生工程哲学" class="headerlink" title="2.2 终端原生工程哲学"></a>2.2 终端原生工程哲学</h3><ul>
+<li>选终端而非 GUI：体现”代理优先”，遵循 Unix 哲学，支持 Pipe &#x2F; 脚本化 &#x2F; 自动化集成。</li>
+<li>与 CI&#x2F;CD 完美衔接（GitHub Actions 自动代码审计）。</li>
+<li>Anthropic Code Review 功能 &#x3D; 基于 PR 的 bug 追踪。</li>
+</ul>
+<h3 id="2-3-MCP-与”即时上下文”（应对工具定义爆炸）"><a href="#2-3-MCP-与”即时上下文”（应对工具定义爆炸）" class="headerlink" title="2.3 MCP 与”即时上下文”（应对工具定义爆炸）"></a>2.3 MCP 与”即时上下文”（应对工具定义爆炸）</h3><p>为应对大规模工具定义导致的上下文溢出，CC 引入：</p>
+<ul>
+<li><strong>工具搜索（Tool Search）</strong>：不一次性加载成千上万 API 定义。</li>
+<li><strong>代码执行模式</strong>：代理编写代码按需调 MCP 服务。<ul>
+<li>例：分析大数据库时不加载全量数据，而是写针对性查询语句，<strong>仅将结果摘要读入上下文</strong>。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>这正是本任务开头遇到的机制——ToolSearch 延迟加载工具 schema，避免上下文中毒。CC 与本 harness 同源。</p>
+</blockquote>
+<h3 id="2-4-CLAUDE-md-与自动记忆"><a href="#2-4-CLAUDE-md-与自动记忆" class="headerlink" title="2.4 CLAUDE.md 与自动记忆"></a>2.4 CLAUDE.md 与自动记忆</h3><ul>
+<li><code>CLAUDE.md</code>：根目录 Markdown，存项目编码标准&#x2F;架构决策&#x2F;测试指令，提供<strong>持久的、跨会话约束</strong>（对比：临时提示词一次性）。</li>
+<li><strong>自动记忆（Auto Memory）</strong>：自动在 <code>MEMORY.md</code> 记录构建命令&#x2F;调试心得&#x2F;用户偏好；新会话加载前 200 行——“越用越懂你”。</li>
+</ul>
+<blockquote>
+<p>你的 <code>~/.claude/CLAUDE.md</code> + 项目 <code>MEMORY.md</code> 机制正是本文描述的工业实现。</p>
+</blockquote>
+<h2 id="三、OpenSpec：规格化驱动框架"><a href="#三、OpenSpec：规格化驱动框架" class="headerlink" title="三、OpenSpec：规格化驱动框架"></a>三、OpenSpec：规格化驱动框架</h2><h3 id="3-1-规格驱动开发（SDD）核心理念"><a href="#3-1-规格驱动开发（SDD）核心理念" class="headerlink" title="3.1 规格驱动开发（SDD）核心理念"></a>3.1 规格驱动开发（SDD）核心理念</h3><blockquote>
+<p>在写任何一行代码之前，先由<strong>人类与 AI 共同协商</strong>并锁定一份<strong>机器可读、人可评审</strong>的规格文档。</p>
+</blockquote>
+<p>SDD 三阶段演进（与 id&#x3D;213 同源）：</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>对应</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>提案（Proposal）</td>
+<td>需求对齐、方案设计</td>
+</tr>
+<tr>
+<td>应用（Apply）</td>
+<td>任务实施</td>
+</tr>
+<tr>
+<td>归档（Archive）</td>
+<td>验收、知识固化</td>
+</tr>
+</tbody></table>
+<h3 id="3-2-OpenSpec-工件体系（Artifacts）"><a href="#3-2-OpenSpec-工件体系（Artifacts）" class="headerlink" title="3.2 OpenSpec 工件体系（Artifacts）"></a>3.2 OpenSpec 工件体系（Artifacts）</h3><p>弃用笨重文档，采用<strong>轻量级、面向 AI 优化的 Markdown 工件</strong>。每个变更（Change）独立文件夹：</p>
+<table>
+<thead>
+<tr>
+<th>工件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>proposal.md</code></td>
+<td>描述变更的初衷（Why）和范围（What）</td>
+</tr>
+<tr>
+<td><code>specs/</code></td>
+<td>逻辑规格，含 <strong>Scenario 场景</strong>描述，通过具体输入输出消除模糊性</td>
+</tr>
+<tr>
+<td><code>design.md</code></td>
+<td>技术设计（DB 变更、接口调整）</td>
+</tr>
+<tr>
+<td><code>tasks.md</code></td>
+<td><strong>原子化任务清单</strong>，作为 AI 执行路径图</td>
+</tr>
+</tbody></table>
+<h3 id="3-3-生命周期管理（最具洞察力的设计）——-治理上下文污染"><a href="#3-3-生命周期管理（最具洞察力的设计）——-治理上下文污染" class="headerlink" title="3.3 生命周期管理（最具洞察力的设计）—— 治理上下文污染"></a>3.3 生命周期管理（最具洞察力的设计）—— 治理上下文污染</h3><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>机制</th>
+<th>治理效果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Proposal</strong></td>
+<td>建立独立变更上下文，AI 只关注当前变更</td>
+<td>隔离旧任务干扰</td>
+</tr>
+<tr>
+<td><strong>Apply</strong></td>
+<td>严格按 <code>tasks.md</code> 执行</td>
+<td>避免盲目扫描全库导致 Token 浪费</td>
+</tr>
+<tr>
+<td><strong>Archive</strong></td>
+<td>临时文档移入归档，<strong>核心规格更新至主规格文件</strong></td>
+<td>AI 始终在”卫生”上下文工作，留下可追溯决策链</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Archive 是反上下文中毒的关键</strong>——任务结束即清理工作区，只把”沉淀后的规格”写回主规格。这与你 flow-deep Stage 5.8 经验沉淀 + planning-with-files 的 findings.md 同构。</p>
+</blockquote>
+<h2 id="四、LLM-幻觉与失控的治理手段（汇总）"><a href="#四、LLM-幻觉与失控的治理手段（汇总）" class="headerlink" title="四、LLM 幻觉与失控的治理手段（汇总）"></a>四、LLM 幻觉与失控的治理手段（汇总）</h2><p>本文未单独成章，但治理逻辑贯穿全文，提炼如下：</p>
+<table>
+<thead>
+<tr>
+<th>治理手段</th>
+<th>机制</th>
+<th>对应工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>验证闭环</strong></td>
+<td>自动跑测试，测试失败自动修复直到 Task 完成</td>
+<td>CC Verify Results</td>
+</tr>
+<tr>
+<td><strong>按需加载</strong></td>
+<td>工具搜索 + 代码执行，不全量灌上下文</td>
+<td>CC Tool Search + MCP</td>
+</tr>
+<tr>
+<td><strong>持久约束</strong></td>
+<td><code>CLAUDE.md</code> 跨会话锁定编码标准</td>
+<td>CC</td>
+</tr>
+<tr>
+<td><strong>规格先行</strong></td>
+<td>写代码前先锁定人机共审的规格文档</td>
+<td>OpenSpec Proposal</td>
+</tr>
+<tr>
+<td><strong>场景消歧</strong></td>
+<td><code>specs/</code> 用具体输入输出 Scenario 消除模糊性</td>
+<td>OpenSpec</td>
+</tr>
+<tr>
+<td><strong>原子任务</strong></td>
+<td><code>tasks.md</code> 拆原子化任务，AI 对照逐项实施</td>
+<td>OpenSpec Apply</td>
+</tr>
+<tr>
+<td><strong>归档隔离</strong></td>
+<td>任务完归档，核心规格回写主文件</td>
+<td>OpenSpec Archive</td>
+</tr>
+<tr>
+<td><strong>自动记忆</strong></td>
+<td><code>MEMORY.md</code> 记录偏好，跨会话复用</td>
+<td>CC Auto Memory</td>
+</tr>
+</tbody></table>
+<p><strong>统一逻辑</strong>：把”对不对&#x2F;符不符合意图”从<strong>模型猜测</strong>变成<strong>规格断言 + 测试断言</strong>——确定性机制锁定，模型只做语义感知。这正是本系列铁律的完整工程化投射。</p>
+<h2 id="五、实战案例：优惠券结算逻辑重构"><a href="#五、实战案例：优惠券结算逻辑重构" class="headerlink" title="五、实战案例：优惠券结算逻辑重构"></a>五、实战案例：优惠券结算逻辑重构</h2><p>展示 CC + OpenSpec 四步落地（OpenSpec 指令集 <code>/opsx:*</code> 注入 CC 会话）：</p>
+<ol>
+<li><strong>提案初始化</strong>：<code>/opsx:propose &quot;重构优惠券结算逻辑，引入 Redis 分布式锁并支持多卷叠加&quot;</code> → CC 在 <code>openspec/changes/refactor-coupon-logic/</code> 生成骨架，AI 分析现有代码自动列出已知结算场景到 <code>spec.md</code>。</li>
+<li><strong>规格对齐与边界确认</strong>：先审 <code>spec.md</code>，发现遗漏”优惠券过期临界点”并发问题 → 要求 AI 改规格：”增加过期校验场景，要求用 Lua 脚本保证原子性”。<strong>这一步 AI 不写代码，只改规格</strong>。</li>
+<li><strong>受控应用</strong>：规格过审后 <code>/opsx:apply</code>，CC 对照 <code>tasks.md</code> 逐项实施，每项修改后跑相关测试，失败自动分析修复直到该项 Task 标”完成”。</li>
+<li><strong>归档与知识固化</strong>：<code>/opsx:archive</code> → 散落在会话的重构逻辑变成 <code>openspec/specs/coupon-settlement.md</code> 标准规格。下一个 AI 代理&#x2F;新同事读它即获完整业务语境。</li>
+</ol>
+<blockquote>
+<p>关键：<strong>Step 2 把”AI 猜意图”变成”人审规格”</strong>——意图模糊是失控之源，规格对齐是治理之锚。</p>
+</blockquote>
+<h2 id="六、团队沉淀：从个人技能到组织资产"><a href="#六、团队沉淀：从个人技能到组织资产" class="headerlink" title="六、团队沉淀：从个人技能到组织资产"></a>六、团队沉淀：从个人技能到组织资产</h2><h3 id="6-1-三类组织资产固化"><a href="#6-1-三类组织资产固化" class="headerlink" title="6.1 三类组织资产固化"></a>6.1 三类组织资产固化</h3><table>
+<thead>
+<tr>
+<th>资产</th>
+<th>载体</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Skill</strong></td>
+<td><code>.claude/skills/</code></td>
+<td>封装公司代码风格&#x2F;安全审计清单&#x2F;中间件指南，CC 自动加载——“资深架构师时刻盯着每行代码”</td>
+</tr>
+<tr>
+<td><strong>MCP Server</strong></td>
+<td>企业向量库（如 Zilliz 语义搜索）</td>
+<td>AI 从数千万行历史代码找最佳实践</td>
+</tr>
+<tr>
+<td><strong>CLAUDE.md 负向约束</strong></td>
+<td>Prohibited rules</td>
+<td>AI 反复犯的错 → 转化为禁止规则</td>
+</tr>
+</tbody></table>
+<h3 id="6-2-AICoding-效能飞轮"><a href="#6-2-AICoding-效能飞轮" class="headerlink" title="6.2 AICoding 效能飞轮"></a>6.2 AICoding 效能飞轮</h3><ul>
+<li><strong>规格积累</strong>：每完成一个 PR 强制更新对应 OpenSpec 规格文件。</li>
+<li><strong>指令进化</strong>：AI 反复犯的错 → CLAUDE.md 负向约束。</li>
+<li><strong>并行执行</strong>：CC Agent Teams——一个代理写规格，一个审计代码，一个集成测试。</li>
+</ul>
+<h3 id="6-3-角色转变：码农-→-规格定义者"><a href="#6-3-角色转变：码农-→-规格定义者" class="headerlink" title="6.3 角色转变：码农 → 规格定义者"></a>6.3 角色转变：码农 → 规格定义者</h3><blockquote>
+<p>AI 能据完美描述生成任何代码，”代码”变成编译后中间产物，”<strong>规格</strong>才是核心产品”。领域专家（Domain Experts）重要性显著提升——他们提供最高质量的业务意图描述。开发者从”语法实现”转向”系统设计 + 逻辑严密性”。</p>
+</blockquote>
+<h2 id="七、可借鉴点"><a href="#七、可借鉴点" class="headerlink" title="七、可借鉴点"></a>七、可借鉴点</h2><ol>
+<li><strong>瓶颈诊断先行</strong>：落地 AICoding 前先判断是模型问题还是上下文&#x2F;意图问题——多数是后者。</li>
+<li><strong>上下文工程三原则</strong>：存储&#x2F;呈现分离、显式转换、默认最小作用域——直接可用于评估任何 Agent 架构。</li>
+<li><strong>OpenSpec 工件体系</strong>：<code>proposal/specs/design/tasks</code> 四件套是”对 LLM 友好的契约”，可替代零散需求文档。</li>
+<li><strong>归档机制反上下文中毒</strong>：任务完即清理工作区，只回写沉淀规格——长期协作的卫生保障。</li>
+<li><strong>验证闭环是确定性锁</strong>：让”代码对不对”从猜测变测试断言。</li>
+<li><strong>组织资产化</strong>：Skill + MCP Server + CLAUDE.md 三件套把个人 AI 能力变团队飞轮。</li>
+<li><strong>角色升级</strong>：把精力从语法实现转向规格定义与系统设计。</li>
+</ol>
+<h2 id="八、与已挖研究的关系（Spec-驱动三件套）"><a href="#八、与已挖研究的关系（Spec-驱动三件套）" class="headerlink" title="八、与已挖研究的关系（Spec 驱动三件套）"></a>八、与已挖研究的关系（Spec 驱动三件套）</h2><p>本文与 id&#x3D;212 Spec Coding、id&#x3D;213 SDD 是<strong>同一方法论的三面</strong>，构成完整的”Spec 驱动”知识三角：</p>
+<table>
+<thead>
+<tr>
+<th>文档</th>
+<th>侧重</th>
+<th>角色</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>id&#x3D;216（本文）</strong></td>
+<td><strong>理论总论 + 工具解构</strong></td>
+<td>为什么必须工程化（上下文工程 + SDD 范式论证）</td>
+</tr>
+<tr>
+<td><strong>id&#x3D;213</strong></td>
+<td><strong>工程落地</strong></td>
+<td>怎么干（模型插拔 + 多 Agent 主从 + SDD 三阶段实践）</td>
+</tr>
+<tr>
+<td><strong>id&#x3D;212</strong></td>
+<td><strong>项目实战</strong></td>
+<td>干成什么样（Spec Coding 具体项目案例）</td>
+</tr>
+</tbody></table>
+<p><strong>三者的统一内核</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">规格（Spec/Intent）— 锁定意图，消除模糊</span><br><span class="line">   ↓</span><br><span class="line">代理（Agent/CC）— 受控执行 + 自动验证</span><br><span class="line">   ↓</span><br><span class="line">沉淀（Archive/Memory）— 规格回写，组织资产化</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>id&#x3D;216 的 OpenSpec Archive</strong> &#x3D; <strong>id&#x3D;213 的 archive 阶段</strong> &#x3D; <strong>id&#x3D;217 的”规范化输出回写主规格”</strong> &#x3D; 你的 flow-deep Stage 5.8 经验沉淀——四处同构。</li>
+<li><strong>id&#x3D;216 的”上下文作为一等系统”</strong> &#x3D; <strong>id&#x3D;217 的”认知&#x2F;执行运行时解耦”</strong>——同一思想的通用版与数仓版。</li>
+<li><strong>id&#x3D;216 的”CLAUDE.md + Auto Memory”</strong> 正是你当前 Claude Code 环境的运作机制（见 <code>~/.claude/CLAUDE.md</code> + <code>MEMORY.md</code>）。</li>
+</ul>
+<p><strong>对得物选型主线的印证</strong>：本文进一步坐实”按场景选型 + 确定性机制锁定 + 模型只做语义感知”——OpenSpec 是”意图层”的确定性机制，CC 的验证闭环是”执行层”的确定性机制，二者合力把模型框在”只做语义感知”的安全区。</p>
+<h2 id="九、局限与待验证"><a href="#九、局限与待验证" class="headerlink" title="九、局限与待验证"></a>九、局限与待验证</h2><ol>
+<li><strong>案例偏理想化</strong>：优惠券重构是教学案例，真实大型遗留系统（千万行级、强耦合）的规格提取成本未量化。</li>
+<li><strong>OpenSpec 工具链成熟度</strong>：<code>/opsx:*</code> 指令集、工具链对比图未给出具体版本&#x2F;性能数据，需到 OpenSpec 官方仓库核实当前能力边界。</li>
+<li><strong>飞轮落地条件缺失</strong>：未讨论”团队不愿写规格”的组织阻力——规格积累依赖工程师纪律，这是非技术难题。</li>
+<li><strong>与 Cursor&#x2F;Aider 等的对比</strong>：文中对比表为图片未抓文字，具体差异维度需回原文核实。</li>
+<li><strong>“代码变中间产物”论断</strong>：在需要高性能&#x2F;底层优化的场景（内核&#x2F;编译器&#x2F;嵌入式）是否成立存疑——规格描述不出所有性能细节。</li>
+</ol>
+<hr>
+<h2 id="参考来源（原文引用）"><a href="#参考来源（原文引用）" class="headerlink" title="参考来源（原文引用）"></a>参考来源（原文引用）</h2><ol>
+<li>TheNewStack: Context is AI Coding’s Real Bottleneck in 2026</li>
+<li>GitHub Blog: Spec-Driven Development with AI (OpenSpec toolkit)</li>
+<li>Anthropic Engineering: Effective Context Engineering for AI Agents</li>
+<li>Anthropic Engineering: Code Execution with MCP</li>
+<li>Claude Code Docs: How Claude Code Works &#x2F; Best Practices</li>
+<li>OpenSpec Dev.to 教程</li>
+</ol>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

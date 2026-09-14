@@ -1,0 +1,125 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Dify 工作流机制与得物第一版用法"><meta name="keywords" content=""><meta name="author" content="MichaelMao"><meta name="copyright" content="MichaelMao"><title>Dify 工作流机制与得物第一版用法 | MMao</title><link rel="shortcut icon" href="/images/my-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.5.6"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css?version=1.5.6"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="dns-prefetch" href="https://unpkg.com"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitment/style/default.min.css"><script src="https://cdn.jsdelivr.net/npm/gitment/dist/gitment.browser.min.js"></script><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script><script>if (window.mermaid) {
+  window.mermaid.initialize({"startOnLoad":true,"theme":"default"});
+}
+</script><link rel="manifest" href="/manifest.json"><link rel="manifest" href="/manifest.json"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script><meta name="generator" content="Hexo 7.3.0"></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="https://pic-mike.oss-cn-hongkong.aliyuncs.com/Blog/avatar.png"></div><div class="author-info__name text-center">MichaelMao</div><div class="author-info__description text-center">stay on your way</div><div class="follow-button"><a href="https://github.com/FrizzleFur">Follow me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">58</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">46</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://juejin.im/user/57f8ffda2e958a005581e3c0/posts">J_Knight</a><a class="author-info-links__name text-center" href="https://halfrost.com/">Halfrost</a><a class="author-info-links__name text-center" href="https://github.com/draveness/analyze">draveness</a><a class="author-info-links__name text-center" href="https://juejin.im/user/5a52075e6fb9a01c9d31b107/posts">老司机周报</a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MMao</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/ideas">思所</a><a class="site-page" href="/booknotes">读书</a><a class="site-page" href="/about">关于</a></span></div><div id="site-info"><div id="site-title">MMao</div><div id="site-sub-title">刚刚在线</div><div id="site-social-icons"><a class="social-icon" href="/atom.xml"><i class="fa-rss fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><article id="page"><h1>Dify 工作流机制与得物第一版用法</h1><div class="article-container"><h1 id="Dify-工作流机制"><a href="#Dify-工作流机制" class="headerlink" title="Dify 工作流机制"></a>Dify 工作流机制</h1><h2 id="一、Dify-是什么"><a href="#一、Dify-是什么" class="headerlink" title="一、Dify 是什么"></a>一、Dify 是什么</h2><p>开源 LLM 应用开发平台，核心理念 <strong>“Backend as a Service + LLMOps”</strong>。把构建大模型应用的关键技术栈（模型接入、RAG、工具编排、监控）集成好，让 AI 应用从原型快速走向生产。定位：LangChain 像”工具箱”（锤子钉子），Dify 像”精装修的脚手架”。</p>
+<h2 id="二、两种应用模式（核心）"><a href="#二、两种应用模式（核心）" class="headerlink" title="二、两种应用模式（核心）"></a>二、两种应用模式（核心）</h2><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>运行方式</th>
+<th>起始节点</th>
+<th>结束节点</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>工作流 Workflow</strong></td>
+<td>从头到尾运行一次</td>
+<td>用户输入 或 触发器</td>
+<td>输出(可选)</td>
+<td>自动报告、数据处理管道、批处理</td>
+</tr>
+<tr>
+<td><strong>对话流 Chatflow</strong></td>
+<td>每条消息触发流程</td>
+<td>用户输入</td>
+<td>直接回复(必需)</td>
+<td>交互式助手、引导式问答</td>
+</tr>
+</tbody></table>
+<p><strong>触发器</strong>（仅工作流）：按计划(cron)、Webhook、插件事件自动运行。</p>
+<h2 id="三、节点系统（搭积木式编排）"><a href="#三、节点系统（搭积木式编排）" class="headerlink" title="三、节点系统（搭积木式编排）"></a>三、节点系统（搭积木式编排）</h2><p>通过可视化画布<strong>拖拽、连接、配置</strong>节点构建流程，每个节点处理一个特定步骤：</p>
+<ul>
+<li><strong>LLM 节点</strong>：调用大模型</li>
+<li><strong>知识检索 Knowledge Retrieval</strong>：RAG 检索</li>
+<li><strong>条件分支 IF&#x2F;ELSE</strong>：路由</li>
+<li><strong>工具节点</strong>：调用外部工具&#x2F;HTTP</li>
+<li><strong>代码节点</strong>：自定义逻辑（Python&#x2F;JS）</li>
+<li><strong>模板转换</strong>：组装输出</li>
+<li><strong>变量聚合器</strong>：合并多路结果</li>
+</ul>
+<blockquote>
+<p>大部分工作无需写代码；只有现有节点满足不了才写。</p>
+</blockquote>
+<h2 id="四、Agent-节点的推理策略"><a href="#四、Agent-节点的推理策略" class="headerlink" title="四、Agent 节点的推理策略"></a>四、Agent 节点的推理策略</h2><p>Dify 的 Agent 节点支持三种：</p>
+<ul>
+<li><strong>Function Calling</strong>：结构化工具调用</li>
+<li><strong>ReAct</strong>（推理+行动）：需要外部知识的复杂任务</li>
+<li><strong>ReWOO</strong>（解耦推理）：先制定完整计划再执行，token 消耗更低</li>
+</ul>
+<h2 id="五、Agentic-工作流的设计哲学（Dify-官方表述）"><a href="#五、Agentic-工作流的设计哲学（Dify-官方表述）" class="headerlink" title="五、Agentic 工作流的设计哲学（Dify 官方表述）"></a>五、Agentic 工作流的设计哲学（Dify 官方表述）</h2><blockquote>
+<p>AI 模型单独使用时不可预测（幻觉、遗漏步骤、输出不一致）。生产环境需要对 AI 运行方式有更多控制。Agentic 工作流通过把 AI 嵌入<strong>结构化、可重复的流程</strong>解决——设计流程逐步编排模型、工具、逻辑，包含<strong>明确的条件、检查点和回退路径</strong>。AI 仍承担重活，但在你定义的边界内运行。</p>
+</blockquote>
+<blockquote>
+<p>这与得物”流程可控、正确率优先”、本系列”确定性机制锁定 + 模型只做语义”的铁律完全一致。</p>
+</blockquote>
+<h2 id="六、得物第一版怎么用-Dify（还原）"><a href="#六、得物第一版怎么用-Dify（还原）" class="headerlink" title="六、得物第一版怎么用 Dify（还原）"></a>六、得物第一版怎么用 Dify（还原）</h2><p>得物活动搭建第一版用 <strong>2 个 Dify Workflow</strong>：</p>
+<ol>
+<li><strong>Workflow 1</strong>：把策划文档（飞书）解析成结构化字段</li>
+<li><strong>Workflow 2</strong>：把解析结果与系统下拉选项做语义匹配</li>
+</ol>
+<p>实现”AI 预填 + 人工校验”，运营从”全部手填”变成”AI 预填 + 校验”。</p>
+<h2 id="七、Dify-的能力边界（为何得物第二版换-LangGraph）"><a href="#七、Dify-的能力边界（为何得物第二版换-LangGraph）" class="headerlink" title="七、Dify 的能力边界（为何得物第二版换 LangGraph）"></a>七、Dify 的能力边界（为何得物第二版换 LangGraph）</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Dify</th>
+<th>LangGraph</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>编排方式</td>
+<td>可视化拖拽节点</td>
+<td>代码定义图</td>
+</tr>
+<tr>
+<td>上手成本</td>
+<td>低（非技术人员可用）</td>
+<td>中高（需写代码）</td>
+</tr>
+<tr>
+<td>灵活度</td>
+<td>受节点能力限制</td>
+<td>任意（代码级控制）</td>
+</tr>
+<tr>
+<td>状态持久化</td>
+<td>平台内置</td>
+<td>Checkpointer（可控）</td>
+</tr>
+<tr>
+<td>中断恢复(HITL)</td>
+<td>较弱</td>
+<td>interrupt&#x2F;resume 原生支持</td>
+</tr>
+<tr>
+<td>适合阶段</td>
+<td><strong>快速验证&#x2F;原型</strong></td>
+<td><strong>生产级可控编排</strong></td>
+</tr>
+</tbody></table>
+<p><strong>得物换型逻辑</strong>：第一版用 Dify 快速验证”AI 能否帮填表”，跑通后发现”范式没变、组件硬编码、无持久化”，要质变需要代码级的可控编排 + interrupt&#x2F;resume + Capability Registry → 第二版切 LangGraph。</p>
+<h2 id="八、可迁移结论"><a href="#八、可迁移结论" class="headerlink" title="八、可迁移结论"></a>八、可迁移结论</h2><ul>
+<li>Dify 适合<strong>从 0 到 1 快速验证</strong> AI 工作流想法（低代码、可视化、非技术可参与）</li>
+<li>LangGraph 适合<strong>从 1 到 N 生产级落地</strong>（需可控状态机、人机中断、复杂扩展）</li>
+<li>两者非互斥：得物正是”Dify 验证 → LangGraph 生产”的典型路径</li>
+</ul>
+</div></article><nav id="pagination"><div class="pagination"></div></nav><div id="gitment-container"></div><script>var gitment = new Gitment({
+  owner: 'michaelMaoMao',
+  repo: 'michaelMaoMao.github.io',
+  oauth: {
+    client_id: '98760fb6521b1f01477f',
+    client_secret: '88766f6b64e79c5427ddc39db6fa3c42ee19f6d9'
+  }
+})
+gitment.render('gitment-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2017 - 2026 By MichaelMao</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">Hi, this is just a small place for reflect.</div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.6"></script><script src="/js/fancybox.js?version=1.5.6"></script><script src="/js/sidebar.js?version=1.5.6"></script><script src="/js/copy.js?version=1.5.6"></script><script src="/js/fireworks.js?version=1.5.6"></script><script src="/js/transition.js?version=1.5.6"></script><script src="/js/scroll.js?version=1.5.6"></script><script src="/js/head.js?version=1.5.6"></script><script src="/js/search/local-search.js"></script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
